@@ -35,7 +35,18 @@ $FName = $_SESSION['FName'];
         };
         senddata(JSON.stringify(data));
     }
+    function showmodal(ID,sel)
+    {
+        var data = 
+        {
+            'STATUS': 'show_detail_customer',
+            'ID':ID,
+            'sel':sel
+        };
+        senddata(JSON.stringify(data));
 
+        
+    }
     function senddata(data)
     {
          var form_data = new FormData();
@@ -82,12 +93,12 @@ $FName = $_SESSION['FName'];
 
                                  var rowCount = $('#TableUser >tbody >tr').length;
 
-                                  var chkUser = "<div class=custom-control custom-checkbox;><input type='checkbox' class='custom-control-input checkSingle' id='user_id_"+i+"' required><label class='custom-control-label' for='user_id_"+i+"'></label></div>";
-                                  var ShowEdit = "<a href='panel-page-profile.html'><i class='icon-eye mr-3'></i></a> <a href='panel-page-profile.html'><i class='icon-pencil'></i></a>";
+                                //   var chkUser = "<div class=custom-control custom-checkbox;><input type='checkbox' class='custom-control-input checkSingle' id='user_id_"+i+"' required><label class='custom-control-label' for='user_id_"+i+"'></label></div>";
+                                  var ShowEdit = "<a href='javascript:void(0)'><i class='icon-pencil'></i></a> <a href='javascript:void(0)' style='margin-left:12px;'><i class='icon-delete_forever'></i></a>";
 
-                                 StrTR = "<tr >"+
-                                                "<td >"+chkUser+"</td>"+
-                                                 "<td >"+temp[i]['FName']+"</td>"+
+                                 StrTR = "<tr ondblclick='showmodal("+temp[i]['ID']+","+'1'+");'>"+
+                                                "<td >"+(i+1)+"</td>"+
+                                                "<td >"+temp[i]['FName']+"</td>"+
                                                 "<td >"+temp[i]['UserName']+"</td>"+
                                                 "<td >"+temp[i]['Password']+"</td>"+
                                                 "<td >"+temp[i]['Tel']+"</td>"+
@@ -104,6 +115,31 @@ $FName = $_SESSION['FName'];
                                    $('#TableUser tbody:last-child').append( StrTR );
                                  }
                               }
+                    }
+                    else if( (temp["form"]=='show_detail_customer') )
+                    {
+                        var sel = temp['sel'];
+                        if(sel==1){
+                            $('#show_customer').modal('toggle');
+
+                            $('#ID').val(temp['ID']);
+                            $('#FName').val(temp['FName']);
+                            $('#UserName').val(temp['UserName']);
+                            $('#address').val(temp['address']);
+                            $('#email').val(temp['email']);
+                            $('#Tel').val(temp['Tel']);
+                        }else{
+                            $('#show_customer_edit').modal('toggle');
+
+                            $('#ID_edit').val(temp['ID']);
+                            $('#FName_edit').val(temp['FName']);
+                            $('#UserName_edit').val(temp['UserName']);
+                            $('#address_edit').val(temp['address']);
+                            $('#email_edit').val(temp['email']);
+                            $('#Tel_edit').val(temp['Tel']);
+                            
+                        }
+                        
                     }
                 }
                 else if (temp['status']=="failed") 
@@ -303,12 +339,7 @@ $FName = $_SESSION['FName'];
                                     <table class="table table-striped table-hover r-0" id="TableUser">
                                         <thead id="theadsum" >
                                         <tr class="no-b">
-                                            <th >
-                                                <div class="custom-control custom-checkbox" hidden>
-                                                    <input type="checkbox" id="checkedAll" class="custom-control-input"><label
-                                                        class="custom-control-label" for="checkedAll"></label>
-                                                </div>
-                                            </th>
+                                            <th>NO.</th>
                                             <th>NAME</th>
                                             <th>USER</th>
                                             <th>PASSWORD</th>
@@ -492,6 +523,133 @@ $FName = $_SESSION['FName'];
          immediately after the control sidebar -->
 <div class="control-sidebar-bg shadow white fixed"></div>
 </div>
+<!--------------------------------------- Modal show_customer ------------------------------------------>
+<div class="modal fade" id="show_customer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">ข้อมูล ลูกค้า</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">ID Code</label>
+            <input type="text" id="ID" class="form-control " placeholder="ID">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">ชื่อ-นามสกุล</label>
+            <input type="text" id="FName" class="form-control " placeholder="ชื่อ-นามสกุล">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">User</label>
+            <input type="text" id="UserName" class="form-control " placeholder="User">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">ที่อยู่</label>
+            <input type="text" id="address" class="form-control " placeholder="ที่อยู่">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">E-Mail</label>
+            <input type="text" id="email" class="form-control " placeholder="E-Mail">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">เบอร์โทร</label>
+            <input type="text" id="Tel" class="form-control " placeholder="เบอร์โทร">
+            </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-------------------------- end Modal ----------------------------------------------->
+<!--------------------------------------- Modal show_customer edit ------------------------------------------>
+<div class="modal fade" id="show_customer_edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">แก้ไข ข้อมูลลูกค้า</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">ID Code</label>
+            <input type="text" id="ID_edit" class="form-control " placeholder="ID" disabled>
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">ชื่อ-นามสกุล *</label>
+            <input type="text" id="FName_edit" class="form-control " placeholder="ชื่อ-นามสกุล">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">User *</label>
+            <input type="text" id="UserName_edit" class="form-control " placeholder="User">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">ที่อยู่ *</label>
+            <input type="text" id="address_edit" class="form-control " placeholder="ที่อยู่">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">E-Mail *</label>
+            <input type="text" id="email_edit" class="form-control " placeholder="E-Mail">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">เบอร์โทร *</label>
+            <input type="text" id="Tel_edit" class="form-control " placeholder="เบอร์โทร">
+            </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" onclick='edit_customer();' class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-------------------------- end Modal ----------------------------------------------->
+<!--------------------------------------- Modal add_customer  ------------------------------------------>
+<div class="modal fade" id="add_customer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">เพิ่ม ข้อมูลลูกค้า</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">ชื่อ-นามสกุล *</label>
+            <input type="text" id="FName_add" class="form-control " placeholder="ชื่อ-นามสกุล">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">User *</label>
+            <input type="text" id="UserName_add" class="form-control " placeholder="User">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">ที่อยู่ *</label>
+            <input type="text" id="address_add" class="form-control " placeholder="ที่อยู่">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">E-Mail *</label>
+            <input type="text" id="email_add" class="form-control " placeholder="E-Mail">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">เบอร์โทร *</label>
+            <input type="text" id="Tel_add" class="form-control " placeholder="เบอร์โทร" maxlength="10">
+            </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" id="bt_save_add" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-------------------------- end add_customer Modal ----------------------------------------------->
 <!--/#app -->
 <script src="assets/js/app.js"></script>
 

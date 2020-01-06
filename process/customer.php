@@ -137,9 +137,21 @@ function getUser($conn, $DATA)
     die;
 
   }
+  function delete_customer($conn, $DATA)
+  {
+    $ID = $DATA["ID"];
 
+    $delete_customer = "DELETE FROM users WHERE ID = $ID  ";
+    mysqli_query($conn, $delete_customer);
 
+    $return['status'] = "success";
+    $return['form'] = "delete_customer";
+    echo json_encode($return);
+    mysqli_close($conn);
+    die;
+  }
 
+  
   $data = $_POST['DATA'];
   $DATA = json_decode(str_replace ('\"','"', $data), true);
 
@@ -151,7 +163,9 @@ function getUser($conn, $DATA)
         edit_customer($conn, $DATA);  
       }elseif ($DATA['STATUS'] == 'add_customer') {
         add_customer($conn, $DATA);  
-      }    
+      }elseif ($DATA['STATUS'] == 'delete_customer') {
+        delete_customer($conn, $DATA);  
+      }        
     else
     {
         $return['status'] = "error";

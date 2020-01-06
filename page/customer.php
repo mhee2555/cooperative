@@ -131,7 +131,35 @@ $FName = $_SESSION['FName'];
          });
 
     }
-    
+    function delete_customer(ID)
+    {
+        swal({
+          title: "ต้องการลบ ผู้ใช้หรือไม่",
+          text: "",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonClass: "btn-danger",
+          confirmButtonText: "ตกลง",
+          cancelButtonText: "ยกเลิก",
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          closeOnConfirm: false,
+          closeOnCancel: false,
+          showCancelButton: true
+        }).then(result => {
+          if (result.value) {
+            var data = 
+                    {
+                    'STATUS': 'delete_customer',
+                    'ID':ID
+                    };
+                senddata(JSON.stringify(data));
+          } else if (result.dismiss === 'cancel') {
+            swal.close();
+          }
+        })
+               
+    }
 
 // --------------------------------------------------------------------------------------------------
     function senddata(data)
@@ -179,12 +207,10 @@ $FName = $_SESSION['FName'];
                               {
                                 
                                  var rowCount = $('#TableUser >tbody >tr').length;
+                                 var ShowEdit = "<a href='javascript:void(0)'  onclick='showmodal("+temp[i]['ID']+","+'2'+");'><i class='icon-pencil'></i></a> <a href='javascript:void(0)' onclick='delete_customer("+temp[i]['ID']+");' style='margin-left:12px;'><i class='icon-delete_forever'></i></a>";
 
-                                  var chkUser = "<div class='custom-control custom-radio'><input type='radio' id='user_id_"+i+"' name='customRadio' class='custom-control-input'><label class='custom-control-label' for='user_id_"+i+"'></label></div>";
-                                  var ShowEdit = "<a href='javascript:void(0)'  onclick='showmodal("+temp[i]['ID']+","+'1'+");'><i class='icon-eye mr-3'></i></a> <a href='javascript:void(0)' onclick='showmodal("+temp[i]['ID']+","+'2'+");'><i class='icon-pencil'></i></a>";
-
-                                 StrTR = "<tr >"+
-                                                "<td >"+chkUser+"</td>"+
+                                 StrTR = "<tr ondblclick='showmodal("+temp[i]['ID']+","+'1'+");'>"+
+                                                "<td >"+(i+1)+"</td>"+
                                                 "<td >"+temp[i]['ID']+"</td>"+
                                                 "<td >"+temp[i]['FName']+"</td>"+
                                                 "<td >"+temp[i]['UserName']+"</td>"+
@@ -259,6 +285,24 @@ $FName = $_SESSION['FName'];
 
                         $('#add_customer').modal('hide');
 
+                        setTimeout(function() {
+                            getUser();
+                        }, 500);
+                        
+                    }
+                    else if( (temp["form"]=='delete_customer') )
+                    {
+                        swal({
+                            title: 'ลบข้อมูล ลูกค้าเรียบร้อย',
+                            text: '',
+                            type: 'success',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            timer: 1000,
+                            confirmButtonText: 'Ok',
+                            showConfirmButton: false
+                        });
                         setTimeout(function() {
                             getUser();
                         }, 500);
@@ -467,12 +511,7 @@ $FName = $_SESSION['FName'];
                                     <table class="table table-striped table-hover r-0" id="TableUser">
                                         <thead id="theadsum" >
                                         <tr class="no-b">
-                                            <th >
-                                                <div class="custom-control custom-checkbox" hidden>
-                                                    <input type="checkbox" id="checkedAll" class="custom-control-input"><label
-                                                        class="custom-control-label" for="checkedAll"></label>
-                                                </div>
-                                            </th>
+                                            <th >NO.</th>
                                             <th>ID CODE</th>
                                             <th>NAME</th>
                                             <th>USER</th>
