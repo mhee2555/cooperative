@@ -90,12 +90,12 @@ $FName = $_SESSION['FName'];
   </div>
 
 
-  <div id="app" class="page  height-full">
+  <div id="app" >
 
   <?php include 'menubar.php';?>
 
 <!-- ============================== -->
-<div class="page has-sidebar-left" >
+<div class="page has-sidebar-left"  hidden>
     <header class="my-3">
         <div class="container-fluid">
             <div class="row">

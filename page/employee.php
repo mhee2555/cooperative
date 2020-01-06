@@ -237,7 +237,7 @@ $FName = $_SESSION['FName'];
         </div>
     </div>
 </div>
-<div id="app" class="page  height-full">
+<div id="app">
 
 <?php include 'menubar.php';?>
 <!-- ===== -->
