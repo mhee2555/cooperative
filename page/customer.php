@@ -36,6 +36,104 @@ $FName = $_SESSION['FName'];
         senddata(JSON.stringify(data));
     }
 
+    function showmodal(ID,sel)
+    {
+        var data = 
+        {
+            'STATUS': 'show_detail_customer',
+            'ID':ID,
+            'sel':sel
+        };
+        senddata(JSON.stringify(data));
+
+        
+    }
+    function edit_customer()
+    {
+        var ID = $('#ID_edit').val();
+        var FName_edit = $('#FName_edit').val();
+        var UserName_edit = $('#UserName_edit').val();
+        var address_edit = $('#address_edit').val();
+        var email_edit = $('#email_edit').val();
+        var Tel_edit = $('#Tel_edit').val();
+
+        if(FName_edit=='' || UserName_edit=='' || address_edit=='' || email_edit=='' || Tel_edit==''){
+                swal({
+                          title: 'กรุณากรอกข้อมูลให้ครบ',
+                          text: '',
+                          type: 'info',
+                          showCancelButton: false,
+                          confirmButtonColor: '#3085d6',
+                          cancelButtonColor: '#d33',
+                          showConfirmButton: false,
+                          timer: 1500,
+                          confirmButtonText: 'Ok'
+                    }); 
+        }else{
+                var data = 
+                    {
+                    'STATUS': 'edit_customer',
+                    'ID':ID,
+                    'FName_edit':FName_edit,
+                    'UserName_edit':UserName_edit,
+                    'address_edit':address_edit,
+                    'email_edit':email_edit,
+                    'Tel_edit':Tel_edit
+                    };
+                senddata(JSON.stringify(data));
+
+        }
+       
+    }
+    function show_add_modal()
+    {
+        $('#add_customer').modal('toggle');
+            $('#FName_add').val("");
+            $('#UserName_add').val("");
+            $('#address_add').val("");
+            $('#email_add').val("");
+            $('#Tel_add').val("");
+            
+        $("#bt_save_add").click(function(){
+            var FName_add = $('#FName_add').val();
+            var UserName_add = $('#UserName_add').val();
+            var address_add = $('#address_add').val();
+            var email_add = $('#email_add').val();
+            var Tel_add = $('#Tel_add').val();
+
+            if(FName_add=='' || UserName_add=='' || address_add=='' || email_add=='' || Tel_add==''){
+                swal({
+                          title: 'กรุณากรอกข้อมูลให้ครบ',
+                          text: '',
+                          type: 'info',
+                          showCancelButton: false,
+                          confirmButtonColor: '#3085d6',
+                          cancelButtonColor: '#d33',
+                          showConfirmButton: false,
+                          timer: 1500,
+                          confirmButtonText: 'Ok'
+                    }); 
+            }else{
+
+                var data = 
+                    {
+                    'STATUS': 'add_customer',
+                    'FName_add':FName_add,
+                    'UserName_add':UserName_add,
+                    'address_add':address_add,
+                    'email_add':email_add,
+                    'Tel_add':Tel_add
+                    };
+                senddata(JSON.stringify(data));
+
+            }
+
+         });
+
+    }
+    
+
+// --------------------------------------------------------------------------------------------------
     function senddata(data)
     {
          var form_data = new FormData();
@@ -79,17 +177,17 @@ $FName = $_SESSION['FName'];
                               console.log(temp);
                               for (var i = 0; i < temp['count']; i++) 
                               {
-
+                                
                                  var rowCount = $('#TableUser >tbody >tr').length;
 
-                                  var chkUser = "<div class=custom-control custom-checkbox;><input type='checkbox' class='custom-control-input checkSingle' id='user_id_"+i+"' required><label class='custom-control-label' for='user_id_"+i+"'></label></div>";
-                                  var ShowEdit = "<a href='panel-page-profile.html'><i class='icon-eye mr-3'></i></a> <a href='panel-page-profile.html'><i class='icon-pencil'></i></a>";
+                                  var chkUser = "<div class='custom-control custom-radio'><input type='radio' id='user_id_"+i+"' name='customRadio' class='custom-control-input'><label class='custom-control-label' for='user_id_"+i+"'></label></div>";
+                                  var ShowEdit = "<a href='javascript:void(0)'  onclick='showmodal("+temp[i]['ID']+","+'1'+");'><i class='icon-eye mr-3'></i></a> <a href='javascript:void(0)' onclick='showmodal("+temp[i]['ID']+","+'2'+");'><i class='icon-pencil'></i></a>";
 
                                  StrTR = "<tr >"+
                                                 "<td >"+chkUser+"</td>"+
-                                                 "<td >"+temp[i]['FName']+"</td>"+
+                                                "<td >"+temp[i]['ID']+"</td>"+
+                                                "<td >"+temp[i]['FName']+"</td>"+
                                                 "<td >"+temp[i]['UserName']+"</td>"+
-                                                "<td >"+temp[i]['Password']+"</td>"+
                                                 "<td >"+temp[i]['Tel']+"</td>"+
                                                 "<td >"+temp[i]['email']+"</td>"+
                                                 "<td >"+ShowEdit+"</td>"+
@@ -104,6 +202,69 @@ $FName = $_SESSION['FName'];
                                  }
                               }
                     }
+                    else if( (temp["form"]=='show_detail_customer') )
+                    {
+                        var sel = temp['sel'];
+                        if(sel==1){
+                            $('#show_customer').modal('toggle');
+
+                            $('#ID').val(temp['ID']);
+                            $('#FName').val(temp['FName']);
+                            $('#UserName').val(temp['UserName']);
+                            $('#address').val(temp['address']);
+                            $('#email').val(temp['email']);
+                            $('#Tel').val(temp['Tel']);
+                        }else{
+                            $('#show_customer_edit').modal('toggle');
+
+                            $('#ID_edit').val(temp['ID']);
+                            $('#FName_edit').val(temp['FName']);
+                            $('#UserName_edit').val(temp['UserName']);
+                            $('#address_edit').val(temp['address']);
+                            $('#email_edit').val(temp['email']);
+                            $('#Tel_edit').val(temp['Tel']);
+                            
+                        }
+                        
+                    }
+                    else if( (temp["form"]=='edit_customer') )
+                    {
+                        swal({
+                            title: 'บันทึกข้อมูลเรียบร้อยแล้ว',
+                            text: '',
+                            type: 'success',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            timer: 1000,
+                            confirmButtonText: 'Ok',
+                            showConfirmButton: false
+                        });
+                        $('#show_customer_edit').modal('hide');
+                        getUser();
+                    }
+                    else if( (temp["form"]=='add_customer') )
+                    {
+                        swal({
+                            title: 'บันทึกข้อมูลเรียบร้อยแล้ว',
+                            text: '',
+                            type: 'success',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            timer: 1000,
+                            confirmButtonText: 'Ok',
+                            showConfirmButton: false
+                        });
+
+                        $('#add_customer').modal('hide');
+
+                        setTimeout(function() {
+                            getUser();
+                        }, 500);
+                        
+                    }
+                    
                 }
                 else if (temp['status']=="failed") 
                 {
@@ -181,6 +342,9 @@ $FName = $_SESSION['FName'];
             top: 50%;
             left: 50%;
         }
+        .margin_input{
+            margin-top: 12px;
+        }
     </style>
     <!-- Js -->
     <!--
@@ -257,14 +421,14 @@ $FName = $_SESSION['FName'];
                         <a class="nav-link active" id="v-pills-all-tab" data-toggle="pill" href="#v-pills-all"
                            role="tab" aria-controls="v-pills-all"><i class="icon icon-home2"></i>All Users</a>
                     </li>
-                    <li>
+                    <!-- <li>
                         <a class="nav-link" id="v-pills-buyers-tab" data-toggle="pill" href="#v-pills-buyers" role="tab"
                            aria-controls="v-pills-buyers"><i class="icon icon-face"></i> Buyers</a>
                     </li>
                     <li>
                         <a class="nav-link" id="v-pills-sellers-tab" data-toggle="pill" href="#v-pills-sellers" role="tab"
                            aria-controls="v-pills-sellers"><i class="icon  icon-local_shipping"></i> Sellers</a>
-                    </li>
+                    </li> -->
                     <li class="float-right">
                         <a class="nav-link"  href="panel-page-users-create.html" ><i class="icon icon-plus-circle"></i> Add New User</a>
                     </li>
@@ -275,6 +439,25 @@ $FName = $_SESSION['FName'];
     <div class="container-fluid animatedParent animateOnce">
         <div class="tab-content my-3" id="v-pills-tabContent">
             <div class="tab-pane animated fadeInUpShort show active" id="v-pills-all" role="tabpanel" aria-labelledby="v-pills-all-tab">
+                <div class="row">
+                    <div class="col-md-3">
+                        <select class =  " custom-select  ">
+                            <option value="1">ค้นหาตามการเข้าถึง</option>
+                            <option value="2">ผู้จัดการ</option>
+                            <option value="3">การตลาด</option>
+                            <option value="4">แปรรูป</option>
+                            <option value="5">รวบรวม</option>
+                            <option value="6">การส่งออก</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 ">
+                        <input type="text" class =  "form-control " placeholder="ค้นหาจากชื่อ-นามสกุล">
+                    </div>
+                    <div class="col-md-3  ">
+                    <button type="button" class="btn btn-outline-primary">ค้นหา</button>
+                    <button type="button" onclick="show_add_modal();" class="btn btn-outline-success">เพิ่ม</button>
+                    </div>
+                </div>
                 <div class="row my-3">
                     <div class="col-md-12">
                         <div class="card r-0 shadow">
@@ -290,9 +473,9 @@ $FName = $_SESSION['FName'];
                                                         class="custom-control-label" for="checkedAll"></label>
                                                 </div>
                                             </th>
+                                            <th>ID CODE</th>
                                             <th>NAME</th>
                                             <th>USER</th>
-                                            <th>PASSWORD</th>
                                             <th>PHONE</th>
                                             <th>E-MAIL</th>
                                             <th hidden>ROLE</th>
@@ -472,6 +655,135 @@ $FName = $_SESSION['FName'];
          immediately after the control sidebar -->
 <div class="control-sidebar-bg shadow white fixed"></div>
 </div>
+
+
+<!--------------------------------------- Modal show_customer ------------------------------------------>
+<div class="modal fade" id="show_customer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">ข้อมูล ลูกค้า</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">ID Code</label>
+            <input type="text" id="ID" class="form-control " placeholder="ID">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">ชื่อ-นามสกุล</label>
+            <input type="text" id="FName" class="form-control " placeholder="ชื่อ-นามสกุล">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">User</label>
+            <input type="text" id="UserName" class="form-control " placeholder="User">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">ที่อยู่</label>
+            <input type="text" id="address" class="form-control " placeholder="ที่อยู่">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">E-Mail</label>
+            <input type="text" id="email" class="form-control " placeholder="E-Mail">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">เบอร์โทร</label>
+            <input type="text" id="Tel" class="form-control " placeholder="เบอร์โทร">
+            </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-------------------------- end Modal ----------------------------------------------->
+<!--------------------------------------- Modal show_customer edit ------------------------------------------>
+<div class="modal fade" id="show_customer_edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">แก้ไข ข้อมูลลูกค้า</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">ID Code</label>
+            <input type="text" id="ID_edit" class="form-control " placeholder="ID" disabled>
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">ชื่อ-นามสกุล *</label>
+            <input type="text" id="FName_edit" class="form-control " placeholder="ชื่อ-นามสกุล">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">User *</label>
+            <input type="text" id="UserName_edit" class="form-control " placeholder="User">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">ที่อยู่ *</label>
+            <input type="text" id="address_edit" class="form-control " placeholder="ที่อยู่">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">E-Mail *</label>
+            <input type="text" id="email_edit" class="form-control " placeholder="E-Mail">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">เบอร์โทร *</label>
+            <input type="text" id="Tel_edit" class="form-control " placeholder="เบอร์โทร">
+            </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" onclick='edit_customer();' class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-------------------------- end Modal ----------------------------------------------->
+<!--------------------------------------- Modal add_customer  ------------------------------------------>
+<div class="modal fade" id="add_customer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">เพิ่ม ข้อมูลลูกค้า</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">ชื่อ-นามสกุล *</label>
+            <input type="text" id="FName_add" class="form-control " placeholder="ชื่อ-นามสกุล">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">User *</label>
+            <input type="text" id="UserName_add" class="form-control " placeholder="User">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">ที่อยู่ *</label>
+            <input type="text" id="address_add" class="form-control " placeholder="ที่อยู่">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">E-Mail *</label>
+            <input type="text" id="email_add" class="form-control " placeholder="E-Mail">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">เบอร์โทร *</label>
+            <input type="text" id="Tel_add" class="form-control " placeholder="เบอร์โทร" maxlength="10">
+            </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" id="bt_save_add" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-------------------------- end add_customer Modal ----------------------------------------------->
 <!--/#app -->
 <script src="assets/js/app.js"></script>
 
