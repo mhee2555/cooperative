@@ -485,7 +485,7 @@ $FName = $_SESSION['FName'];
         <div class="tab-content my-3" id="v-pills-tabContent">
             <div class="tab-pane animated fadeInUpShort show active" id="v-pills-all" role="tabpanel" aria-labelledby="v-pills-all-tab">
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-3 mt-sm-2">
                         <select class =  " custom-select  ">
                             <option value="1">ค้นหาตามการเข้าถึง</option>
                             <option value="2">ผู้จัดการ</option>
@@ -495,12 +495,12 @@ $FName = $_SESSION['FName'];
                             <option value="6">การส่งออก</option>
                         </select>
                     </div>
-                    <div class="col-md-3 ">
+                    <div class="col-md-3 mt-sm-2">
                         <input type="text" class =  "form-control " placeholder="ค้นหาจากชื่อ-นามสกุล">
                     </div>
-                    <div class="col-md-3  ">
-                    <button type="button" class="btn btn-outline-primary">ค้นหา</button>
-                    <button type="button" onclick="show_add_modal();" class="btn btn-outline-success" style=" margin-left:5%;">เพิ่ม</button>
+                    <div class="col-md-6  mt-sm-2">
+                    <button type="button" class="btn btn-primary btn-lg">ค้นหา</button>
+                    <button type="button" onclick="show_add_modal();" class="btn btn-success btn-lg ml-3" >&nbsp;เพิ่ม&nbsp;</button>
                     </div>
                 </div>
                 <div class="row my-3">
