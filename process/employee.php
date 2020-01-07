@@ -89,7 +89,6 @@ function show_detail_customer($conn, $DATA)
       die;
     }
   }
-
   function edit_customer($conn, $DATA)
   {
     $ID = $DATA["ID"];
@@ -129,34 +128,66 @@ function show_detail_customer($conn, $DATA)
   }
   function add_customer($conn, $DATA)
   {
+    $FName_add           = $DATA["FName_add"];
+    $UserName_add      = $DATA["UserName_add"];
+    $address_add          = $DATA["address_add"];
+    $email_add              = $DATA["email_add"];
+    $Tel_add                  = $DATA["Tel_add"];
+    $PmID_add              = $DATA["PmID_add"];
+    $Password_add        = $DATA["Password_add"];
 
-    $FName_add = $DATA["FName_add"];
-    $UserName_add = $DATA["UserName_add"];
-    $address_add = $DATA["address_add"];
-    $email_add = $DATA["email_add"];
-    $Tel_add = $DATA["Tel_add"];
-    $PmID_add = $DATA["PmID_add"];
-    $Password_add = $DATA["Password_add"];
-
-    $Sql_ID = "SELECT (ID)+1 AS ID FROM employee
-               ORDER BY ID DESC LIMIT 1 ";
+    // ===================
+    $Sql_ID = "SELECT
+                        (ID) + 1 AS ID
+                      FROM
+                        employee
+                      ORDER BY
+                        ID DESC
+                      LIMIT 1";
     $meQuery = mysqli_query($conn, $Sql_ID);
-    $Result2 = mysqli_fetch_assoc($meQuery); 
-    $ID =  $Result2['ID'];
+    $Result = mysqli_fetch_assoc($meQuery); 
+    $ID =  $Result['ID'];
+    // ===================
 
     if($ID==null){
       $ID=1;
     }else{
-      $ID =  $Result2['ID']; 
+      $ID =  $Result['ID']; 
     }
     
-    $addcustomer = "INSERT INTO employee
-                    (ID,FName,PmID,UserName,`Password`,email,Start_Date,Modify_User,Modify_Date,IsCancel,Tel,address)
-                    VALUES
-                    ($ID,'$FName_add',$PmID_add,'$UserName_add','$Password_add','$email_add',NOW(),$ID,NOW(),0,'$Tel_add','$address_add')    
+    $addcustomer = "INSERT INTO employee (
+                                    ID,
+                                    FName,
+                                    PmID,
+                                    UserName,
+                                    `Password`,
+                                    email,
+                                    Start_Date,
+                                    Modify_User,
+                                    Modify_Date,
+                                    IsCancel,
+                                    Tel,
+                                    address
+                                  )
+                                  VALUES
+                                    (
+                                      $ID,
+                                      '$FName_add',
+                                      $PmID_add,
+                                      '$UserName_add',
+                                      '$Password_add',
+                                      '$email_add',
+                                      NOW(),
+                                      $ID,
+                                      NOW(),
+                                      0,
+                                      '$Tel_add',
+                                      '$address_add'
+                                    )
             ";
-            // $return['sql'] = $addcustomer;
+
     mysqli_query($conn, $addcustomer);
+
 
 
     $return['status'] = "success";
@@ -164,7 +195,6 @@ function show_detail_customer($conn, $DATA)
     echo json_encode($return);
     mysqli_close($conn);
     die;
-
   }
 
 

@@ -117,29 +117,19 @@ $FName = $_SESSION['FName'];
                
     }
     function show_add_modal()
-    {
-        $('#add_customer').modal('toggle');
-            $('#FName_add').val("");
-            $('#UserName_add').val("");
-            $('#address_add').val("");
-            $('#email_add').val("");
-            $('#Tel_add').val("");
-            $('#PmID_add').val("1");
-            $('#Password_add').val("");
-            
-        $("#bt_save_add").click(function(){
-            var FName_add = $('#FName_add').val();
-            var UserName_add = $('#UserName_add').val();
-            var address_add = $('#address_add').val();
-            var email_add = $('#email_add').val();
-            var Tel_add = $('#Tel_add').val();
-            var PmID_add = $('#PmID_add').val();
-            var Password_add = $('#Password_add').val();
+    {            
+            var FName_add                = $('#FName_add').val();
+            var UserName_add           = $('#UserName_add').val();
+            var address_add                = $('#address_add').val();
+            var email_add                    = $('#email_add').val();
+            var Tel_add                        = $('#Tel_add').val();
+            var PmID_add                    = $('#PmID_add').val();
+            var Password_add              = $('#Password_add').val();
 
             if(FName_add=='' || UserName_add=='' || address_add=='' || email_add=='' || Tel_add==''|| Password_add==''){
                 swal({
-                          title: 'กรุณากรอกข้อมูลให้ครบ',
-                          text: '',
+                          title: '',
+                          text: 'กรุณากรอกข้อมูลให้ครบ',
                           type: 'info',
                           showCancelButton: false,
                           confirmButtonColor: '#3085d6',
@@ -161,12 +151,13 @@ $FName = $_SESSION['FName'];
                     'PmID_add':PmID_add,
                     'Password_add':Password_add
                     };
-                senddata(JSON.stringify(data));
 
+                $('#add_customer').modal('toggle');
+
+                setTimeout(() => {
+                    senddata(JSON.stringify(data));
+                }, 1000);
             }
-
-         });
-
     }
 //-----------------------------------------------------------------------------------------
     function senddata(data)
@@ -207,7 +198,6 @@ $FName = $_SESSION['FName'];
                 {
                     if( (temp["form"]=='getUser') )
                     {
-
                               $( "#TableUser tbody" ).empty();
                               console.log(temp);
                               for (var i = 0; i < temp['count']; i++) 
@@ -215,7 +205,6 @@ $FName = $_SESSION['FName'];
 
                                  var rowCount = $('#TableUser >tbody >tr').length;
 
-                                //   var chkUser = "<div class=custom-control custom-checkbox;><input type='checkbox' class='custom-control-input checkSingle' id='user_id_"+i+"' required><label class='custom-control-label' for='user_id_"+i+"'></label></div>";
                                   var ShowEdit = "<a href='javascript:void(0)'  onclick='showmodal("+temp[i]['ID']+","+'2'+");'><i class='icon-pencil'></i></a> <a href='javascript:void(0)' onclick='delete_customer("+temp[i]['ID']+");' style='margin-left:5%;'><i class='icon-delete_forever'></i></a>";
 
                                  StrTR = "<tr ondblclick='showmodal("+temp[i]['ID']+","+'1'+");'>"+
@@ -253,7 +242,6 @@ $FName = $_SESSION['FName'];
                             $('#PmID').val(temp['Permission']);
                         }else{
                             $('#show_customer_edit').modal('toggle');
-
                             $('#ID_edit').val(temp['ID']);
                             $('#FName_edit').val(temp['FName']);
                             $('#UserName_edit').val(temp['UserName']);
@@ -268,8 +256,8 @@ $FName = $_SESSION['FName'];
                     else if( (temp["form"]=='edit_customer') )
                     {
                         swal({
-                            title: 'บันทึกข้อมูลเรียบร้อยแล้ว',
-                            text: '',
+                            title: '',
+                            text: 'บันทึกข้อมูลเรียบร้อยแล้ว',
                             type: 'success',
                             showCancelButton: false,
                             confirmButtonColor: '#3085d6',
@@ -287,8 +275,8 @@ $FName = $_SESSION['FName'];
                     else if( (temp["form"]=='delete_customer') )
                     {
                         swal({
-                            title: 'ลบข้อมูล พนักงานเรียบร้อย',
-                            text: '',
+                            title: '',
+                            text: 'ลบข้อมูล พนักงานเรียบร้อย',
                             type: 'success',
                             showCancelButton: false,
                             confirmButtonColor: '#3085d6',
@@ -305,8 +293,8 @@ $FName = $_SESSION['FName'];
                     else if( (temp["form"]=='add_customer') )
                     {
                         swal({
-                            title: 'บันทึกข้อมูลเรียบร้อยแล้ว',
-                            text: '',
+                            title: '',
+                            text: 'บันทึกข้อมูลเรียบร้อยแล้ว',
                             type: 'success',
                             showCancelButton: false,
                             confirmButtonColor: '#3085d6',
@@ -315,15 +303,21 @@ $FName = $_SESSION['FName'];
                             confirmButtonText: 'Ok',
                             showConfirmButton: false
                         });
-
-                        $('#add_customer').modal('hide');
+                        // CLEAR ALL
+                        $('#FName_add').val('');
+                        $('#UserName_add').val('');
+                        $('#address_add').val('');
+                        $('#email_add').val('');
+                        $('#Tel_add').val('');
+                        $('#PmID_add').val('1');
+                        $('#Password_add').val('');
+                        // 
 
                         setTimeout(function() {
                             getUser();
                         }, 1000);
                         
                     }
-
                 }
                 else if (temp['status']=="failed") 
                 {
@@ -496,7 +490,7 @@ $FName = $_SESSION['FName'];
         <div class="tab-content my-3" id="v-pills-tabContent">
             <div class="tab-pane animated fadeInUpShort show active" id="v-pills-all" role="tabpanel" aria-labelledby="v-pills-all-tab">
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-3 mt-sm-2">
                     <select class =  " custom-select  ">
                         <option value="1">ค้นหาตามการเข้าถึง</option>
                         <option value="2">ผู้จัดการ</option>
@@ -506,12 +500,12 @@ $FName = $_SESSION['FName'];
                         <option value="6">การส่งออก</option>
                     </select>
                 </div>
-                <div class="col-md-3 ">
+                <div class="col-md-3 mt-sm-2">
                     <input type="text" class =  "form-control " placeholder="ค้นหาจากชื่อ-นามสกุล">
                 </div>
-                <div class="col-md-3  ">
-                   <button type="button" class="btn btn-outline-primary">ค้นหา</button>
-                   <button type="button" onclick="show_add_modal();" class="btn btn-outline-success" style=" margin-left:5%;">เพิ่ม</button>
+                <div class="col-md-3  mt-sm-2">
+                <button type="button" class="btn btn-primary btn-lg">ค้นหา</button>
+                    <button type="button"  data-toggle="modal" data-target="#add_customer"  class="btn btn-success btn-lg ml-3" >&nbsp;เพิ่ม&nbsp;</button>
                 </div>
             </div>
                 <div class="row my-3">
@@ -860,7 +854,7 @@ $FName = $_SESSION['FName'];
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" id="bt_save_add" class="btn btn-primary">Save</button>
+        <button type="button"onclick="show_add_modal()" class="btn btn-primary">Save</button>
       </div>
     </div>
   </div>
