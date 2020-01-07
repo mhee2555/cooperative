@@ -92,6 +92,7 @@ function getUser($conn, $DATA)
 
     $editcustomer = " UPDATE users SET users.FName ='$FName_edit',users.UserName ='$UserName_edit',users.email ='$email_edit',users.Tel ='$Tel_edit',users.address ='$address_edit'
                       WHERE users.ID='$ID' ";
+    $return['sql'] = $editcustomer;
     mysqli_query($conn, $editcustomer);
 
 

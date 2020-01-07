@@ -207,7 +207,7 @@ $FName = $_SESSION['FName'];
                               {
                                 
                                  var rowCount = $('#TableUser >tbody >tr').length;
-                                 var ShowEdit = "<a href='javascript:void(0)'  onclick='showmodal("+temp[i]['ID']+","+'2'+");'><i class='icon-pencil'></i></a> <a href='javascript:void(0)' onclick='delete_customer("+temp[i]['ID']+");' style='margin-left:12px;'><i class='icon-delete_forever'></i></a>";
+                                 var ShowEdit = "<a href='javascript:void(0)'  onclick='showmodal("+temp[i]['ID']+","+'2'+");'><i class='icon-pencil'></i></a> <a href='javascript:void(0)' onclick='delete_customer("+temp[i]['ID']+");' style='margin-left:5%;'><i class='icon-delete_forever'></i></a>";
 
                                  StrTR = "<tr ondblclick='showmodal("+temp[i]['ID']+","+'1'+");'>"+
                                                 "<td >"+(i+1)+"</td>"+
@@ -287,7 +287,7 @@ $FName = $_SESSION['FName'];
 
                         setTimeout(function() {
                             getUser();
-                        }, 500);
+                        }, 1000);
                         
                     }
                     else if( (temp["form"]=='delete_customer') )
@@ -388,6 +388,7 @@ $FName = $_SESSION['FName'];
         }
         .margin_input{
             margin-top: 12px;
+           
         }
     </style>
     <!-- Js -->
@@ -499,7 +500,7 @@ $FName = $_SESSION['FName'];
                     </div>
                     <div class="col-md-3  ">
                     <button type="button" class="btn btn-outline-primary">ค้นหา</button>
-                    <button type="button" onclick="show_add_modal();" class="btn btn-outline-success">เพิ่ม</button>
+                    <button type="button" onclick="show_add_modal();" class="btn btn-outline-success" style=" margin-left:5%;">เพิ่ม</button>
                     </div>
                 </div>
                 <div class="row my-3">
