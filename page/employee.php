@@ -124,6 +124,8 @@ $FName = $_SESSION['FName'];
             $('#address_add').val("");
             $('#email_add').val("");
             $('#Tel_add').val("");
+            $('#PmID_add').val("1");
+            $('#Password_add').val("");
             
         $("#bt_save_add").click(function(){
             var FName_add = $('#FName_add').val();
