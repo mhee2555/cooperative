@@ -142,16 +142,18 @@ function show_detail_customer($conn, $DATA)
                ORDER BY ID DESC LIMIT 1 ";
     $meQuery = mysqli_query($conn, $Sql_ID);
     $Result2 = mysqli_fetch_assoc($meQuery); 
-    $ID =  $Result2['ID']; 
+    $ID =  $Result2['ID'];
+
     if($ID==null){
       $ID=1;
     }else{
       $ID =  $Result2['ID']; 
     }
-    $addcustomer = "INSERT INTO users
-                    (ID,FName,PmID,UserName,email,Start_Date,Modify_User,Modify_Date,IsCancel,Tel,address)
+    
+    $addcustomer = "INSERT INTO employee
+                    (ID,FName,PmID,UserName,`Password`,email,Start_Date,Modify_User,Modify_Date,IsCancel,Tel,address)
                     VALUES
-                    ($ID,'$FName_add',1,'$UserName_add','$email_add',NOW(),$ID,NOW(),0,'$Tel_add','$address_add')    
+                    ($ID,'$FName_add',$PmID_add,'$UserName_add','$Password_add','$email_add',NOW(),$ID,NOW(),0,'$Tel_add','$address_add')    
             ";
             // $return['sql'] = $addcustomer;
     mysqli_query($conn, $addcustomer);
