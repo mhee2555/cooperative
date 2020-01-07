@@ -87,20 +87,14 @@ $FName = $_SESSION['FName'];
     }
     function show_add_modal()
     {
-        $('#add_customer').modal('toggle');
-            $('#FName_add').val("");
-            $('#UserName_add').val("");
-            $('#address_add').val("");
-            $('#email_add').val("");
-            $('#Tel_add').val("");
-            
-        $("#bt_save_add").click(function(){
+        
             var FName_add = $('#FName_add').val();
             var UserName_add = $('#UserName_add').val();
             var address_add = $('#address_add').val();
             var email_add = $('#email_add').val();
             var Tel_add = $('#Tel_add').val();
 
+          
             if(FName_add=='' || UserName_add=='' || address_add=='' || email_add=='' || Tel_add==''){
                 swal({
                           title: 'กรุณากรอกข้อมูลให้ครบ',
@@ -125,10 +119,9 @@ $FName = $_SESSION['FName'];
                     'Tel_add':Tel_add
                     };
                 senddata(JSON.stringify(data));
-
+                $('#add_customer').modal('toggle');
             }
 
-         });
 
     }
     function delete_customer(ID)
@@ -282,8 +275,14 @@ $FName = $_SESSION['FName'];
                             confirmButtonText: 'Ok',
                             showConfirmButton: false
                         });
-
-                        $('#add_customer').modal('hide');
+                        // CLEAR ALL
+                        $('#FName_add').val('');
+                        $('#UserName_add').val('');
+                        $('#address_add').val('');
+                        $('#email_add').val('');
+                        $('#Tel_add').val('');
+                        // 
+                 
 
                         setTimeout(function() {
                             getUser();
@@ -500,7 +499,7 @@ $FName = $_SESSION['FName'];
                     </div>
                     <div class="col-md-6  mt-sm-2">
                     <button type="button" class="btn btn-primary btn-lg">ค้นหา</button>
-                    <button type="button" onclick="show_add_modal();" class="btn btn-success btn-lg ml-3" >&nbsp;เพิ่ม&nbsp;</button>
+                    <button type="button"  data-toggle="modal" data-target="#add_customer" class="btn btn-success btn-lg ml-3" >&nbsp;เพิ่ม&nbsp;</button>
                     </div>
                 </div>
                 <div class="row my-3">
@@ -818,7 +817,7 @@ $FName = $_SESSION['FName'];
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" id="bt_save_add" class="btn btn-primary">Save</button>
+        <button type="button" onclick='show_add_modal();' class="btn btn-primary">Save</button>
       </div>
     </div>
   </div>
