@@ -1,8 +1,9 @@
 
 <aside class="main-sidebar fixed offcanvas shadow" data-toggle='offcanvas'>
     <section class="sidebar">
-        <div class="w-80px mt-3 mb-3 ml-3">
-            <img src="assets/img/basic/logo.png" alt="">
+        <div class="w-200px mt-3 mb-3 ml-3">
+            <img src="assets/img/basic/download.jfif" alt="" style="width: 20%;">
+            <label >San Pa Tong Cooperative</label>
         </div>
         <!-- ผู้ใช้งาน =============================-->
         <div class="relative">
@@ -28,7 +29,7 @@
                         </a>
                         <a href="#" class="list-group-item list-group-item-action"><i
                                 class="mr-2 icon-cogs text-yellow"></i>เปลี่ยนรหัสผ่าน</a>
-                        <a href="../login.php" class="list-group-item list-group-item-action"><i
+                        <a href="../index.php" class="list-group-item list-group-item-action"><i
                                 class="mr-2 icon-security text-purple"></i>ออกจากระบบ</a>
                     </div>
                 </div>

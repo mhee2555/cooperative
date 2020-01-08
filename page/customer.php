@@ -13,7 +13,7 @@ $FName = $_SESSION['FName'];
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="assets/img/basic/favicon.ico" type="image/x-icon">
-    <link href="../dist/css/sweetalert2.css" rel="stylesheet">
+    <!-- <link href="../dist/css/sweetalert2.css" rel="stylesheet"> -->
     <script src="../dist/js/sweetalert2.min.js"></script>
     <script src="../dist/js/jquery-3.3.1.min.js"></script>
 
@@ -24,6 +24,14 @@ $FName = $_SESSION['FName'];
     <script type="text/javascript">
       $(document).ready(function(e){
         getUser();
+        $("#Search").on("keyup", function() 
+        {
+        var value = $(this).val().toLowerCase();
+            $("#TableUser tbody tr").filter(function() 
+            {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
     });
 
     function getUser()
@@ -35,7 +43,6 @@ $FName = $_SESSION['FName'];
         };
         senddata(JSON.stringify(data));
     }
-
     function showmodal(ID,sel)
     {
         var data = 
@@ -52,19 +59,17 @@ $FName = $_SESSION['FName'];
     {
         var ID = $('#ID_edit').val();
         var FName_edit = $('#FName_edit').val();
-        var UserName_edit = $('#UserName_edit').val();
+        // var UserName_edit = $('#UserName_edit').val();
         var address_edit = $('#address_edit').val();
         var email_edit = $('#email_edit').val();
         var Tel_edit = $('#Tel_edit').val();
 
         if(FName_edit=='' || UserName_edit=='' || address_edit=='' || email_edit=='' || Tel_edit==''){
                 swal({
-                          title: 'กรุณากรอกข้อมูลให้ครบ',
-                          text: '',
+                          title: '',
+                          text: 'กรุณากรอกข้อมูลให้ครบ',
                           type: 'info',
                           showCancelButton: false,
-                          confirmButtonColor: '#3085d6',
-                          cancelButtonColor: '#d33',
                           showConfirmButton: false,
                           timer: 1500,
                           confirmButtonText: 'Ok'
@@ -75,7 +80,7 @@ $FName = $_SESSION['FName'];
                     'STATUS': 'edit_customer',
                     'ID':ID,
                     'FName_edit':FName_edit,
-                    'UserName_edit':UserName_edit,
+                    // 'UserName_edit':UserName_edit,
                     'address_edit':address_edit,
                     'email_edit':email_edit,
                     'Tel_edit':Tel_edit
@@ -87,9 +92,8 @@ $FName = $_SESSION['FName'];
     }
     function show_add_modal()
     {
-        
             var FName_add = $('#FName_add').val();
-            var UserName_add = $('#UserName_add').val();
+            // var UserName_add = $('#UserName_add').val();
             var address_add = $('#address_add').val();
             var email_add = $('#email_add').val();
             var Tel_add = $('#Tel_add').val();
@@ -97,12 +101,10 @@ $FName = $_SESSION['FName'];
           
             if(FName_add=='' || UserName_add=='' || address_add=='' || email_add=='' || Tel_add==''){
                 swal({
-                          title: 'กรุณากรอกข้อมูลให้ครบ',
-                          text: '',
+                          title: '',
+                          text: 'กรุณากรอกข้อมูลให้ครบ',
                           type: 'info',
                           showCancelButton: false,
-                          confirmButtonColor: '#3085d6',
-                          cancelButtonColor: '#d33',
                           showConfirmButton: false,
                           timer: 1500,
                           confirmButtonText: 'Ok'
@@ -113,7 +115,7 @@ $FName = $_SESSION['FName'];
                     {
                     'STATUS': 'add_customer',
                     'FName_add':FName_add,
-                    'UserName_add':UserName_add,
+                    // 'UserName_add':UserName_add,
                     'address_add':address_add,
                     'email_add':email_add,
                     'Tel_add':Tel_add
@@ -127,15 +129,13 @@ $FName = $_SESSION['FName'];
     function delete_customer(ID)
     {
         swal({
-          title: "ต้องการลบ ผู้ใช้หรือไม่",
-          text: "",
+          title: "",
+          text: "ต้องการลบ ผู้ใช้หรือไม่",
           type: "warning",
           showCancelButton: true,
           confirmButtonClass: "btn-danger",
           confirmButtonText: "ตกลง",
           cancelButtonText: "ยกเลิก",
-          confirmButtonColor: '#d33',
-          cancelButtonColor: '#3085d6',
           closeOnConfirm: false,
           closeOnCancel: false,
           showCancelButton: true
@@ -193,32 +193,21 @@ $FName = $_SESSION['FName'];
                 {
                     if( (temp["form"]=='getUser') )
                     {
-
                               $( "#TableUser tbody" ).empty();
-                              console.log(temp);
                               for (var i = 0; i < temp['count']; i++) 
                               {
-                                
-                                 var rowCount = $('#TableUser >tbody >tr').length;
                                  var ShowEdit = "<a href='javascript:void(0)'  onclick='showmodal("+temp[i]['ID']+","+'2'+");'><i class='icon-pencil'></i></a> <a href='javascript:void(0)' onclick='delete_customer("+temp[i]['ID']+");' style='margin-left:5%;'><i class='icon-delete_forever'></i></a>";
 
                                  StrTR = "<tr ondblclick='showmodal("+temp[i]['ID']+","+'1'+");'>"+
                                                 "<td >"+(i+1)+"</td>"+
                                                 "<td >"+temp[i]['ID']+"</td>"+
                                                 "<td >"+temp[i]['FName']+"</td>"+
-                                                "<td >"+temp[i]['UserName']+"</td>"+
                                                 "<td >"+temp[i]['Tel']+"</td>"+
                                                 "<td >"+temp[i]['email']+"</td>"+
                                                 "<td >"+ShowEdit+"</td>"+
                                                 "</tr>";
-                                 if(rowCount == 0)
-                                 {
+
                                    $('#TableUser tbody').append( StrTR );
-                                 }
-                                 else
-                                 {
-                                   $('#TableUser tbody:last-child').append( StrTR );
-                                 }
                               }
                     }
                     else if( (temp["form"]=='show_detail_customer') )
@@ -249,28 +238,27 @@ $FName = $_SESSION['FName'];
                     else if( (temp["form"]=='edit_customer') )
                     {
                         swal({
-                            title: 'บันทึกข้อมูลเรียบร้อยแล้ว',
-                            text: '',
+                            title: '',
+                            text: 'บันทึกข้อมูลเรียบร้อยแล้ว',
                             type: 'success',
                             showCancelButton: false,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
                             timer: 1000,
                             confirmButtonText: 'Ok',
                             showConfirmButton: false
                         });
                         $('#show_customer_edit').modal('hide');
-                        getUser();
+                        
+                        setTimeout(function() {
+                            getUser();
+                        }, 1000);
                     }
                     else if( (temp["form"]=='add_customer') )
                     {
                         swal({
-                            title: 'บันทึกข้อมูลเรียบร้อยแล้ว',
-                            text: '',
+                            title: '',
+                            text: 'บันทึกข้อมูลเรียบร้อยแล้ว',
                             type: 'success',
                             showCancelButton: false,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
                             timer: 1000,
                             confirmButtonText: 'Ok',
                             showConfirmButton: false
@@ -292,12 +280,10 @@ $FName = $_SESSION['FName'];
                     else if( (temp["form"]=='delete_customer') )
                     {
                         swal({
-                            title: 'ลบข้อมูล ลูกค้าเรียบร้อย',
-                            text: '',
+                            title: '',
+                            text: 'ลบข้อมูล ลูกค้าเรียบร้อย',
                             type: 'success',
                             showCancelButton: false,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
                             timer: 1000,
                             confirmButtonText: 'Ok',
                             showConfirmButton: false
@@ -484,20 +470,10 @@ $FName = $_SESSION['FName'];
         <div class="tab-content my-3" id="v-pills-tabContent">
             <div class="tab-pane animated fadeInUpShort show active" id="v-pills-all" role="tabpanel" aria-labelledby="v-pills-all-tab">
                 <div class="row">
-                    <div class="col-md-3 mt-sm-2">
-                        <select class =  " custom-select  ">
-                            <option value="1">ค้นหาตามการเข้าถึง</option>
-                            <option value="2">ผู้จัดการ</option>
-                            <option value="3">การตลาด</option>
-                            <option value="4">แปรรูป</option>
-                            <option value="5">รวบรวม</option>
-                            <option value="6">การส่งออก</option>
-                        </select>
+                    <div class="col-md-3 mt-2">
+                        <input type="text" class =  "form-control " placeholder="ค้นหาจากชื่อ-นามสกุล" id="Search">
                     </div>
-                    <div class="col-md-3 mt-sm-2">
-                        <input type="text" class =  "form-control " placeholder="ค้นหาจากชื่อ-นามสกุล">
-                    </div>
-                    <div class="col-md-6  mt-sm-2">
+                    <div class="col-md-6  mt-2">
                     <button type="button" class="btn btn-primary btn-lg">ค้นหา</button>
                     <button type="button"  data-toggle="modal" data-target="#add_customer" class="btn btn-success btn-lg ml-3" >&nbsp;เพิ่ม&nbsp;</button>
                     </div>
@@ -514,7 +490,6 @@ $FName = $_SESSION['FName'];
                                             <th >NO.</th>
                                             <th>ID CODE</th>
                                             <th>NAME</th>
-                                            <th>USER</th>
                                             <th>PHONE</th>
                                             <th>E-MAIL</th>
                                             <th hidden>ROLE</th>
@@ -715,13 +690,13 @@ $FName = $_SESSION['FName'];
             <label class="form-label mr-1" style="color:#000000;">ชื่อ-นามสกุล</label>
             <input type="text" id="FName" class="form-control " placeholder="ชื่อ-นามสกุล">
             </div>
-            <div class="margin_input">
+            <div class="margin_input" hidden>
             <label class="form-label mr-1" style="color:#000000;">User</label>
             <input type="text" id="UserName" class="form-control " placeholder="User">
             </div>
             <div class="margin_input">
             <label class="form-label mr-1" style="color:#000000;">ที่อยู่</label>
-            <input type="text" id="address" class="form-control " placeholder="ที่อยู่">
+            <textarea type="text" id="address" class="form-control " placeholder="ที่อยู่"> </textarea>
             </div>
             <div class="margin_input">
             <label class="form-label mr-1" style="color:#000000;">E-Mail</label>
@@ -733,7 +708,7 @@ $FName = $_SESSION['FName'];
             </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+        <button type="button" class="btn btn-success" data-dismiss="modal">OK</button>
       </div>
     </div>
   </div>
@@ -758,13 +733,13 @@ $FName = $_SESSION['FName'];
             <label class="form-label mr-1" style="color:#000000;">ชื่อ-นามสกุล *</label>
             <input type="text" id="FName_edit" class="form-control " placeholder="ชื่อ-นามสกุล">
             </div>
-            <div class="margin_input">
+            <div class="margin_input" hidden>
             <label class="form-label mr-1" style="color:#000000;">User *</label>
             <input type="text" id="UserName_edit" class="form-control " placeholder="User">
             </div>
             <div class="margin_input">
             <label class="form-label mr-1" style="color:#000000;">ที่อยู่ *</label>
-            <input type="text" id="address_edit" class="form-control " placeholder="ที่อยู่">
+            <textarea type="text" id="address_edit" class="form-control " placeholder="ที่อยู่"></textarea>
             </div>
             <div class="margin_input">
             <label class="form-label mr-1" style="color:#000000;">E-Mail *</label>
@@ -777,7 +752,7 @@ $FName = $_SESSION['FName'];
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" onclick='edit_customer();' class="btn btn-primary">Save</button>
+        <button type="button" onclick='edit_customer();' class="btn btn-success">Save</button>
       </div>
     </div>
   </div>
@@ -798,13 +773,13 @@ $FName = $_SESSION['FName'];
             <label class="form-label mr-1" style="color:#000000;">ชื่อ-นามสกุล *</label>
             <input type="text" id="FName_add" class="form-control " placeholder="ชื่อ-นามสกุล">
             </div>
-            <div class="margin_input">
+            <div class="margin_input" hidden>
             <label class="form-label mr-1" style="color:#000000;">User *</label>
             <input type="text" id="UserName_add" class="form-control " placeholder="User">
             </div>
             <div class="margin_input">
             <label class="form-label mr-1" style="color:#000000;">ที่อยู่ *</label>
-            <input type="text" id="address_add" class="form-control " placeholder="ที่อยู่">
+            <textarea type="text" id="address_add" class="form-control " placeholder="ที่อยู่"></textarea>
             </div>
             <div class="margin_input">
             <label class="form-label mr-1" style="color:#000000;">E-Mail *</label>
@@ -817,7 +792,7 @@ $FName = $_SESSION['FName'];
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" onclick='show_add_modal();' class="btn btn-primary">Save</button>
+        <button type="button" onclick='show_add_modal();' class="btn btn-success">Save</button>
       </div>
     </div>
   </div>

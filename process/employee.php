@@ -4,6 +4,7 @@ require '../connect/connect.php';
 
 function getUser($conn, $DATA)
   {
+    $Permission = $DATA["Permission"];
     $count = 0;
 
         $Showuser = " SELECT
@@ -17,6 +18,13 @@ function getUser($conn, $DATA)
         FROM
         employee
         INNER JOIN permission ON employee.PmID = permission.PmID ";
+
+        // ค้นหาจาก permission
+        if($Permission > 0) {$Showuser .="WHERE employee.PmID = $Permission";}
+        // 
+
+      $Showuser.=" ORDER BY employee.ID DESC";
+
       $meQuery = mysqli_query($conn, $Showuser);
       while ($Result = mysqli_fetch_assoc($meQuery)) {
         $return[$count]['FName']          = $Result['FName'];
@@ -25,7 +33,7 @@ function getUser($conn, $DATA)
         $return[$count]['email']              = $Result['email']; 
         $return[$count]['Tel']                  = $Result['Tel']; 
         $return[$count]['Permission']     = $Result['Permission'];
-        $return[$count]['ID']     = $Result['ID'];  
+        $return[$count]['ID']                   = $Result['ID'];  
         $count++;
       }
       $return['count']  = $count;
@@ -165,7 +173,6 @@ function show_detail_customer($conn, $DATA)
                                     Start_Date,
                                     Modify_User,
                                     Modify_Date,
-                                    IsCancel,
                                     Tel,
                                     address
                                   )
@@ -180,7 +187,6 @@ function show_detail_customer($conn, $DATA)
                                       NOW(),
                                       $ID,
                                       NOW(),
-                                      0,
                                       '$Tel_add',
                                       '$address_add'
                                     )

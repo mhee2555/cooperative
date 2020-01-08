@@ -8,8 +8,6 @@ function getUser($conn, $DATA)
 
     $Showuser = " SELECT
                                 users.FName,
-                                users.UserName,
-                                users.`Password`,
                                 users.email,
                                 users.Tel,
                                 users.ID
@@ -17,8 +15,6 @@ function getUser($conn, $DATA)
     $meQuery = mysqli_query($conn, $Showuser);
     while ($Result = mysqli_fetch_assoc($meQuery)) {
       $return[$count]['FName']    = $Result['FName'];
-      $return[$count]['UserName'] = $Result['UserName'];
-      $return[$count]['Password'] = $Result['Password'];
       $return[$count]['email']    = $Result['email']; 
       $return[$count]['Tel']      = $Result['Tel']; 
       $return[$count]['ID']      = $Result['ID']; 
@@ -40,15 +36,12 @@ function getUser($conn, $DATA)
     }
 
   }
-
-
   function show_detail_customer($conn, $DATA)
   {
     $ID = $DATA["ID"];
     $sel = $DATA["sel"];
     $Showcustomer = " SELECT
                           users.FName,
-                          users.UserName,
                           users.email,
                           users.Tel,
                           users.ID,
@@ -58,7 +51,6 @@ function getUser($conn, $DATA)
     $meQuery = mysqli_query($conn, $Showcustomer);
     $Result = mysqli_fetch_assoc($meQuery); 
       $return['FName']    = $Result['FName'];
-      $return['UserName'] = $Result['UserName'];
       $return['email']    = $Result['email']; 
       $return['Tel']      = $Result['Tel']; 
       $return['ID']       = $Result['ID'];
@@ -85,14 +77,13 @@ function getUser($conn, $DATA)
   {
     $ID = $DATA["ID"];
     $FName_edit = $DATA["FName_edit"];
-    $UserName_edit = $DATA["UserName_edit"];
+    // $UserName_edit = $DATA["UserName_edit"];
     $address_edit = $DATA["address_edit"];
     $email_edit = $DATA["email_edit"];
     $Tel_edit = $DATA["Tel_edit"];
 
-    $editcustomer = " UPDATE users SET users.FName ='$FName_edit',users.UserName ='$UserName_edit',users.email ='$email_edit',users.Tel ='$Tel_edit',users.address ='$address_edit'
+    $editcustomer = " UPDATE users SET users.FName ='$FName_edit',users.email ='$email_edit',users.Tel ='$Tel_edit',users.address ='$address_edit'
                       WHERE users.ID='$ID' ";
-    $return['sql'] = $editcustomer;
     mysqli_query($conn, $editcustomer);
 
 
@@ -107,7 +98,7 @@ function getUser($conn, $DATA)
   {
 
     $FName_add = $DATA["FName_add"];
-    $UserName_add = $DATA["UserName_add"];
+    // $UserName_add = $DATA["UserName_add"];
     $address_add = $DATA["address_add"];
     $email_add = $DATA["email_add"];
     $Tel_add = $DATA["Tel_add"];
@@ -123,9 +114,9 @@ function getUser($conn, $DATA)
       $ID =  $Result2['ID']; 
     }
     $addcustomer = "INSERT INTO users
-                    (ID,FName,PmID,UserName,email,Start_Date,Modify_User,Modify_Date,IsCancel,Tel,address)
+                    (ID,FName,email,Start_Date,Modify_User,Modify_Date,Tel,address)
                     VALUES
-                    ($ID,'$FName_add',1,'$UserName_add','$email_add',NOW(),$ID,NOW(),0,'$Tel_add','$address_add')    
+                    ($ID,'$FName_add','$email_add',NOW(),$ID,NOW(),'$Tel_add','$address_add')    
             ";
             // $return['sql'] = $addcustomer;
     mysqli_query($conn, $addcustomer);

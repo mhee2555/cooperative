@@ -18,8 +18,7 @@ function checklogin($conn,$DATA)
                     employee 
                 WHERE 
                     employee.UserName = '$username' 
-                    AND employee.`Password` = '$password' 
-                    AND employee.IsCancel = 0";
+                    AND employee.`Password` = '$password' ";
 
 
     $meQuery = mysqli_query($conn,$Sql);

@@ -14,7 +14,7 @@ $FName = $_SESSION['FName'];
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="assets/img/basic/favicon.ico" type="image/x-icon">
-    <link href="../dist/css/sweetalert2.css" rel="stylesheet">
+    <!-- <link href="../dist/css/sweetalert2.css" rel="stylesheet"> -->
     <script src="../dist/js/sweetalert2.min.js"></script>
     <script src="../dist/js/jquery-3.3.1.min.js"></script>
 
@@ -25,13 +25,26 @@ $FName = $_SESSION['FName'];
     <script type="text/javascript">
       $(document).ready(function(e){
         getUser();
+        // ค้นหา
+        $("#Search").on("keyup", function() 
+        {
+        var value = $(this).val().toLowerCase();
+            $("#TableUser tbody tr").filter(function() 
+            {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+        // 
     });
 
     function getUser()
     {
+        var Permission = $('#Permission').val();
+
         var data = 
         {
-            'STATUS': 'getUser'
+            'STATUS': 'getUser',
+            'Permission':Permission,
         };
         senddata(JSON.stringify(data));
     }
@@ -44,9 +57,8 @@ $FName = $_SESSION['FName'];
             'sel':sel
         };
         senddata(JSON.stringify(data));
-
-        
-    } function edit_customer()
+    } 
+    function edit_customer()
     {
         var ID = $('#ID_edit').val();
         var FName_edit = $('#FName_edit').val();
@@ -59,12 +71,10 @@ $FName = $_SESSION['FName'];
         
         if(FName_edit=='' || UserName_edit=='' || address_edit=='' || email_edit=='' || Tel_edit==''|| Password_edit==''){
                 swal({
-                          title: 'กรุณากรอกข้อมูลให้ครบ',
-                          text: '',
+                          title: '',
+                          text: 'กรุณากรอกข้อมูลให้ครบ',
                           type: 'info',
                           showCancelButton: false,
-                          confirmButtonColor: '#3085d6',
-                          cancelButtonColor: '#d33',
                           showConfirmButton: false,
                           timer: 1500,
                           confirmButtonText: 'Ok'
@@ -90,15 +100,13 @@ $FName = $_SESSION['FName'];
     function delete_customer(ID)
     {
         swal({
-          title: "ต้องการลบ ผู้ใช้หรือไม่",
-          text: "",
+          title: "",
+          text: "ต้องการลบ ผู้ใช้หรือไม่",
           type: "warning",
           showCancelButton: true,
           confirmButtonClass: "btn-danger",
           confirmButtonText: "ตกลง",
           cancelButtonText: "ยกเลิก",
-          confirmButtonColor: '#d33',
-          cancelButtonColor: '#3085d6',
           closeOnConfirm: false,
           closeOnCancel: false,
           showCancelButton: true
@@ -132,8 +140,6 @@ $FName = $_SESSION['FName'];
                           text: 'กรุณากรอกข้อมูลให้ครบ',
                           type: 'info',
                           showCancelButton: false,
-                          confirmButtonColor: '#3085d6',
-                          cancelButtonColor: '#d33',
                           showConfirmButton: false,
                           timer: 1500,
                           confirmButtonText: 'Ok'
@@ -199,12 +205,8 @@ $FName = $_SESSION['FName'];
                     if( (temp["form"]=='getUser') )
                     {
                               $( "#TableUser tbody" ).empty();
-                              console.log(temp);
                               for (var i = 0; i < temp['count']; i++) 
                               {
-
-                                 var rowCount = $('#TableUser >tbody >tr').length;
-
                                   var ShowEdit = "<a href='javascript:void(0)'  onclick='showmodal("+temp[i]['ID']+","+'2'+");'><i class='icon-pencil'></i></a> <a href='javascript:void(0)' onclick='delete_customer("+temp[i]['ID']+");' style='margin-left:5%;'><i class='icon-delete_forever'></i></a>";
 
                                  StrTR = "<tr ondblclick='showmodal("+temp[i]['ID']+","+'1'+");'>"+
@@ -217,14 +219,8 @@ $FName = $_SESSION['FName'];
                                                 "<td >"+temp[i]['Permission']+"</td>"+
                                                 "<td >"+ShowEdit+"</td>"+
                                                 "</tr>";
-                                 if(rowCount == 0)
-                                 {
+   
                                    $('#TableUser tbody').append( StrTR );
-                                 }
-                                 else
-                                 {
-                                   $('#TableUser tbody:last-child').append( StrTR );
-                                 }
                               }
                     }
                     else if( (temp["form"]=='show_detail_customer') )
@@ -232,7 +228,6 @@ $FName = $_SESSION['FName'];
                         var sel = temp['sel'];
                         if(sel==1){
                             $('#show_customer').modal('toggle');
-
                             $('#ID').val(temp['ID']);
                             $('#FName').val(temp['FName']);
                             $('#UserName').val(temp['UserName']);
@@ -260,8 +255,6 @@ $FName = $_SESSION['FName'];
                             text: 'บันทึกข้อมูลเรียบร้อยแล้ว',
                             type: 'success',
                             showCancelButton: false,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
                             timer: 1000,
                             confirmButtonText: 'Ok',
                             showConfirmButton: false
@@ -279,8 +272,6 @@ $FName = $_SESSION['FName'];
                             text: 'ลบข้อมูล พนักงานเรียบร้อย',
                             type: 'success',
                             showCancelButton: false,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
                             timer: 1000,
                             confirmButtonText: 'Ok',
                             showConfirmButton: false
@@ -297,8 +288,6 @@ $FName = $_SESSION['FName'];
                             text: 'บันทึกข้อมูลเรียบร้อยแล้ว',
                             type: 'success',
                             showCancelButton: false,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
                             timer: 1000,
                             confirmButtonText: 'Ok',
                             showConfirmButton: false
@@ -375,8 +364,6 @@ $FName = $_SESSION['FName'];
             },
         });
     }
-
-
     </script>
     <style>
         .loader {
@@ -490,21 +477,21 @@ $FName = $_SESSION['FName'];
         <div class="tab-content my-3" id="v-pills-tabContent">
             <div class="tab-pane animated fadeInUpShort show active" id="v-pills-all" role="tabpanel" aria-labelledby="v-pills-all-tab">
             <div class="row">
-                <div class="col-md-3 mt-sm-2">
-                    <select class =  " custom-select  ">
-                        <option value="1">ค้นหาตามการเข้าถึง</option>
-                        <option value="2">ผู้จัดการ</option>
-                        <option value="3">การตลาด</option>
-                        <option value="4">แปรรูป</option>
-                        <option value="5">รวบรวม</option>
-                        <option value="6">การส่งออก</option>
+                <div class="col-md-3 mt-2 ">
+                    <select class =  " custom-select  "  id="Permission" onchange="getUser()">
+                        <option value="0">ค้นหาตามการเข้าถึง</option>
+                        <option value="1">ผู้จัดการ</option>
+                        <option value="2">การตลาด</option>
+                        <option value="3">แปรรูป</option>
+                        <option value="4">รวบรวม</option>
+                        <option value="5">การส่งออก</option>
                     </select>
                 </div>
-                <div class="col-md-3 mt-sm-2">
-                    <input type="text" class =  "form-control " placeholder="ค้นหาจากชื่อ-นามสกุล">
+                <div class="col-md-3 mt-2 ">
+                    <input type="text" class =  "form-control " placeholder="ค้นหาจากชื่อ-นามสกุล" id="Search">
                 </div>
-                <div class="col-md-3  mt-sm-2">
-                <button type="button" class="btn btn-primary btn-lg">ค้นหา</button>
+                <div class="col-md-3  mt-2 ">
+                <button type="button" class="btn btn-primary btn-lg" onclick="getUser()">ค้นหา</button>
                     <button type="button"  data-toggle="modal" data-target="#add_customer"  class="btn btn-success btn-lg ml-3" >&nbsp;เพิ่ม&nbsp;</button>
                 </div>
             </div>
@@ -742,7 +729,7 @@ $FName = $_SESSION['FName'];
             </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+        <button type="button" class="btn btn-success " data-dismiss="modal">OK</button>
       </div>
     </div>
   </div>
@@ -800,7 +787,7 @@ $FName = $_SESSION['FName'];
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" onclick='edit_customer();' class="btn btn-primary">Save</button>
+        <button type="button" onclick='edit_customer();' class="btn btn-success">Save</button>
       </div>
     </div>
   </div>
@@ -854,7 +841,7 @@ $FName = $_SESSION['FName'];
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button"onclick="show_add_modal()" class="btn btn-primary">Save</button>
+        <button type="button"onclick="show_add_modal()" class="btn btn-success">Save</button>
       </div>
     </div>
   </div>
