@@ -68,6 +68,8 @@
                 <ul class="treeview-menu">
                     <li><a href="item.php"><i class="icon icon-circle-o"></i>รายการ</a>
                     </li>
+                    <li><a href="item_stock.php"><i class="icon icon-circle-o"></i>คลังสินค้า</a>
+                    </li>
                     <li><a href="panel-page-products-create.html"><i class="icon icon-add"></i>Add
                         New </a>
                     </li>
