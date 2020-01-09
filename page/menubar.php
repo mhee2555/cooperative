@@ -42,10 +42,10 @@
 
             <!-- แดชบอร์ด หน้าหลัก -->
             <li class="treeview"  >
-            <a href="main.php" ><i class="icon icon-sailing-boat-water purple-text s-18"></i> <span>หน้าหลัก</span>
+            <a href="main.php" ><i class="icon icon-sailing-boat-water purple-text s-18"></i> <span>ทั่วไป</span>
                 <i class="icon icon-angle-left s-18 pull-right"></i></a>
                 <!-- เมนูข้างใน แดชบอร์ด -->
-                <ul class="treeview-menu" hidden>
+                <ul class="treeview-menu" >
                     <li><a href="index.html"><i class="icon icon-folder5"></i>Panel Dashboard 1</a>
                     </li>
                     <li><a href="panel-page-dashboard1-rtl.html"><i class="icon icon-folder5"></i>Panel Dashboard 1 - RTL</a>
@@ -54,16 +54,6 @@
                     </li>
                     <li><a href="panel-page-dashboard3.html"><i class="icon icon-folder5"></i>Panel Dashboard 3</a>
                     </li>
-                    <li><a href="panel-page-dashboard4.html"><i class="icon icon-folder5"></i>Panel Dashboard 4</a>
-                    </li>
-                    <li><a href="panel-page-dashboard5.html"><i class="icon icon-folder5"></i>Panel Dashboard 5</a>
-                    </li>
-                    <li><a href="panel-page-dashboard6.html"><i class="icon icon-folder5"></i>Panel Dashboard 6</a>
-                    </li>
-                    <li><a href="panel-page-dashboard7.html"><i class="icon icon-folder5"></i>Panel Dashboard 7</a></li>
-                    <li><a href="panel-page-dashboard9.html"><i class="icon icon-folder5"></i>Panel Dashboard 9</a></li>
-                    <li><a href="panel-page-dashboard10.html"><i class="icon icon-folder5"></i>Panel Dashboard 10</a></li>
-                    <li><a href="panel-page-dashboard11.html"><i class="icon icon-folder5"></i>Panel Dashboard 11</a></li>
                 </ul>
             </li>
             <!-- ================================= -->
@@ -73,10 +63,10 @@
             <li class="treeview"><a href="#">
                 <i class="icon icon icon-package blue-text s-18"></i>
                 <span>สินค้า</span>
-                <span class="badge r-3 badge-primary pull-right">4</span>
+                <i class="icon icon-angle-left s-18 pull-right"></i></a>
             </a>
                 <ul class="treeview-menu">
-                    <li><a href="panel-page-products.html"><i class="icon icon-circle-o"></i>All Products</a>
+                    <li><a href="item.php"><i class="icon icon-circle-o"></i>รายการ</a>
                     </li>
                     <li><a href="panel-page-products-create.html"><i class="icon icon-add"></i>Add
                         New </a>
@@ -87,12 +77,12 @@
 
             <!-- ผู้ใช้งาน ============================ -->
             <li class="treeview"><a href="#"><i class="icon icon-account_box light-green-text s-18"></i>
-                  <span>ลูกค้า</span>          
+                  <span>ผู้ใช้งาน</span>          
             <i class="icon icon-angle-left s-18 pull-right"></i></a>
                 <ul class="treeview-menu">
-                    <li><a href="customer.php"><i class="icon icon-circle-o"></i>ข้อมูลลูกค้า</a>
+                    <li><a href="customer.php"><i class="icon icon-user"></i>ข้อมูลลูกค้า</a>
                     </li>
-                    <li><a href="panel-page-users-create.html"><i class="icon icon-add"></i>Add User</a>
+                    <li><a href="employee.php"><i class="icon icon-user"></i>ข้อมูลพนักงาน</a>
                     </li>
                     <li><a href="panel-page-profile.html"><i class="icon icon-user"></i>User Profile </a>
                     </li>
@@ -101,11 +91,11 @@
             <!-- ================================== -->
 
             <!--    inbox================================ -->
-            <li class="treeview "><a href="#"> <i class="icon icon-package light-green-text s-18"></i>
-                    <span>พนักงาน</span>
+            <!-- <li class="treeview "><a href="#"> <i class="icon icon-package light-green-text s-18"></i>
+                    <span>พนักงาน</span> -->
              <i class="icon icon-angle-left s-18 pull-right"></i></a>
                 <!-- <span   class="badge r-3 badge-success pull-right">20</span> -->
-                <ul class="treeview-menu">
+                <!-- <ul class="treeview-menu">
                     <li><a href="employee.php"><i class="icon icon-circle-o"></i>ข้อมูลพนักงาน</a>
                     </li>
                     <li><a href="register.html"><i class="icon icon-circle-o"></i>Panel7 - Inbox</a>
@@ -115,15 +105,15 @@
                     <li><a href="panel-page-inbox-create.html"><i class="icon icon-add"></i>Compose</a>
                     </li>
                 </ul>
-            </li>
+            </li> -->
             <!-- ================================== -->
 
             <!-- หัวเมนูหลัก -->
-            <li class="header light mt-3"><strong>เมนูตั้งค่า</strong></li>
+            <!-- <li class="header light mt-3"><strong>เมนูตั้งค่า</strong></li> -->
             <!-- ================================== -->
 
             <!--=APP================================= -->
-            <li class="treeview ">
+            <!-- <li class="treeview ">
                 <a href="#">
                     <i class="icon icon-package text-lime s-18"></i> <span>Apps</span>
                     <i class="icon icon-angle-left s-18 pull-right"></i>
@@ -148,11 +138,11 @@
                     <li><a href="panel7-payments.html"><i class="icon icon-circle-o"></i>Payments</a>
                     </li>
                 </ul>
-            </li>
+            </li> -->
             <!-- ================================== -->
 
             <!-- =PAGE================================ -->
-            <li class="treeview">
+            <!-- <li class="treeview">
                 <a href="#">
                     <i class="icon icon-documents3 text-blue s-18"></i> <span>Pages</span>
                     <i class="icon icon-angle-left s-18 pull-right"></i>
@@ -204,7 +194,7 @@
                         </ul>
                     </li>
                 </ul>
-            </li>
+            </li> -->
 
         <!-- ================================== -->
         </ul>
