@@ -24,8 +24,10 @@ $FName = $_SESSION['FName'];
 
     <script type="text/javascript">
       $(document).ready(function(e){
-        Showitem();
+       
+        Showtype();
         // ค้นหา
+        Showitem();
         $("#Search").on("keyup", function() 
         {
         var value = $(this).val().toLowerCase();
@@ -40,15 +42,26 @@ $FName = $_SESSION['FName'];
     function Showitem()
     {
         var item_type = $('#item_type').val();
-
+        var item_type2 = $('#item_type2').val();
         var data = 
         {
             'STATUS': 'Showitem',
-            'item_type':item_type
+            'item_type':item_type,
+            'item_type2':item_type2
         };
         senddata(JSON.stringify(data));
     }
 
+    function Showtype()
+    {
+        var item_type = $('#item_type').val();
+        var data = 
+        {
+            'STATUS': 'Showtype',
+            'item_type':item_type
+        };
+        senddata(JSON.stringify(data));
+    }
 //-----------------------------------------------------------------------------------------
     function senddata(data)
     {
@@ -102,13 +115,25 @@ $FName = $_SESSION['FName'];
                                                 "<td >"+temp[i]['item_qty']+"</td>"+
                                                 "<td >"+temp[i]['item_qty']+"</td>"+
                                                 "<td >"+temp[i]['UnitName']+"</td>"+
-                                                "<td >"+ShowEdit+"</td>"+
+                                                "<td ></td>"+
                                                 "</tr>";
    
                                    $('#Tableitem tbody').append( StrTR );
                               }
 
                     }
+                    else if( (temp["form"]=='Showtype') )
+                    {
+                        $("#item_type2").empty();
+                        var StrTr2 = "<option value = '%%'> ทั้งหมด </option>"
+                                $("#item_type2").append(StrTr2);
+                        for (var i = 0; i < temp['count']; i++) {
+                                var StrTr = "<option value = '"+temp[i]['id']+"'> " + temp[i]['type_name'] + " </option>"
+                                $("#item_type2").append(StrTr);
+                        }
+
+                    }
+            //------------------------------------------------------------------------------
                 }
                 else if (temp['status']=="failed") 
                 {
@@ -280,17 +305,21 @@ $FName = $_SESSION['FName'];
             <div class="tab-pane animated fadeInUpShort show active" id="v-pills-all" role="tabpanel" aria-labelledby="v-pills-all-tab">
             <div class="row">
                 <div class="col-md-3 mt-2 ">
-                    <select class =  " custom-select  "  id="item_type" onchange="Showitem()">
+                    <select class =  " custom-select  "  id="item_type" onchange="Showtype();Showitem();">
                         <option value="1">สินค้ายังไม่ได้แปรรูป</option>
                         <option value="2">สินค้าแปรรูป</option>
                     </select>
                 </div>
                 <div class="col-md-3 mt-2 ">
+                    <select class =  " custom-select  " style="width:70%;"  id="item_type2" onchange="Showitem()">
+                    </select>
+                </div>
+                <div class="col-md-3 mt-2 " style="margin-left:18%;">
                     <input type="text" class =  "form-control " placeholder="ค้นหาจากชื่อรายการ" id="Search">
                 </div>
-                <div class="col-md-3  mt-2 ">
+                <div class=" mt-2 " >
                 <button type="button" class="btn btn-primary btn-lg" onclick="Showitem()">ค้นหา</button>
-                    <button type="button"  data-toggle="modal" data-target="#add_item"  class="btn btn-success btn-lg ml-3" >&nbsp;เพิ่ม&nbsp;</button>
+                    <!-- <button type="button"  data-toggle="modal" data-target="#add_item"  class="btn btn-success btn-lg ml-3" >&nbsp;เพิ่ม&nbsp;</button> -->
                 </div>
             </div>
                 <div class="row my-3">
@@ -302,7 +331,7 @@ $FName = $_SESSION['FName'];
                                     <table class="table table-striped table-hover r-0" id="Tableitem">
                                         <thead id="theadsum" >
                                         <tr class="no-b">
-                                            <th>NO.<th>
+                                            <th>NO.</th>
                                             <th>NAME</th>
                                             <th>TYPE</th>
                                             <th>LOT</th>
@@ -384,7 +413,7 @@ $FName = $_SESSION['FName'];
                                     <table class="table table-striped table-hover r-0" id="Tableitem_Longan" hidden>
                                         <thead id="theadsum" >
                                         <tr class="no-b">
-                                            <th>NO.<th>
+                                            <th>NO.</th>
                                             <th>NAME</th>
                                             <th>TEPY</th>
                                             <th>PIRCE UNIT</th>
