@@ -35,7 +35,6 @@ $FName = $_SESSION['FName'];
             });
         });
         // 
-        onchk_table();
     });
 
     function Showitem()
@@ -49,118 +48,13 @@ $FName = $_SESSION['FName'];
         };
         senddata(JSON.stringify(data));
     }
-    
-    function onchk_table()
-    {
-        $("#Search").on("keyup", function() 
-        {
-            var value = $(this).val().toLowerCase();
-            alert(value);
-        });
-    }
-    function showmodal(ID,sel)
-    {
-        var data = 
-        {
-            'STATUS': 'show_detail_item',
-            'ID':ID,
-            'sel':sel
-        };
-        senddata(JSON.stringify(data));
-    } 
-    function edit_item()
-    {
-        var ID = $('#ID_edit').val();
-        var item_name_edit = $('#item_name_edit').val();
-        var item_type_edit = $('#item_type_edit').val();
-        
-        if(item_name_edit=='' || item_type_edit=='' ){
-                swal({
-                          title: '',
-                          text: 'กรุณากรอกข้อมูลให้ครบ',
-                          type: 'info',
-                          showCancelButton: false,
-                          showConfirmButton: false,
-                          timer: 1500,
-                          confirmButtonText: 'Ok'
-                    }); 
-        }else{
-                var data = 
-                    {
-                    'STATUS': 'edit_item',
-                    'ID':ID,
-                    'item_name_edit':item_name_edit,
-                    'item_type_edit':item_type_edit
-                    };
-                senddata(JSON.stringify(data));
 
-        }
-       
-    }
-    function delete_item(ID)
-    {
-        swal({
-          title: "",
-          text: "ต้องการลบ รายการหรือไม่",
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonClass: "btn-danger",
-          confirmButtonText: "ตกลง",
-          cancelButtonText: "ยกเลิก",
-          closeOnConfirm: false,
-          closeOnCancel: false,
-          showCancelButton: true
-        }).then(result => {
-          if (result.value) {
-            var data = 
-                    {
-                    'STATUS': 'delete_item',
-                    'ID':ID
-                    };
-                senddata(JSON.stringify(data));
-          } else if (result.dismiss === 'cancel') {
-            swal.close();
-          }
-        })
-               
-    }
-    function show_add_modal()
-    {            
-            var item_name_add                = $('#item_name_add').val();
-            var item_type_add                  = $('#item_type_add').val();
-
-            if(item_name_add=='' || item_type_add=='' ){
-                swal({
-                          title: '',
-                          text: 'กรุณากรอกข้อมูลให้ครบ',
-                          type: 'info',
-                          showCancelButton: false,
-                          showConfirmButton: false,
-                          timer: 1500,
-                          confirmButtonText: 'Ok'
-                    }); 
-            }else{
-
-                var data = 
-                    {
-                    'STATUS': 'add_item',
-                    'item_name_add':item_name_add,
-                    'item_type_add':item_type_add
-                    };
-
-                $('#add_item').modal('toggle');
-
-                setTimeout(() => {
-                    senddata(JSON.stringify(data));
-                }, 1000);
-            }
-    }
 //-----------------------------------------------------------------------------------------
     function senddata(data)
     {
          var form_data = new FormData();
          form_data.append("DATA",data);
-         var URL = '../process/item.php';
+         var URL = '../process/item_stock.php';
          $.ajax
          ({
             url: URL,
@@ -195,6 +89,7 @@ $FName = $_SESSION['FName'];
                     if( (temp["form"]=='Showitem') )
                     {
                               $( "#Tableitem tbody" ).empty();
+
                               for (var i = 0; i < temp['count']; i++) 
                               {
                                   var ShowEdit = "<a href='javascript:void(0)'  onclick='showmodal("+temp[i]['item_code']+","+'2'+");'><i class='icon-pencil'></i></a> <a href='javascript:void(0)' onclick='delete_item("+temp[i]['item_code']+");' style='margin-left:5%;'><i class='icon-delete_forever'></i></a>";
@@ -202,86 +97,17 @@ $FName = $_SESSION['FName'];
                                  StrTR = "<tr ondblclick='showmodal("+temp[i]['item_code']+","+'1'+");'>"+
                                                 "<td >"+(i+1)+"</td>"+
                                                 "<td >"+temp[i]['item_name']+"</td>"+
-                                                "<td ></td>"+
-                                                "<td ></td>"+
-                                                "<td ></td>"+
-                                                "<td ></td>"+
-                                                "<td ></td>"+
+                                                "<td >"+temp[i]['type_name']+"</td>"+
+                                                "<td >"+temp[i]['Lot']+"</td>"+
+                                                "<td >"+temp[i]['item_qty']+"</td>"+
+                                                "<td >"+temp[i]['item_qty']+"</td>"+
+                                                "<td >"+temp[i]['UnitName']+"</td>"+
                                                 "<td >"+ShowEdit+"</td>"+
                                                 "</tr>";
    
                                    $('#Tableitem tbody').append( StrTR );
                               }
-                    }
-                    else if( (temp["form"]=='show_detail_item') )
-                    {
-                        var sel = temp['sel'];
-                        if(sel==1){
-                            $('#show_item').modal('toggle');
-                            $('#ID').val(temp['item_code']);
-                            $('#item_name_show').val(temp['item_name']);
-                            $('#item_type_show').val(temp['type_name']);
-                        }else{
-                            $('#show_item_edit').modal('toggle');
-                            $('#ID_edit').val(temp['item_code']);
-                            $('#item_name_edit').val(temp['item_name']);
-                            $('#item_type_edit').val(temp['item_type']);
-                        }
-                        
-                    }
-                    else if( (temp["form"]=='edit_item') )
-                    {
-                        swal({
-                            title: '',
-                            text: 'บันทึกข้อมูลเรียบร้อยแล้ว',
-                            type: 'success',
-                            showCancelButton: false,
-                            timer: 1000,
-                            confirmButtonText: 'Ok',
-                            showConfirmButton: false
-                        });
-                        $('#show_item_edit').modal('hide');
 
-                        setTimeout(function() {
-                            Showitem();
-                        }, 1000);
-                    }
-                    else if( (temp["form"]=='delete_item') )
-                    {
-                        swal({
-                            title: '',
-                            text: 'ลบข้อมูล รายการเรียบร้อย',
-                            type: 'success',
-                            showCancelButton: false,
-                            timer: 1000,
-                            confirmButtonText: 'Ok',
-                            showConfirmButton: false
-                        });
-                        setTimeout(function() {
-                            Showitem();
-                        }, 1000);
-                        
-                    }
-                    else if( (temp["form"]=='add_item') )
-                    {
-                        swal({
-                            title: '',
-                            text: 'บันทึกข้อมูลเรียบร้อยแล้ว',
-                            type: 'success',
-                            showCancelButton: false,
-                            timer: 1000,
-                            confirmButtonText: 'Ok',
-                            showConfirmButton: false
-                        });
-                        // CLEAR ALL
-                        $('#item_name_add').val('');
-                        $('#item_type_add').val('1');
-                        // 
-
-                        setTimeout(function() {
-                            Showitem();
-                        }, 1000);
-                        
                     }
                 }
                 else if (temp['status']=="failed") 
@@ -424,7 +250,7 @@ $FName = $_SESSION['FName'];
                 <div class="col">
                     <h4>
                         <i class="icon-package"></i>
-                        รายการ
+                        คลังสินค้า
                     </h4>
                 </div>
             </div>
@@ -455,15 +281,12 @@ $FName = $_SESSION['FName'];
             <div class="row">
                 <div class="col-md-3 mt-2 ">
                     <select class =  " custom-select  "  id="item_type" onchange="Showitem()">
-                        <option value="0">ค้นหาตามประเภท</option>
-                        <option value="1">ข้าว</option>
-                        <option value="2">ลำไย</option>
-                        <option value="3">ข้าวแปรรูป</option>
-                        <option value="4">ลำไยแปรรูป</option>
+                        <option value="1">สินค้ายังไม่ได้แปรรูป</option>
+                        <option value="2">สินค้าแปรรูป</option>
                     </select>
                 </div>
                 <div class="col-md-3 mt-2 ">
-                    <input type="text" class =  "form-control " placeholder="ค้นหาจากชื่อ-นามสกุล" id="Search">
+                    <input type="text" class =  "form-control " placeholder="ค้นหาจากชื่อรายการ" id="Search">
                 </div>
                 <div class="col-md-3  mt-2 ">
                 <button type="button" class="btn btn-primary btn-lg" onclick="Showitem()">ค้นหา</button>
@@ -481,9 +304,10 @@ $FName = $_SESSION['FName'];
                                         <tr class="no-b">
                                             <th>NO.<th>
                                             <th>NAME</th>
-                                            <th>TEPY</th>
-                                            <th>PIRCE UNIT</th>
+                                            <th>TYPE</th>
+                                            <th>LOT</th>
                                             <th>QTY</th>
+                                            <th>GRADE</th>
                                             <th>UNIT</th>
                                             <th hidden>ROLE</th>
                                             <th></th>
@@ -744,107 +568,7 @@ $FName = $_SESSION['FName'];
          immediately after the control sidebar -->
 <div class="control-sidebar-bg shadow white fixed"></div>
 </div>
-<!--------------------------------------- Modal show_customer ------------------------------------------>
-<div class="modal fade" id="show_item" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">ข้อมูล รายการ</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-            <div class="margin_input">
-            <label class="form-label mr-1" style="color:#000000;">ID Code</label>
-            <input type="text" id="ID" class="form-control " placeholder="ID">
-            </div>
-            <div class="margin_input">
-            <label class="form-label mr-1" style="color:#000000;">รายการ</label>
-            <input type="text" id="item_name_show" class="form-control " placeholder="ชื่อรายการ">
-            </div>
-            <div class="margin_input">
-            <label class="form-label mr-1" style="color:#000000;">ประเภท</label>
-            <input type="text" id="item_type_show" class="form-control " placeholder="Type">
-            </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-success " data-dismiss="modal">OK</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-------------------------- end Modal ----------------------------------------------->
-<!--------------------------------------- Modal show_customer edit ------------------------------------------>
-<div class="modal fade" id="show_item_edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">แก้ไข รายการ</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-            <div class="margin_input">
-            <label class="form-label mr-1" style="color:#000000;">ID Code</label>
-            <input type="text" id="ID_edit" class="form-control " placeholder="ID" disabled>
-            </div>
-            <div class="margin_input">
-            <label class="form-label mr-1" style="color:#000000;">ชื่อรายการ *</label>
-            <input type="text" id="item_name_edit" class="form-control " placeholder="ชื่อรายการ">
-            </div>
-            <div class="margin_input">
-            <label class="form-label mr-1" style="color:#000000;">ประเภท</label>
-                <select class =  " custom-select  " id="item_type_edit">
-                            <option value="1">ข้าว</option>
-                            <option value="2">ลำไย</option>
-                            <option value="3">ข้าวแปรรูป</option>
-                            <option value="4">ลำไยแปรรูป</option>
-                </select>
-            </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" onclick='edit_item();' class="btn btn-success">Save</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-------------------------- end Modal ----------------------------------------------->
-<!--------------------------------------- Modal add_customer  ------------------------------------------>
-<div class="modal fade" id="add_item" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">เพิ่ม รายการ</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-            <div class="margin_input">
-            <label class="form-label mr-1" style="color:#000000;">ชื่อราการ *</label>
-            <input type="text" id="item_name_add" class="form-control " placeholder="ชื่อราการ">
-            </div>
-            <div class="margin_input">
-            <label class="form-label mr-1" style="color:#000000;">ประเภท</label>
-                <select class =  " custom-select  " id="item_type_add">
-                            <option value="1">ข้าว</option>
-                            <option value="2">ลำไย</option>
-                            <option value="3">ข้าวแปรรูป</option>
-                            <option value="4">ลำไยแปรรูป</option>
-                </select>
-            </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button"onclick="show_add_modal()" class="btn btn-success">Save</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-------------------------- end add_customer Modal ----------------------------------------------->
+
 <!--/#app -->
 <script src="assets/js/app.js"></script>
 

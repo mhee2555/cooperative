@@ -453,7 +453,7 @@ $FName = $_SESSION['FName'];
                     </select>
                 </div>
                 <div class="col-md-3 mt-2 ">
-                    <input type="text" class =  "form-control " placeholder="ค้นหาจากชื่อ-นามสกุล" id="Search">
+                    <input type="text" class =  "form-control " placeholder="ค้นหาจากชื่อรายการ" id="Search">
                 </div>
                 <div class="col-md-3  mt-2 ">
                 <button type="button" class="btn btn-primary btn-lg" onclick="Showitem()">ค้นหา</button>
