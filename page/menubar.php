@@ -46,7 +46,7 @@
                 <i class="icon icon-angle-left s-18 pull-right"></i></a>
                 <!-- เมนูข้างใน แดชบอร์ด -->
                 <ul class="treeview-menu" >
-                    <li><a href="index.html"><i class="icon icon-folder5"></i>Panel Dashboard 1</a>
+                    <li><a href="buy.php"><i class="icon icon-folder5"></i>บันทึกการซื้อลำไย</a>
                     </li>
                     <li><a href="panel-page-dashboard1-rtl.html"><i class="icon icon-folder5"></i>Panel Dashboard 1 - RTL</a>
                     </li>
