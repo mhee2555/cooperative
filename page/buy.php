@@ -273,22 +273,22 @@ $FName = $_SESSION['FName'];
 
             <div class="row m-1 mt-4 d-flex justify-content-end col-12" >
                 <div class="d-flex justify-content-center ">
-                    <button type="button"   class="btn btn-primary btn-lg btn-block ml-4 active r-20" > สร้างเอกสาร </button>
+                    <button type="button"   class="btn btn-primary btn-lg btn-block ml-4 active r-20" style="width: 130px;"> สร้างเอกสาร </button>
                 </div>
                 <div class="d-flex justify-content-center">
-                    <button type="button"    class="btn btn-secondary btn-lg btn-block ml-4 active r-20" > เพิ่มรายการ </button>
+                    <button type="button"    class="btn btn-secondary btn-lg btn-block ml-4 active r-20"  style="width: 130px;"> เพิ่มรายการ </button>
                 </div>
                 <div class="d-flex justify-content-center">
-                    <button type="button"   class="btn btn-danger btn-lg btn-block ml-4 active r-20" > ลบรายการ </button>
+                    <button type="button"   class="btn btn-danger btn-lg btn-block ml-4 active r-20" style="width: 130px;"> ลบรายการ </button>
                 </div>
                 <div class="d-flex justify-content-center">
-                    <button type="button"   class="btn btn-success btn-lg btn-block ml-4 active r-20" >บันทึก</button>
+                    <button type="button"   class="btn btn-success btn-lg btn-block ml-4 active r-20" style="width: 130px;">บันทึก</button>
                 </div>
                 <div class="d-flex justify-content-center">
-                    <button type="button"   class="btn btn-danger btn-lg btn-block ml-4 active r-20" > ยกเลิกเอกสาร </button>
+                    <button type="button"   class="btn btn-danger btn-lg btn-block ml-4 active r-20" style="width: 130px;"> ยกเลิกเอกสาร </button>
                 </div>
                 <div class="d-flex justify-content-center">
-                    <button type="button"    class="btn btn-warning btn-lg btn-block ml-4 active r-20" > พิมพ์ยงาน </button>
+                    <button type="button"    class="btn btn-warning btn-lg btn-block ml-4 active r-20" style="width: 130px;"> พิมพ์ยงาน </button>
                 </div>
             </div>
 
