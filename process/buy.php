@@ -85,7 +85,6 @@ function CreateDocument($conn, $DATA)
     }
 }
 
-
 function ShowItem($conn, $DATA)
 {
   $count = 0;
@@ -128,7 +127,114 @@ function ShowItem($conn, $DATA)
 
 }
 
+function Importdata($conn, $DATA)
+{
+  $DocNo = $DATA["DocNo"];
+  $item_code = $DATA["item_code"];
+  $kilo = $DATA["kilo"];
+  $total = $DATA["total"];
 
+  #========================================
+  $item_codex  = explode(",", $item_code);
+  $kilox       = explode(",", $kilo);
+  $totalx      = explode(",", $total);
+  #========================================
+
+  foreach ($item_codex as $key => $value)
+  {
+    // checkinsert
+    $count = " SELECT
+                COUNT(*) AS Cnt
+               FROM
+                buy_product_detail
+               WHERE
+                Buy_DocNo = '$DocNo'
+               AND item_code = '$value' ";
+              $meQuery = mysqli_query($conn, $count);
+              $Result = mysqli_fetch_assoc($meQuery);
+              $chkUpdate = $Result['Cnt'];
+ 
+    if ($chkUpdate == 0) 
+    {
+      $insert = "INSERT INTO  buy_product_detail
+                  SET 
+                      Buy_DocNo = '$DocNo',
+                      item_code = '$value',
+                      kilo = '$kilox[$key]',
+                      total = '$totalx[$key]' ";
+
+                  mysqli_query($conn, $insert);
+    }
+    else
+    {
+      $update = "UPDATE  buy_product_detail
+                 SET 
+                      Buy_DocNo = '$DocNo',
+                      item_code = '$value',
+                      kilo = ( kilo + '$kilox[$key]' ),
+                      total = (total + '$totalx[$key]' ) 
+                WHERE
+                      Buy_DocNo = '$DocNo'
+                AND    item_code = '$value'  ";
+
+                  mysqli_query($conn, $update);
+    }
+  }
+
+  ShowDetail($conn, $DATA);
+}
+
+function ShowDetail($conn, $DATA)
+{
+  $DocNo = $DATA["DocNo"];
+  $boolean = false;
+  $count = 0;
+
+  $Detail = "SELECT
+  	          bpd.RowID,
+              bpd.item_code,
+              item.item_name,
+              bpd.kilo,
+              bpd.total,
+	            grade_price.Grade
+            FROM
+              buy_product_detail bpd
+            INNER JOIN item ON item.item_code = bpd.item_code
+            INNER JOIN grade_price ON grade_price.item_code = item.item_code
+            WHERE Buy_DocNo = '$DocNo' ";
+            $meQuery = mysqli_query($conn, $Detail);
+            while ($Result = mysqli_fetch_assoc($meQuery)) 
+            {
+              $return[$count]['RowID']          = $Result['RowID'];
+              $return[$count]['item_code']      = $Result['item_code'];
+              $return[$count]['item_name']      = $Result['item_name'];
+              $return[$count]['kilo']           = $Result['kilo'];
+              $return[$count]['total']          = $Result['total'];
+              $return[$count]['Grade']          = $Result['Grade'];
+
+              $count ++ ;
+              $boolean = true;
+            }
+
+            $return['Row'] = $count;
+
+  if ($boolean) 
+  {
+    $return['status'] = "success";
+    $return['form'] = "ShowDetail";
+    echo json_encode($return);
+    mysqli_close($conn);
+    die;
+  }
+  else
+  {
+    $return['status'] = "failed";
+    $return['form'] = "ShowDetail";
+    echo json_encode($return);
+    mysqli_close($conn);
+    die;
+  }
+}
 
 
 
@@ -143,6 +249,14 @@ function ShowItem($conn, $DATA)
       else if ($DATA['STATUS'] == 'ShowItem') 
       {
         ShowItem($conn, $DATA);
+      }
+      else if ($DATA['STATUS'] == 'Importdata') 
+      {
+        Importdata($conn, $DATA);
+      }
+      else if ($DATA['STATUS'] == 'ShowDetail') 
+      {
+        ShowDetail($conn, $DATA);
       }
       else
       {

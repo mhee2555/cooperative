@@ -13,10 +13,14 @@ $FName = $_SESSION['FName'];
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="assets/img/basic/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css?family=Krub&display=swap" rel="stylesheet">
     <title>Paper</title>
     <!-- CSS -->
     <link rel="stylesheet" href="assets/css/app.css">
     <style>
+        body{
+            font-family: 'Krub', sans-serif;
+        }
         .loader {
             position: fixed;
             left: 0;

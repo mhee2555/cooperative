@@ -16,6 +16,7 @@ $Userid = $_SESSION['ID'];
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="assets/img/basic/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css?family=Krub&display=swap" rel="stylesheet">
     <!-- <link href="../dist/css/sweetalert2.css" rel="stylesheet"> -->
     <script src="../dist/js/sweetalert2.min.js"></script>
     <script src="../dist/js/jquery-3.3.1.min.js"></script>
@@ -28,7 +29,7 @@ $Userid = $_SESSION['ID'];
       $(document).ready(function(e){
 
     });
-
+    // Function 
     function Createdocument()
     {
         var userid = '<?php echo $Userid; ?>';
@@ -86,6 +87,52 @@ $Userid = $_SESSION['ID'];
             SUM = 0;
         }
         $("#Total_"+rowid).val(SUM);
+    }
+    function Importdata()
+    {
+        var DocNo = $("#DocNo").val();
+        /* declare an checkbox array */
+        var iArray = [];
+        var kiloArray = [];
+        var totalArray = [];
+        var item_codeArray = [];
+        
+        $(".checkitem:checked").each(function() 
+        {
+            iArray.push($(this).val());
+        });
+        // =======================================================
+        for(var j=0;j<iArray.length; j++)
+        {
+            item_codeArray.push( $("#item_code_"+iArray[j]).val() );
+            kiloArray.push( $("#Kilo_"+iArray[j]).val() );
+            totalArray.push( $("#Total_"+iArray[j]).val() );
+        }
+        // =======================================================
+        var item_code = item_codeArray.join(',') ;
+        var kilo = kiloArray.join(',') ;
+        var total = totalArray.join(',') ;
+        // =======================================================
+        $( "#TableDetail tbody" ).empty();
+        var data = 
+        {
+          'STATUS'  	: 'Importdata',
+          'item_code'   : item_code,
+          'kilo'		: kilo,
+          'total'	  	: total,
+          'DocNo'		: DocNo
+        };
+        senddata(JSON.stringify(data));
+
+    }
+    function ShowDetail() 
+    {
+        var DocNo = $("#DocNo").val();
+        var data = {
+            'STATUS'  : 'ShowDetail',
+            'DocNo'   : DocNo
+        };
+        senddata(JSON.stringify(data));
     }
 //-----------------------------------------------------------------------------------------
     function senddata(data)
@@ -147,12 +194,12 @@ $Userid = $_SESSION['ID'];
 
 
                     }
-                   else if(temp["form"]=='ShowItem')
+                    else if(temp["form"]=='ShowItem')
                     {
                         $( "#Tableitem tbody" ).empty();
                               for (var i = 0; i < temp['Row']; i++) 
                               {
-                                  var chkinput = "<div class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input checkSingle' id= ' item_id_"+i+" ' required><label class='custom-control-label' for=' item_id_"+i+" ' style='margin-top: 15px;'></label></div>";
+                                  var chkinput = "<div class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input checkSingle checkitem'  value='"+i+"'  id= ' item_id_"+i+" ' required><label class='custom-control-label ' for=' item_id_"+i+" ' style='margin-top: 15px;'></label></div> <input type='hidden' id='item_code_"+i+"' value='"+temp[i]['item_code']+"'>";
                                   var Kilo = "<input type='text' id='Kilo_"+i+"' class='form-control ' autocomplete='off'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['Grade']+"\" , \""+i+"\" ) '>  ";
                                   var Total = "<input type='text' id='Total_"+i+"' class='form-control ' autocomplete='off'  value='0.00' disabled>  ";
 
@@ -166,6 +213,26 @@ $Userid = $_SESSION['ID'];
                                                 "</tr>";
    
                                    $('#Tableitem tbody').append( StrTR );
+                              }
+                    }
+                    else if(temp["form"]=='ShowDetail')
+                    {
+                        $( "#TableDetail tbody" ).empty();
+                              for (var i = 0; i < temp['Row']; i++) 
+                              {
+                                  var chkinput = "<div class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input checkSingle checkdetail'  value='"+i+"'  id= ' Detail_id_"+i+" ' required><label class='custom-control-label ' for=' Detail_id_"+i+" ' style='margin-top: 15px;'></label></div> <input type='hidden' id='Detail_item_code_"+i+"' value='"+temp[i]['item_code']+"'>";
+                                  var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' autocomplete='off'  placeholder='0.00' value='"+temp[i]['kilo']+"' style='width: 40%;'>  ";
+                                  var Total = "<input type='text' id='Detail_Total_"+i+"' class='form-control ' autocomplete='off'  value='"+temp[i]['total']+"' disabled style='width: 40%;'>  ";
+
+                                   StrTR =   "<tr>"+
+                                                "<td >"+chkinput+"</td>"+
+                                                "<td style=' width: 20%; '>"+temp[i]['item_name']+"</td>"+
+                                                "<td style=' width: 25%; ' >"+temp[i]['Grade']+"</td>"+
+                                                "<td >"+Kilo+"</td>"+
+                                                "<td >"+Total+"</td>"+
+                                                "</tr>";
+   
+                                   $('#TableDetail tbody').append( StrTR );
                               }
                     }
                 }
@@ -227,6 +294,9 @@ $Userid = $_SESSION['ID'];
     }
     </script>
     <style>
+        body{
+            font-family: 'Krub', sans-serif;
+        }
         .loader {
             position: fixed;
             left: 0;
@@ -430,85 +500,19 @@ $Userid = $_SESSION['ID'];
                         <div class="card r-0 shadow">
                             <div class="table-responsive">
                                 <form>
-                                    <!-- SHOW USER -->
-                                    <table class="table table-striped table-hover r-0" id="TableUser">
+                                    <!-- SHOW DETAIL -->
+                                    <table class="table table-striped table-hover r-0" id="TableDetail">
                                         <thead id="theadsum" >
                                         <tr class="no-b">
                                             <th>NO.</th>
-                                            <th>NAME</th>
-                                            <th>USER</th>
-                                            <th>PASSWORD</th>
-                                            <th>PHONE</th>
-                                            <th>E-MAIL</th>
-                                            <th>Permission</th>
-                                            <th hidden>ROLE</th>
-                                            <th></th>
+                                            <th>ชื่อรายการ</th>
+                                            <th>ราคาต่อหน่วย</th>
+                                            <th>กิโล</th>
+                                            <th>ราคารวม</th>
                                         </tr>
                                         </thead>
 
-                                        <tbody  id="tbody"  >
-
-                                        <tr hidden>
-                                            <td >
-                                                <div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input checkSingle" id="user_id_1" required><label class="custom-control-label" for="user_id_1"></label></div>
-                                            </td>
-
-                                            <td>
-                                                <div>
-                                                    <div>
-                                                        <strong>Alexander Pierce</strong>
-                                                    </div>
-                                                    <small> alexander@paper.com</small>
-                                                </div>
-                                            </td>
-
-                                            <td>2</td>
-                                            <td>256</td>
-
-                                            <td>+92 333 123 136</td>
-                                            <td hidden><span class="icon icon-circle s-12  mr-2 text-warning"></span> Inactive</td>
-                                            <td hidden><span class="r-3 badge badge-success ">Administrator</span></td>
-
-
-                                            <td>
-                                                <a href="panel-page-profile.html"><i class="icon-eye mr-3"></i></a>
-                                                <a href="panel-page-profile.html"><i class="icon-pencil"></i></a>
-                                            </td>
-                                        </tr>
-
-                                        <tr hidden>
-                                            <td>
-                                                <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" class="custom-control-input checkSingle"
-                                                           id="user_id_5" required><label
-                                                        class="custom-control-label" for="user_id_5"></label>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div class="avatar avatar-md mr-3 mt-1 float-left">
-                                                    <img  src="assets/img/dummy/u5.png" alt="">
-                                                </div>
-                                                <div>
-                                                    <div>
-                                                        <strong>Alexander Pierce</strong>
-                                                    </div>
-                                                    <small> alexander@paper.com</small>
-                                                </div>
-                                            </td>
-                                            <td>2</td>
-                                            <td>6,000</td>
-
-                                            <td>+92 333 123 136</td>
-                                            <td><span class="icon icon-circle s-12  mr-2 text-success"></span> Active</td>
-
-                                            <td><span class="r-3 badge badge-warning">Seller</span></td>
-                                            <td>
-                                                <a href="panel-page-profile.html"><i class="icon-eye mr-3"></i></a>
-                                                <a href="panel-page-profile.html"><i class="icon-pencil"></i></a>
-                                            </td>
-                                        </tr>
-                                    
+                                        <tbody  id="tbody"  >                                    
                                         </tbody>
                                     </table>
                                     <!-- =============== -->
@@ -670,7 +674,7 @@ $Userid = $_SESSION['ID'];
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">ยกเลิก</button>
-        <button type="button"  class="btn btn-success">ยืนยัน</button>
+        <button type="button"  class="btn btn-success" onclick="Importdata()">ยืนยัน</button>
       </div>
     </div>
   </div>

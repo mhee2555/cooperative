@@ -14,6 +14,7 @@ $FName = $_SESSION['FName'];
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="assets/img/basic/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css?family=Krub&display=swap" rel="stylesheet">
     <!-- <link href="../dist/css/sweetalert2.css" rel="stylesheet"> -->
     <script src="../dist/js/sweetalert2.min.js"></script>
     <script src="../dist/js/jquery-3.3.1.min.js"></script>
@@ -366,6 +367,9 @@ $FName = $_SESSION['FName'];
     }
     </script>
     <style>
+       body{
+            font-family: 'Krub', sans-serif;
+        }
         .loader {
             position: fixed;
             left: 0;
