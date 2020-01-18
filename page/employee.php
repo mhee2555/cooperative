@@ -602,6 +602,7 @@ $FName = $_SESSION['FName'];
                         </li>
                     </ul>
                 </nav>
+                
             </div>
 
             <!-- START BUYERS -->

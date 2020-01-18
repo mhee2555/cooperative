@@ -2,7 +2,9 @@
 session_start();
 require '../connect/connect.php';
 date_default_timezone_set("Asia/Bangkok");
-$FName = $_SESSION['FName'];
+$PmID = $_SESSION['PmID'];
+$Userid = $_SESSION['ID'];
+
 // session_destroy();
 ?>
 
@@ -27,6 +29,64 @@ $FName = $_SESSION['FName'];
 
     });
 
+    function Createdocument()
+    {
+        var userid = '<?php echo $Userid; ?>';
+        swal({
+          title: "",
+          text: "ยืนยันการสร้างเอกสาร",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonClass: "btn-danger",
+          confirmButtonText: "ใช่",
+          cancelButtonText: "ไม่ใช่",
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          closeOnConfirm: false,
+          closeOnCancel: false,
+          showCancelButton: true}).then(result => {
+            if (result.value) {
+            var data = {
+              'STATUS'    : 'CreateDocument',
+              'userid'	: userid
+            };
+            senddata(JSON.stringify(data));
+          } else if (result.dismiss === 'cancel') {
+            swal.close();
+          } 
+          })
+
+    }
+    function Additem()
+    {
+        var DocNo = $("#DocNo").val();
+
+        if(DocNo != "")
+        {
+            $('#Additem').modal('show');
+
+            ShowItem();
+        }
+
+    }
+    function ShowItem()
+    {
+        var data = 
+        {
+            'STATUS'  : 'ShowItem'
+        };
+        senddata(JSON.stringify(data));
+    }
+    function Sumitem(grade , rowid)
+    {
+        var Kilo =  parseFloat($("#Kilo_"+rowid).val());
+        var SUM =parseFloat( Kilo * grade );
+        if(isNaN(SUM) )
+        {
+            SUM = 0;
+        }
+        $("#Total_"+rowid).val(SUM);
+    }
 //-----------------------------------------------------------------------------------------
     function senddata(data)
     {
@@ -64,7 +124,50 @@ $FName = $_SESSION['FName'];
                 swal.close();
                 if(temp["status"]=='success')
                 {
+                    if(temp["form"]=='CreateDocument')
+                    {
+                        swal({
+                            title: "สร้างเอกสาร",
+                            text: temp[0]['DocNo'] + "สำเร็จ",
+                            type: "success",
+                            showCancelButton: false,
+                            timer: 1000,
+                            confirmButtonText: 'Ok',
+                            showConfirmButton: false
+                            });
+                        $("#DocNo").val(temp[0]['DocNo']);
+                        $("#docdate").val(temp[0]['DocDate']);
+                        $("#Employee").val(temp[0]['Record']);
+                        $("#ModifyDate").val(temp[0]['RecNow']);
+                        
+                        $("#ModifyDate").attr('disabled' , true );
+                        $("#docdate").attr('disabled' , true );
+                        $("#Employee").attr('disabled' , true );
+                        $("#DocNo").attr('disabled' , true );
 
+
+                    }
+                   else if(temp["form"]=='ShowItem')
+                    {
+                        $( "#Tableitem tbody" ).empty();
+                              for (var i = 0; i < temp['Row']; i++) 
+                              {
+                                  var chkinput = "<div class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input checkSingle' id= ' item_id_"+i+" ' required><label class='custom-control-label' for=' item_id_"+i+" ' style='margin-top: 15px;'></label></div>";
+                                  var Kilo = "<input type='text' id='Kilo_"+i+"' class='form-control ' autocomplete='off'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['Grade']+"\" , \""+i+"\" ) '>  ";
+                                  var Total = "<input type='text' id='Total_"+i+"' class='form-control ' autocomplete='off'  value='0.00' disabled>  ";
+
+
+                                 StrTR = "<tr>"+
+                                                "<td >"+chkinput+"</td>"+
+                                                "<td style=' width: 20%; '>"+temp[i]['item_name']+"</td>"+
+                                                "<td style=' width: 25%; ' >"+temp[i]['Grade']+"</td>"+
+                                                "<td >"+Kilo+"</td>"+
+                                                "<td >"+Total+"</td>"+
+                                                "</tr>";
+   
+                                   $('#Tableitem tbody').append( StrTR );
+                              }
+                    }
                 }
                 else if (temp['status']=="failed") 
                 {
@@ -140,6 +243,12 @@ $FName = $_SESSION['FName'];
             top: 50%;
             left: 50%;
         }
+        .boxshadowx button{
+            box-shadow: none  !important;
+        }
+        .boxshadowx button:hover{
+            color: #bcaaa4 !important;
+          }
     </style>
     <!-- Js -->
     <!--
@@ -237,7 +346,7 @@ $FName = $_SESSION['FName'];
                 <div class="col-md-6">
                     <div class='form-group row  text-black'>
                         <label class=" col-sm-4 form-label  h4" >วันที่เอกสาร</label>
-                        <input type="text" autocomplete="off"   class=" col-sm-7 form-control " id="DocDate"  placeholder="วันที่เอกสาร" >
+                        <input type="text" autocomplete="off"   class=" col-sm-7 form-control " id="docdate"  placeholder="วันที่เอกสาร" >
                     </div>
                 </div>
             </div>
@@ -270,30 +379,51 @@ $FName = $_SESSION['FName'];
                 </div>
             </div>
 
+            <div class="row box  col-md-12 my-3 d-flex justify-content-end">
 
-            <div class="row m-1 mt-4 d-flex justify-content-end col-12" >
-                <div class="d-flex justify-content-center ">
-                    <button type="button"   class="btn btn-primary btn-lg btn-block ml-4 active r-20" style="width: 130px;"> สร้างเอกสาร </button>
-                </div>
-                <div class="d-flex justify-content-center">
-                    <button type="button"    class="btn btn-secondary btn-lg btn-block ml-4 active r-20"  style="width: 130px;"> เพิ่มรายการ </button>
-                </div>
-                <div class="d-flex justify-content-center">
-                    <button type="button"   class="btn btn-danger btn-lg btn-block ml-4 active r-20" style="width: 130px;"> ลบรายการ </button>
-                </div>
-                <div class="d-flex justify-content-center">
-                    <button type="button"   class="btn btn-success btn-lg btn-block ml-4 active r-20" style="width: 130px;">บันทึก</button>
-                </div>
-                <div class="d-flex justify-content-center">
-                    <button type="button"   class="btn btn-danger btn-lg btn-block ml-4 active r-20" style="width: 130px;"> ยกเลิกเอกสาร </button>
-                </div>
-                <div class="d-flex justify-content-center">
-                    <button type="button"    class="btn btn-warning btn-lg btn-block ml-4 active r-20" style="width: 130px;"> พิมพ์ยงาน </button>
-                </div>
-            </div>
+                            <div class=" ml-5 boxshadowx">
+                            <button type="button" class="btn "   onclick="Createdocument();">
+                                    <i class="icon-document-add2 blue accent-2 avatar-md circle avatar-letter"></i>
+                                    <div class="pt-1">สร้างเอกสาร</div>
+                            </button>
+                            </div>
 
+                            <div class=" ml-5 boxshadowx">
+                            <button type="button" class="btn "  onclick="Additem();">
+                                    <i class="icon-add_circle blue lighten-2 avatar-md circle avatar-letter"></i>
+                                    <div class="pt-1">เพิ่มรายการ</div>
+                            </button>
+                            </div>
 
+                            <div class=" ml-5 boxshadowx">
+                            <button type="button" class="btn " >
+                                    <i class="icon-delete  red lighten-2 avatar-md circle avatar-letter"></i>
+                                    <div class="pt-1">ลบรายการ</div>
+                            </button>
+                            </div>
 
+                            <div class=" ml-5 boxshadowx">
+                            <button type="button" class="btn " >
+                                    <i class="icon-save2 green lighten-2 avatar-md circle avatar-letter"></i>
+                                    <div class="pt-1">บันทึก</div>
+                            </button>
+                            </div>
+
+                            <div class=" ml-5 boxshadowx">
+                            <button type="button" class="btn " >
+                                    <i class="icon-document-cancel2 red lighten-1 avatar-md circle avatar-letter"></i>
+                                    <div class="pt-1">ยกเลิกเอกสาร</div>
+                            </button>
+                            </div>
+
+                            <div class=" ml-5 boxshadowx">
+                            <button type="button" class="btn " >
+                                    <i class="icon-print orange lighten-2 avatar-md circle avatar-letter"></i>
+                                    <div class="pt-1">พิมพ์รายงาน</div>
+                            </button>
+                            </div>
+
+                        </div>
 
                 <div class="row my-3">
                     <div class="col-md-12">
@@ -387,21 +517,6 @@ $FName = $_SESSION['FName'];
                         </div>
                     </div>
                 </div>
-
-                <nav class="my-3" aria-label="Page navigation">
-                    <ul class="pagination">
-                        <li class="page-item"><a class="page-link" href="#">Previous</a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="#">1</a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="#">2</a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="#">3</a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="#">Next</a>
-                        </li>
-                    </ul>
-                </nav>
             </div>
 
             <!-- START BUYERS -->
@@ -441,8 +556,6 @@ $FName = $_SESSION['FName'];
                 </div>
             </div>
             <!-- END BUYERS -->
-
-
         </div>
     </div>
     <!--Add New Message Fab Button-->
@@ -451,9 +564,118 @@ $FName = $_SESSION['FName'];
 <!-- /.right-sidebar -->
 <!-- Add the sidebar's background. This div must be placed
          immediately after the control sidebar -->
-<div class="control-sidebar-bg shadow white fixed"></div>
+    <div class="control-sidebar-bg shadow white fixed"></div>
 </div>
 
+<!--------------------------------------- Modal add_customer  ------------------------------------------>
+<div class="modal fade" id="Additem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">เพิ่ม รายการ</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <table class="table table-striped table-hover r-0" id="Tableitem">
+                                        <thead id="theadsum" >
+                                        <tr class="no-b">
+                                            <th></th>
+                                            <th>ชื่อรายการ</th>
+                                            <th>ราคาต่อหน่วย</th>
+                                            <th>กิโล</th>
+                                            <th>ราคารวม</th>
+                                        </tr>
+                                        </thead>
+
+                                        <tbody  id="tbody"  >
+
+                                        <tr hidden >
+                                            <td >
+                                                <div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input checkSingle" id="user_id" required><label class="custom-control-label" for="user_id" style="margin-top: 25%;"></label></div>
+                                            </td>
+                                            <td>
+                                                  <strong>ลำไย เกรด AA</strong>
+                                            </td>
+                                            <td>
+                                                24
+                                            </td>
+                                            <td>
+                                                256
+                                            </td>
+                                            <td>
+                                                5000
+                                            </td>
+                                        </tr>
+
+
+                                        <tr hidden >
+                                            <td >
+                                            <div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input checkSingle" id="user_id" required><label class="custom-control-label" for="user_id" style="margin-top: 25%;"></label></div>
+                                            </td>
+                                            <td>
+                                                  <strong>ลำไย เกรด A</strong>
+                                            </td>
+                                            <td>
+                                                24
+                                            </td>
+                                            <td>
+                                                256
+                                            </td>
+                                            <td>
+                                                5000
+                                            </td>
+                                        </tr>
+
+
+                                        <tr hidden >
+                                            <td >
+                                            <div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input checkSingle" id="user_id" required><label class="custom-control-label" for="user_id" style="margin-top: 25%;"></label></div>
+                                            </td>
+                                            <td>
+                                                  <strong>ลำไย เกรด B</strong>
+                                            </td>
+                                            <td>
+                                                24
+                                            </td>
+                                            <td>
+                                                256
+                                            </td>
+                                            <td>
+                                                5000
+                                            </td>
+                                        </tr>
+
+
+                                        <tr hidden>
+                                            <td >
+                                            <div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input checkSingle" id="user_id" required><label class="custom-control-label" for="user_id" style="margin-top: 25%;"></label></div>
+                                            </td>
+                                            <td>
+                                                  <strong>ลำไย เกรด C</strong>
+                                            </td>
+                                            <td>
+                                                24
+                                            </td>
+                                            <td>
+                                                256
+                                            </td>
+                                            <td>
+                                                5000
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">ยกเลิก</button>
+        <button type="button"  class="btn btn-success">ยืนยัน</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-------------------------- end add_customer Modal ----------------------------------------------->
 <!--/#app -->
 <script src="assets/js/app.js"></script>
 
