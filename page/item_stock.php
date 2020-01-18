@@ -78,15 +78,6 @@ $FName = $_SESSION['FName'];
             processData: false,
             data: form_data,
             type: 'post',
-            beforeSend: function() 
-            {
-                swal({
-                title: '<?php echo $array['pleasewait'][$language]; ?>',
-                text: '<?php echo $array['processing'][$language]; ?>',
-                allowOutsideClick: false
-                })
-                swal.showLoading();
-            },
             success: function (result) 
             {
                 try 
