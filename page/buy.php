@@ -20,18 +20,36 @@ $Userid = $_SESSION['ID'];
     <!-- <link href="../dist/css/sweetalert2.css" rel="stylesheet"> -->
     <script src="../dist/js/sweetalert2.min.js"></script>
     <script src="../dist/js/jquery-3.3.1.min.js"></script>
-
+    <script src="../datepicker/dist/js/datepicker-en.js"></script>
+    <link href="../datepicker/dist/css/datepicker.min.css" rel="stylesheet" type="text/css">
+    <script src="../datepicker/dist/js/datepicker.th.js"></script>
+    <script src="../datepicker/dist/js/i18n/datepicker.en.js"></script>
     <title>บันทึกการซื้อ</title>
     <!-- CSS -->
     <link rel="stylesheet" href="assets/css/app.css">
 
     <script type="text/javascript">
-      $(document).ready(function(e){
-
+    $(document).ready(function(e)
+    {
+        // ========
+        Showuser();
+        ShowSearch();
+        // ========
+        // ค้นหา
+        $("#Search").on("keyup", function() 
+        {
+            var value = $(this).val().toLowerCase();
+            $("#TableSearch tbody tr").filter(function() 
+            {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+        // 
     });
     // Function 
     function Createdocument()
     {
+        var Customer = $("#Customer").val();
         var userid = '<?php echo $Userid; ?>';
         swal({
           title: "",
@@ -49,7 +67,8 @@ $Userid = $_SESSION['ID'];
             if (result.value) {
             var data = {
               'STATUS'    : 'CreateDocument',
-              'userid'	: userid
+              'userid'	: userid,
+              'Customer'	: Customer
             };
             senddata(JSON.stringify(data));
           } else if (result.dismiss === 'cancel') {
@@ -122,6 +141,7 @@ $Userid = $_SESSION['ID'];
           'total'	  	: total,
           'DocNo'		: DocNo
         };
+        $('#Additem').modal('toggle');
         senddata(JSON.stringify(data));
 
     }
@@ -133,6 +153,147 @@ $Userid = $_SESSION['ID'];
             'DocNo'   : DocNo
         };
         senddata(JSON.stringify(data));
+    }
+    function Showuser()
+    {
+        var data = {
+            'STATUS'  : 'Showuser'
+        };
+        senddata(JSON.stringify(data));
+    }
+    function ShowSearch()
+    {
+        var datepicker = $("#datepicker").val();
+
+        var data = 
+        {
+          'STATUS'  	: 'ShowSearch',
+          'datepicker' : datepicker
+
+        };
+        senddata(JSON.stringify(data));
+    }
+    function Savebill()
+    {
+        var DocNo = $("#DocNo").val();
+        swal({
+          title: "",
+          text: "ยืนยันการบันทึกเอกสาร "+DocNo+" ",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonClass: "btn-danger",
+          confirmButtonText: "ใช่",
+          cancelButtonText: "ไม่ใช่",
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          closeOnConfirm: false,
+          closeOnCancel: false,
+          showCancelButton: true}).then(result => 
+          {
+              if (result.value) 
+              {
+                var data = 
+                {
+                    'STATUS'      : 'Savebill',
+                    'DocNo'      : DocNo
+                };
+                senddata(JSON.stringify(data));
+                $('#v-pills-buyers-tab').tab('show');
+              }
+              else if (result.dismiss === 'cancel') 
+              {
+                swal.close();
+              }
+          })
+    }
+    function Cancelbill()
+    {
+        var DocNo = $("#DocNo").val();
+        swal({
+          title: "",
+          text: "ยืนยันการบันทึกเอกสาร "+DocNo+" ",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonClass: "btn-danger",
+          confirmButtonText: "ใช่",
+          cancelButtonText: "ไม่ใช่",
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          closeOnConfirm: false,
+          closeOnCancel: false,
+          showCancelButton: true}).then(result => 
+          {
+              if (result.value) 
+              {
+                var data = 
+                {
+                    'STATUS'      : 'Cancelbill',
+                    'DocNo'      : DocNo
+                };
+                senddata(JSON.stringify(data));
+                $('#v-pills-buyers-tab').tab('show');
+              }
+              else if (result.dismiss === 'cancel') 
+              {
+                swal.close();
+              }
+          })
+    }
+    function ShowDocNo()
+    {
+        var DocNochk = "";
+        $('input[name="searchrow"]:checked').each(function() 
+        {
+            DocNochk = $(this).val();
+        });
+
+        var data = 
+        {
+          'STATUS'  : 'ShowDocNo',
+          'DocNochk'	: DocNochk
+        };
+        senddata(JSON.stringify(data));
+        
+    }
+    function Deleteitem()
+    {
+        var DocNo = $("#DocNo").val();
+        var itemcode = "";
+        $('input[name="detailrow"]:checked').each(function() 
+        {
+            itemcode = $(this).val();
+        });
+
+        swal({
+          title: "",
+          text: "ยืนยันการลบรายการ",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonClass: "btn-danger",
+          confirmButtonText: "ใช่",
+          cancelButtonText: "ไม่ใช่",
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          closeOnConfirm: false,
+          closeOnCancel: false,
+          showCancelButton: true}).then(result => 
+          {
+            if (result.value) 
+            {
+                var data = 
+                {
+                'STATUS'    : 'Deleteitem',
+                'DocNo'	: DocNo,
+                'itemcode'	: itemcode
+                };
+                senddata(JSON.stringify(data));
+            } 
+            else if (result.dismiss === 'cancel') 
+            {
+                swal.close();
+            } 
+          })
+        
     }
 //-----------------------------------------------------------------------------------------
     function senddata(data)
@@ -209,9 +370,12 @@ $Userid = $_SESSION['ID'];
                     else if(temp["form"]=='ShowDetail')
                     {
                         $( "#TableDetail tbody" ).empty();
+                        // total
+                        $("#Total").val(temp['Total']);
+                        // 
                               for (var i = 0; i < temp['Row']; i++) 
                               {
-                                  var chkinput = "<div class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input checkSingle checkdetail'  value='"+i+"'  id= ' Detail_id_"+i+" ' required><label class='custom-control-label ' for=' Detail_id_"+i+" ' style='margin-top: 15px;'></label></div> <input type='hidden' id='Detail_item_code_"+i+"' value='"+temp[i]['item_code']+"'>";
+                                  var chkinput = "<div class='custom-control custom-radio'><input type='radio' class='custom-control-input checkSingle checkdetail' name='detailrow'  value='"+temp[i]['item_code']+"'  id= ' Detail_id_"+i+" ' required><label class='custom-control-label ' for=' Detail_id_"+i+" ' style='margin-top: 15px;'></label></div> ";
                                   var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' autocomplete='off'  placeholder='0.00' value='"+temp[i]['kilo']+"' style='width: 40%;'>  ";
                                   var Total = "<input type='text' id='Detail_Total_"+i+"' class='form-control ' autocomplete='off'  value='"+temp[i]['total']+"' disabled style='width: 40%;'>  ";
 
@@ -226,16 +390,101 @@ $Userid = $_SESSION['ID'];
                                    $('#TableDetail tbody').append( StrTR );
                               }
                     }
+                    else if(temp["form"]=='Showuser')
+                    {
+                        $("#Customer").empty();
+
+                        for (var i = 0; i < temp['Row']; i++) 
+                        {
+                            var Str = "<option value="+temp[i]['ID']+">"+temp[i]['FName']+"</option>";
+                            $("#Customer").append(Str);
+                        }
+                    }
+                    else if(temp["form"]=='ShowSearch')
+                    {
+                        $( "#TableSearch tbody" ).empty();
+                                for (var i = 0; i < temp['Row']; i++) 
+                                {
+                                    var chkinput = "<div class='custom-control custom-radio'><input type='radio' class='custom-control-input checkSingle checksearch' name='searchrow'  value='"+temp[i]['DocNo']+"'  id='search_id_"+i+"' required><label class='custom-control-label ' for='search_id_"+i+"' style='margin-top: 15px;'></label></div> ";
+                                    
+                                    if(temp[i]['IsStatus']==0)
+                                    {
+                                        Status = "ยังไม่ได้บันทึก";
+                                        Style  = "style='color: #3399ff;'";
+                                    }
+                                    else if(temp[i]['IsStatus']==1)
+                                    {
+                                        Status = "บันทึกสำเร็จ";
+                                        Style  = "style='color: #20B80E;'";
+                                    }
+                                    else if(temp[i]['IsStatus']==9)
+                                    {
+                                        Status = "ยกเลิกเอกสาร";
+                                        Style  = "style='color: #ff0000;'";
+                                    }
+
+                                    StrTR =   "<tr>"+
+                                                "<td >"+chkinput+"</td>"+
+                                                "<td>"+temp[i]['DocNo']+"</td>"+
+                                                "<td>"+temp[i]['DocDate']+"</td>"+
+                                                "<td>"+temp[i]['Modify_Date']+"</td>"+
+                                                "<td>"+temp[i]['employee']+"</td>"+
+                                                "<td>"+temp[i]['customer']+"</td>"+
+                                                "<td " +Style+ ">"+Status+"</td>"+
+
+                                                "</tr>";
+
+                                    $('#TableSearch tbody').append( StrTR );
+                                }
+                    }
+                    else if(temp["form"]=='ShowDocNo')
+                    {
+                        // SELECT USER
+                        $("#Customer").empty();
+
+                        for (var i = 0; i < temp['Rowuser']; i++) 
+                        {
+                            var Str = "<option value="+temp[i]['ID']+">"+temp[i]['FName']+"</option>";
+                            $("#Customer").append(Str);
+                        }
+                        // 
+
+                        // CLEAR DETAIL
+                        $( "#TableDetail tbody" ).empty();
+                        // 
+
+                        $("#DocNo").val(temp[0]['DocNo']);
+                        $("#docdate").val(temp[0]['DocDate']);
+                        $("#ModifyDate").val(temp[0]['Modify_Date']);
+                        $("#Customer").val(temp[0]['customer']);
+                        $("#Employee").val(temp[0]['employee']);
+
+                        // DISABLED INPUT
+                        $("#ModifyDate").attr('disabled' , true );
+                        $("#docdate").attr('disabled' , true );
+                        $("#Employee").attr('disabled' , true );
+                        $("#DocNo").attr('disabled' , true );
+                        // 
+
+                        // 
+                        ShowDetail();
+                        // 
+
+                        // SHOW MAIN
+                        $('#v-pills-all-tab').tab('show')
+                        // 
+                    }
                 }
                 else if (temp['status']=="failed") 
                 {
                     switch (temp['msg']) 
                     {
-                    case "notchosen":
-                                temp['msg'] = "<?php echo $array['choosemsg'][$language]; ?>";
+                    case "searchfailed":
+                                temp['msg'] = "ไม่พบเอกสารของวันที่ "+temp['date']+" ";
                         break;
-                    case "cantcreate":
-                                temp['msg'] = "<?php echo $array['cantcreatemsg'][$language]; ?>";
+                    case "Detailfail":
+                                $( "#TableDetail tbody" ).empty();
+                                temp['msg'] = "เอกสาร "+temp['DocNo']+" ไม่มีรายละเอียด ";
                         break;
                     case "noinput":
                                 temp['msg'] = "<?php echo $array['noinputmsg'][$language]; ?>";
@@ -285,7 +534,7 @@ $Userid = $_SESSION['ID'];
     }
     </script>
     <style>
-        body{
+        body , .swal2-popup{
             font-family: 'Krub', sans-serif;
         }
         .loader {
@@ -383,12 +632,12 @@ $Userid = $_SESSION['ID'];
             <div class="row justify-content-between">
                 <ul class="nav nav-material nav-material-white responsive-tab" id="v-pills-tab" role="tablist">
                     <li>
-                        <a class="nav-link active" id="v-pills-all-tab" data-toggle="pill" href="#v-pills-all"
-                           role="tab" aria-controls="v-pills-all"><i class="icon icon-home2"></i>การซื้อลำไย</a>
+                        <a class="nav-link active" id="v-pills-all-tab" data-toggle="pill" href="#v-pills-all" role="tab" 
+                        aria-controls="v-pills-all"><i class="icon icon-home2"></i>การซื้อลำไย</a>
                     </li>
                     <li>
                         <a class="nav-link" id="v-pills-buyers-tab" data-toggle="pill" href="#v-pills-buyers" role="tab"
-                           aria-controls="v-pills-buyers"><i class="icon icon-face"></i> ค้นหา </a>
+                           aria-controls="v-pills-buyers"><i class="icon-search3"></i> ค้นหา </a>
                     </li>
                 </ul>
             </div>
@@ -429,13 +678,13 @@ $Userid = $_SESSION['ID'];
                 <div class="col-md-6">
                     <div class='form-group row  text-black'>
                         <label class=" col-sm-4 form-label  h4" >ลูกค้า</label>
-                        <input type="text" autocomplete="off"   class=" col-sm-7 form-control " id="Customer"   placeholder="ลูกค้า" >
+                        <select  autocomplete="off"   class=" col-sm-7 form-control " id="Customer"   placeholder="ลูกค้า" > </select>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class='form-group row  text-black'>
                         <label class=" col-sm-4 form-label h4" >จำนวนเงินทั้งหมด</label>
-                        <input type="text" autocomplete="off"   class=" col-sm-7 form-control " id="Total"  placeholder="จำนวนเงินทั้งหมด" >
+                        <input type="text" autocomplete="off"   class=" col-sm-7 form-control " id="Total"  placeholder="จำนวนเงินทั้งหมด" disabled="true">
                     </div>
                 </div>
             </div>
@@ -450,28 +699,28 @@ $Userid = $_SESSION['ID'];
                             </div>
 
                             <div class=" ml-5 boxshadowx">
-                            <button type="button" class="btn "  onclick="Additem();">
+                            <button type="button" class="btn "  onclick="Additem();" >
                                     <i class="icon-add_circle blue lighten-2 avatar-md circle avatar-letter"></i>
                                     <div class="pt-1">เพิ่มรายการ</div>
                             </button>
                             </div>
 
                             <div class=" ml-5 boxshadowx">
-                            <button type="button" class="btn " >
+                            <button type="button" class="btn " onclick="Deleteitem()">
                                     <i class="icon-delete  red lighten-2 avatar-md circle avatar-letter"></i>
                                     <div class="pt-1">ลบรายการ</div>
                             </button>
                             </div>
 
                             <div class=" ml-5 boxshadowx">
-                            <button type="button" class="btn " >
+                            <button type="button" class="btn " onclick="Savebill()";>
                                     <i class="icon-save2 green lighten-2 avatar-md circle avatar-letter"></i>
                                     <div class="pt-1">บันทึก</div>
                             </button>
                             </div>
 
                             <div class=" ml-5 boxshadowx">
-                            <button type="button" class="btn " >
+                            <button type="button" class="btn " onclick="Cancelbill()">
                                     <i class="icon-document-cancel2 red lighten-1 avatar-md circle avatar-letter"></i>
                                     <div class="pt-1">ยกเลิกเอกสาร</div>
                             </button>
@@ -514,42 +763,51 @@ $Userid = $_SESSION['ID'];
                 </div>
             </div>
 
-            <!-- START BUYERS -->
+            <!-- SEARCH -->
             <div class="tab-pane animated fadeInUpShort" id="v-pills-buyers" role="tabpanel" aria-labelledby="v-pills-buyers-tab">
                 <div class="row">
-
-                    <div class="col-md-3 my-3">
-                        <div class="card no-b">
-                            <div class="card-body text-center p-5">
-                                <div class="avatar avatar-xl mb-3">
-                                    <img  src="assets/img/dummy/u11.png" alt="User Image">
-                                </div>
-                                <div>
-                                    <h6 class="p-t-10">Alexander Pierce</h6>
-                                    alexander@paper.com
-                                </div>
-                                <a href="#" class="btn btn-success btn-sm mt-3">View Profile</a>
+                    <div class="col-md-3 mt-2 ">
+                    <input type="text" autocomplete="off" class ="form-control datepicker-here" id="datepicker" data-language='en' data-date-format='yyyy-mm-dd' placeholder="ค้นหาจากวันที่">
+                    </div>
+                    <div class="col-md-3 mt-2 ">
+                        <input type="text" class =  "form-control " placeholder="ค้นหา" id="Search">
+                    </div>
+                    <div class="col-md-3  mt-2 ">
+                    <button type="button" class="btn btn-primary btn-lg" onclick="ShowSearch()">
+                    <i class="icon-search3"></i> ค้นหา </button>
+                    <button type="button" class="btn btn-success btn-lg" onclick="ShowDocNo()">
+                    <i class="icon-documents4"></i> แสดงเอกสาร </button>
+                    </div>
+                </div>
+                <div class="row my-3">
+                    <div class="col-md-12">
+                        <div class="card r-0 shadow">
+                            <div class="table-responsive">
+                                <form>
+                                    <!-- SHOW USER -->
+                                    <table class="table table-striped table-hover r-0" id="TableSearch">
+                                        <thead id="theadsum" >
+                                        <tr class="no-b">
+                                            <th>NO.</th>
+                                            <th>เลขที่เอกสาร</th>
+                                            <th>วันที่เอกสาร</th>
+                                            <th>วันที่บันทึก</th>
+                                            <th>ผู้บันทึก</th>
+                                            <th>ลูกค้า</th>
+                                            <th>สถานะ</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody  id="tbody">                                    
+                                        </tbody>
+                                    </table>
+                                    <!-- =============== -->
+                                </form>
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-md-3 my-3">
-                        <div class="card no-b">
-                            <div class="card-body text-center p-5">
-                                <div class="avatar avatar-xl mb-3">
-                                    <img  src="assets/img/dummy/u12.png" alt="User Image">
-                                </div>
-                                <div>
-                                    <h6 class="p-t-10">Alexander Pierce</h6>
-                                    alexander@paper.com
-                                </div>
-                                <a href="#" class="btn btn-success btn-sm mt-3">View Profile</a>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
+
             <!-- END BUYERS -->
         </div>
     </div>
@@ -586,80 +844,6 @@ $Userid = $_SESSION['ID'];
 
                                         <tbody  id="tbody"  >
 
-                                        <tr hidden >
-                                            <td >
-                                                <div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input checkSingle" id="user_id" required><label class="custom-control-label" for="user_id" style="margin-top: 25%;"></label></div>
-                                            </td>
-                                            <td>
-                                                  <strong>ลำไย เกรด AA</strong>
-                                            </td>
-                                            <td>
-                                                24
-                                            </td>
-                                            <td>
-                                                256
-                                            </td>
-                                            <td>
-                                                5000
-                                            </td>
-                                        </tr>
-
-
-                                        <tr hidden >
-                                            <td >
-                                            <div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input checkSingle" id="user_id" required><label class="custom-control-label" for="user_id" style="margin-top: 25%;"></label></div>
-                                            </td>
-                                            <td>
-                                                  <strong>ลำไย เกรด A</strong>
-                                            </td>
-                                            <td>
-                                                24
-                                            </td>
-                                            <td>
-                                                256
-                                            </td>
-                                            <td>
-                                                5000
-                                            </td>
-                                        </tr>
-
-
-                                        <tr hidden >
-                                            <td >
-                                            <div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input checkSingle" id="user_id" required><label class="custom-control-label" for="user_id" style="margin-top: 25%;"></label></div>
-                                            </td>
-                                            <td>
-                                                  <strong>ลำไย เกรด B</strong>
-                                            </td>
-                                            <td>
-                                                24
-                                            </td>
-                                            <td>
-                                                256
-                                            </td>
-                                            <td>
-                                                5000
-                                            </td>
-                                        </tr>
-
-
-                                        <tr hidden>
-                                            <td >
-                                            <div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input checkSingle" id="user_id" required><label class="custom-control-label" for="user_id" style="margin-top: 25%;"></label></div>
-                                            </td>
-                                            <td>
-                                                  <strong>ลำไย เกรด C</strong>
-                                            </td>
-                                            <td>
-                                                24
-                                            </td>
-                                            <td>
-                                                256
-                                            </td>
-                                            <td>
-                                                5000
-                                            </td>
-                                        </tr>
                                         </tbody>
                                     </table>
       </div>

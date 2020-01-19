@@ -9,6 +9,7 @@ function CreateDocument($conn, $DATA)
   $boolean = false;
   $count = 0;
   $Employee_ID   = $DATA["userid"];
+  $Customer_ID   = $DATA["Customer"];
 
   // ============CREATEDOCUMENT====================
 
@@ -44,7 +45,7 @@ function CreateDocument($conn, $DATA)
                       DATE(NOW()),
                       TIME(NOW()),
                       $Employee_ID,
-                      1
+                      $Customer_ID
                     )";
 
         mysqli_query($conn, $Sql);
@@ -153,7 +154,7 @@ function Importdata($conn, $DATA)
               $meQuery = mysqli_query($conn, $count);
               $Result = mysqli_fetch_assoc($meQuery);
               $chkUpdate = $Result['Cnt'];
- 
+
     if ($chkUpdate == 0) 
     {
       $insert = "INSERT INTO  buy_product_detail
@@ -179,8 +180,10 @@ function Importdata($conn, $DATA)
 
                   mysqli_query($conn, $update);
     }
-  }
 
+    # ผลรวม ราคา        
+    $sumtotal +=$totalx[$key];
+  }
   ShowDetail($conn, $DATA);
 }
 
@@ -211,12 +214,21 @@ function ShowDetail($conn, $DATA)
               $return[$count]['kilo']           = $Result['kilo'];
               $return[$count]['total']          = $Result['total'];
               $return[$count]['Grade']          = $Result['Grade'];
-
+              $Total += $Result['total'];
               $count ++ ;
               $boolean = true;
             }
-
+            $return['Total'] = $Total;
             $return['Row'] = $count;
+
+                      
+            #UPDATE TOTAL
+            $updatetotal = "UPDATE buy_product 
+            SET 
+                Total = $Total 
+            WHERE DocNo ='$DocNo' ";
+          mysqli_query($conn, $updatetotal);
+          // 
 
   if ($boolean) 
   {
@@ -230,14 +242,222 @@ function ShowDetail($conn, $DATA)
   {
     $return['status'] = "failed";
     $return['form'] = "ShowDetail";
+    $return['msg'] = "Detailfail";
+    $return['DocNo'] = $DocNo;
     echo json_encode($return);
     mysqli_close($conn);
     die;
   }
 }
 
+function Showuser($conn, $DATA)
+{
+  $boolean = false;
+  $count = 0;
+
+  $Selectuser = "SELECT
+                  users.ID,
+                  users.FName
+                FROM
+                  users ";
+
+  $meQuery = mysqli_query($conn, $Selectuser);
+  while ($Result = mysqli_fetch_assoc($meQuery)) 
+  {
+    $return[$count]['ID']          = $Result['ID'];
+    $return[$count]['FName']      = $Result['FName'];
+
+    $count ++ ;
+    $boolean = true;
+
+  }
+    $return['Row'] = $count;
+
+  if ($boolean) 
+  {
+    $return['status'] = "success";
+    $return['form'] = "Showuser";
+    echo json_encode($return);
+    mysqli_close($conn);
+    die;
+  }
+  else
+  {
+    $return['status'] = "failed";
+    $return['form'] = "Showuser";
+    echo json_encode($return);
+    mysqli_close($conn);
+    die;
+  }
+}
+
+function ShowSearch($conn, $DATA)
+{
+  $datepicker  = $DATA["datepicker"]==''?date('Y-m-d'):$DATA["datepicker"];
+  $boolean = false;
+  $count = 0;
+
+  $Showsearch = "SELECT
+                  bp.DocNo,
+                  bp.DocDate,
+                  TIME(bp.Modify_Date) AS  Modify_Date, 
+                  users.FName AS customer,
+                  emp.FName AS employee ,
+                  bp.IsStatus
+                FROM
+                  buy_product bp
+                INNER JOIN employee emp ON emp.ID = bp.Employee_ID
+                INNER JOIN users ON users.ID = bp.Customer_ID
+                WHERE bp.DocDate = '$datepicker' ORDER BY bp.DocNo DESC ";
+
+    $meQuery = mysqli_query($conn, $Showsearch);
+    while ($Result = mysqli_fetch_assoc($meQuery)) 
+    {
+      $return[$count]['DocNo']         = $Result['DocNo'];
+      $return[$count]['DocDate']       = $Result['DocDate'];
+      $return[$count]['Modify_Date']   = $Result['Modify_Date'];
+      $return[$count]['customer']      = $Result['customer'];
+      $return[$count]['employee']      = $Result['employee'];
+      $return[$count]['IsStatus']      = $Result['IsStatus'];
+
+      $count ++ ;
+      $boolean = true;
+  
+    }
+    $return['Row'] = $count;
+
+  if ($boolean) 
+  {
+    $return['status'] = "success";
+    $return['form'] = "ShowSearch";
+    echo json_encode($return);
+    mysqli_close($conn);
+    die;
+  }
+  else
+  {
+    $return['status'] = "failed";
+    $return['msg'] = "searchfailed";
+    $return['status'] = "failed";
+    $return['date'] = $datepicker;
+    echo json_encode($return);
+    mysqli_close($conn);
+    die;
+  }
+}
+
+function Savebill($conn, $DATA)
+{
+  $DocNo  = $DATA["DocNo"];
+  $boolean = false;
+  $count = 0;
+
+  $Sql = "UPDATE buy_product SET IsStatus = 1 WHERE buy_product.DocNo = '$DocNo'";
+  mysqli_query($conn, $Sql);
+
+  ShowSearch($conn, $DATA);
+
+}
+
+function Cancelbill($conn, $DATA)
+{
+  $DocNo  = $DATA["DocNo"];
+  $boolean = false;
+  $count = 0;
+
+  $Sql = "UPDATE buy_product SET IsStatus = 9 WHERE buy_product.DocNo = '$DocNo'";
+  mysqli_query($conn, $Sql);
+
+  ShowSearch($conn, $DATA);
+
+}
+
+function ShowDocNo($conn, $DATA)
+{
+  $DocNo  = $DATA["DocNochk"];
+  $boolean = false;
+  $count = 0;
+  $countuser = 0;
 
 
+  $ShowDocNo = "SELECT
+                  bp.DocNo,
+                  bp.DocDate,
+                  TIME(bp.Modify_Date) AS  Modify_Date, 
+                  users.ID AS customer,
+                  emp.FName AS employee ,
+                  bp.IsStatus
+                FROM
+                  buy_product bp
+                INNER JOIN employee emp ON emp.ID = bp.Employee_ID
+                INNER JOIN users ON users.ID = bp.Customer_ID
+                WHERE bp.DocNo = '$DocNo' ";
+
+    $meQuery = mysqli_query($conn, $ShowDocNo);
+    while ($Result = mysqli_fetch_assoc($meQuery)) 
+    {
+      $return[$count]['DocNo']         = $Result['DocNo'];
+      $return[$count]['DocDate']       = $Result['DocDate'];
+      $return[$count]['Modify_Date']   = $Result['Modify_Date'];
+      $return[$count]['customer']      = $Result['customer'];
+      $return[$count]['employee']      = $Result['employee'];
+      $return[$count]['IsStatus']      = $Result['IsStatus'];
+
+      $count ++ ;
+      $boolean = true;
+  
+    }
+    $return['Row'] = $count;
+
+    // ===========
+    $Selectuser = "SELECT
+                    users.ID,
+                    users.FName
+                  FROM
+                    users ";
+
+                $meQuery = mysqli_query($conn, $Selectuser);
+                while ($Result = mysqli_fetch_assoc($meQuery)) 
+                {
+                $return[$countuser]['ID']         = $Result['ID'];
+                $return[$countuser]['FName']      = $Result['FName'];
+
+                $countuser ++ ;
+                $boolean = true;
+
+                }
+                $return['Rowuser'] = $countuser;
+
+    // ===========
+
+    if ($boolean) 
+    {
+      $return['status'] = "success";
+      $return['form'] = "ShowDocNo";
+      echo json_encode($return);
+      mysqli_close($conn);
+      die;
+    }
+    else
+    {
+      $return['status'] = "failed";
+      $return['form'] = "ShowDocNo";
+      echo json_encode($return);
+      mysqli_close($conn);
+      die;
+    }
+}
+function Deleteitem($conn, $DATA)
+{
+  $DocNo  = $DATA["DocNo"];
+  $itemcode  = $DATA["itemcode"];
+
+  $Delete = "DELETE FROM buy_product_detail WHERE item_code = '$itemcode' AND Buy_DocNo = '$DocNo' ";
+  mysqli_query($conn, $Delete);
+
+  ShowDetail($conn, $DATA);
+
+}
 
     $data = $_POST['DATA'];
     $DATA = json_decode(str_replace ('\"','"', $data), true);
@@ -257,6 +477,30 @@ function ShowDetail($conn, $DATA)
       else if ($DATA['STATUS'] == 'ShowDetail') 
       {
         ShowDetail($conn, $DATA);
+      }
+      else if ($DATA['STATUS'] == 'Showuser') 
+      {
+        Showuser($conn, $DATA);
+      }
+      else if ($DATA['STATUS'] == 'ShowSearch') 
+      {
+        ShowSearch($conn, $DATA);
+      }
+      else if ($DATA['STATUS'] == 'Savebill') 
+      {
+        Savebill($conn, $DATA);
+      }
+      else if ($DATA['STATUS'] == 'Cancelbill') 
+      {
+        Cancelbill($conn, $DATA);
+      }
+      else if ($DATA['STATUS'] == 'ShowDocNo') 
+      {
+        ShowDocNo($conn, $DATA);
+      }
+      else if ($DATA['STATUS'] == 'Deleteitem') 
+      {
+        Deleteitem($conn, $DATA);
       }
       else
       {
