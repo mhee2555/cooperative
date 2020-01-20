@@ -124,6 +124,7 @@ $FName = $_SESSION['FName'];
         /* declare an checkbox array */
         var iArray = [];
         var kiloArray = [];
+        var moistureArray = [];
         var totalArray = [];
         var item_codeArray = [];
         
@@ -136,11 +137,13 @@ $FName = $_SESSION['FName'];
         {
             item_codeArray.push( $("#item_code_"+iArray[j]).val() );
             kiloArray.push( $("#Kilo_"+iArray[j]).val() );
+            moistureArray.push( $("#moisture_"+iArray[j]).val() );
             totalArray.push( $("#Total_"+iArray[j]).val() );
         }
         // =======================================================
         var item_code = item_codeArray.join(',') ;
         var kilo = kiloArray.join(',') ;
+        var moisture = moistureArray.join(',') ;
         var total = totalArray.join(',') ;
         // =======================================================
         $( "#TableDetail tbody" ).empty();
@@ -149,6 +152,7 @@ $FName = $_SESSION['FName'];
           'STATUS'  	: 'Importdata',
           'item_code'   : item_code,
           'kilo'		: kilo,
+          'moisture'    :moisture,
           'total'	  	: total,
           'DocNo'		: DocNo
         };
@@ -397,6 +401,7 @@ $FName = $_SESSION['FName'];
                               {
                                   var chkinput = "<div class='custom-control custom-radio'><input type='radio' class='custom-control-input checkSingle checkdetail' name='detailrow'  value='"+temp[i]['item_code']+"'  id= ' Detail_id_"+i+" ' required><label class='custom-control-label ' for=' Detail_id_"+i+" ' style='margin-top: 15px;'></label></div> ";
                                   var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' autocomplete='off'  placeholder='0.00' value='"+temp[i]['kilo']+"' style='width: 40%;'>  ";
+                                  var moisture = "<input type='text' id='Detail_moisture_"+i+"' class='form-control ' autocomplete='off'  placeholder='0.00' value='"+temp[i]['moisture']+"' style='width: 40%;'>  ";
                                   var Total = "<input type='text' id='Detail_Total_"+i+"' class='form-control ' autocomplete='off'  value='"+temp[i]['total']+"' disabled style='width: 40%;'>  ";
 
                                    StrTR =   "<tr>"+
@@ -404,6 +409,7 @@ $FName = $_SESSION['FName'];
                                                 "<td style=' width: 20%; '>"+temp[i]['item_name']+"</td>"+
                                                 "<td style=' width: 25%; ' >"+temp[i]['Grade']+"</td>"+
                                                 "<td >"+Kilo+"</td>"+
+                                                "<td >"+moisture+"</td>"+
                                                 "<td >"+Total+"</td>"+
                                                 "</tr>";
    
@@ -805,6 +811,7 @@ $FName = $_SESSION['FName'];
                                             <th>ชื่อรายการ</th>
                                             <th>ราคาต่อหน่วย</th>
                                             <th>กิโล</th>
+                                            <th>ความชื้น</th>
                                             <th>ราคารวม</th>
                                         </tr>
                                         </thead>
