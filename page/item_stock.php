@@ -25,10 +25,11 @@ $FName = $_SESSION['FName'];
 
     <script type="text/javascript">
       $(document).ready(function(e){
-       
         Showtype();
+        setTimeout(() => {
+            Showitem();
+        }, 200);
         // ค้นหา
-        Showitem();
         $("#Search").on("keyup", function() 
         {
         var value = $(this).val().toLowerCase();
@@ -42,24 +43,20 @@ $FName = $_SESSION['FName'];
 
     function Showitem()
     {
-        var item_type = $('#item_type').val();
-        var item_type2 = $('#item_type2').val();
+        var type = $('#type').val();
         var data = 
         {
             'STATUS': 'Showitem',
-            'item_type':item_type,
-            'item_type2':item_type2
+            'type':type
         };
         senddata(JSON.stringify(data));
     }
 
     function Showtype()
     {
-        var item_type = $('#item_type').val();
         var data = 
         {
-            'STATUS': 'Showtype',
-            'item_type':item_type
+            'STATUS': 'Showtype'
         };
         senddata(JSON.stringify(data));
     }
@@ -97,33 +94,23 @@ $FName = $_SESSION['FName'];
 
                               for (var i = 0; i < temp['count']; i++) 
                               {
-                                  var ShowEdit = "<a href='javascript:void(0)'  onclick='showmodal("+temp[i]['item_code']+","+'2'+");'><i class='icon-pencil'></i></a> <a href='javascript:void(0)' onclick='delete_item("+temp[i]['item_code']+");' style='margin-left:5%;'><i class='icon-delete_forever'></i></a>";
-
                                  StrTR = "<tr ondblclick='showmodal("+temp[i]['item_code']+","+'1'+");'>"+
                                                 "<td >"+(i+1)+"</td>"+
                                                 "<td >"+temp[i]['item_name']+"</td>"+
-                                                "<td >"+temp[i]['type_name']+"</td>"+
-                                                "<td >"+temp[i]['Lot']+"</td>"+
                                                 "<td >"+temp[i]['item_qty']+"</td>"+
-                                                "<td >"+temp[i]['item_qty']+"</td>"+
-                                                "<td >"+temp[i]['UnitName']+"</td>"+
-                                                "<td ></td>"+
                                                 "</tr>";
-   
                                    $('#Tableitem tbody').append( StrTR );
                               }
 
                     }
                     else if( (temp["form"]=='Showtype') )
                     {
-                        $("#item_type2").empty();
-                        var StrTr2 = "<option value = '%%'> ทั้งหมด </option>"
-                                $("#item_type2").append(StrTr2);
-                        for (var i = 0; i < temp['count']; i++) {
-                                var StrTr = "<option value = '"+temp[i]['id']+"'> " + temp[i]['type_name'] + " </option>"
-                                $("#item_type2").append(StrTr);
+                        $("#type").empty();
+                        for (var i = 0; i < temp['count']; i++) 
+                        {
+                            var StrTr = "<option value = '"+temp[i]['id']+"'> " + temp[i]['type_name'] + " </option>"
+                            $("#type").append(StrTr);
                         }
-
                     }
             //------------------------------------------------------------------------------
                 }
@@ -300,21 +287,14 @@ $FName = $_SESSION['FName'];
             <div class="tab-pane animated fadeInUpShort show active" id="v-pills-all" role="tabpanel" aria-labelledby="v-pills-all-tab">
             <div class="row">
                 <div class="col-md-3 mt-2 ">
-                    <select class =  " custom-select  "  id="item_type" onchange="Showtype();Showitem();">
-                        <option value="1">สินค้ายังไม่ได้แปรรูป</option>
-                        <option value="2">สินค้าแปรรูป</option>
+                    <select class ="custom-select" id="type" onchange="Showitem()">
                     </select>
                 </div>
-                <div class="col-md-3 mt-2 ">
-                    <select class =  " custom-select  " style="width:70%;"  id="item_type2" onchange="Showitem()">
-                    </select>
-                </div>
-                <div class="col-md-3 mt-2 " style="margin-left:18%;">
+                <div class="col-md-3 mt-2 " >
                     <input type="text" class =  "form-control " placeholder="ค้นหาจากชื่อรายการ" id="Search">
                 </div>
                 <div class=" mt-2 " >
-                <button type="button" class="btn btn-primary btn-lg" onclick="Showitem()">ค้นหา</button>
-                    <!-- <button type="button"  data-toggle="modal" data-target="#add_item"  class="btn btn-success btn-lg ml-3" >&nbsp;เพิ่ม&nbsp;</button> -->
+                <button type="button" class="btn btn-primary btn-lg" onclick="Showitem()"><i class="icon-search3"></i>ค้นหา</button>
                 </div>
             </div>
                 <div class="row my-3">
@@ -328,13 +308,8 @@ $FName = $_SESSION['FName'];
                                         <tr class="no-b">
                                             <th>NO.</th>
                                             <th>NAME</th>
-                                            <th>TYPE</th>
-                                            <th>LOT</th>
                                             <th>QTY</th>
-                                            <th>GRADE</th>
-                                            <th>UNIT</th>
                                             <th hidden>ROLE</th>
-                                            <th></th>
                                         </tr>
                                         </thead>
 

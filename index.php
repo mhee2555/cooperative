@@ -35,22 +35,26 @@
     {
       var username = $('#username').val();
       var password = $('#password').val();
-      if (username != "" && password != "") {
-                var data = {
-                    'STATUS': 'checklogin',
-                    'USERNAME': username,
-                    'PASSWORD': password
-                };
-                console.log(JSON.stringify(data));
-                senddata(JSON.stringify(data));
-            } else {
-            swal({
-                type: 'warning',
-                title: 'Something Wrong',
-                // customClass: 'swal-wide',
-                text: 'Please recheck your username and password!'
-            })
-            }
+      if (username != "" && password != "") 
+      {
+        var data = 
+        {
+            'STATUS': 'checklogin',
+            'USERNAME': username,
+            'PASSWORD': password
+        };
+        console.log(JSON.stringify(data));
+        senddata(JSON.stringify(data));
+      }
+      else
+      {
+        swal({
+            type: 'warning',
+            title: 'Something Wrong',
+            // customClass: 'swal-wide',
+            text: 'Please recheck your username and password!'
+        })
+      }
     }
 
     function senddata(data)
@@ -259,7 +263,7 @@
                                    placeholder="Username">
                         </div>
                         <div class="form-group has-icon"><i class="icon-user-secret"></i>
-                            <input id="password" type="text" autocomplete="off" class="form-control form-control-lg"
+                            <input id="password" type="password" autocomplete="off" class="form-control form-control-lg"
                                    placeholder="Password">
                         </div>
                         <input type="submit" class="btn btn-success btn-lg btn-block" value="Log In" onclick="chklogin()">

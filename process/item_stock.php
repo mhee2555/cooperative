@@ -4,34 +4,28 @@ require '../connect/connect.php';
 
   function Showitem($conn, $DATA)
   {
-    $item_type = $DATA["item_type"];
-    $item_type2 = $DATA["item_type2"];
+    $type = $DATA["type"];
     $count = 0;
     $table ='';
-    if($item_type ==1) 
+
+    if($type ==1 || $type ==2) 
     {
-      $table = 'item_stockproduct';
+      $table = 'stock_unprocess';
     }
-    else
+    else if($type ==3 || $type ==4) 
     {
-      $table = 'item_stockfinished';
+      $table = 'stock_process';
     }
     
     
         $Showitem = "SELECT
                                   item.item_name,
                                   $table.item_code,
-                                  $table.item_qty,
-                                  $table.Lot,
-                                  $table.item_type,
-                                  type_item.type_name,
-                                  item_unit.UnitName
+                                  $table.item_qty
                                 FROM
                                   $table
                                 INNER JOIN item ON $table.item_code = item.item_code
-                                INNER JOIN type_item ON item.item_type = type_item.id
-                                INNER JOIN item_unit ON $table.item_unit = item_unit.UnitCode
-                                WHERE $table.item_type LIKE '$item_type2'
+                                WHERE item.item_type = $type
         ";
 
         // ค้นหาจาก item_type
@@ -46,11 +40,6 @@ require '../connect/connect.php';
         $return[$count]['item_code']          = $Result['item_code'];
         $return[$count]['item_name']          = $Result['item_name'];
         $return[$count]['item_qty']          = $Result['item_qty'];
-        $return[$count]['Lot']          = $Result['Lot'];
-        $return[$count]['item_type']          = $Result['item_type'];
-        $return[$count]['type_name']          = $Result['type_name'];
-        $return[$count]['UnitName']          = $Result['UnitName'];
-
         $count++;
       }
       $return['count']  = $count;
@@ -72,15 +61,12 @@ require '../connect/connect.php';
 
   function Showtype($conn, $DATA)
   {
-    $item_type = $DATA["item_type"];
     $count=0;
     $Showtype = "SELECT 
                   type_item.id,
                   type_item.type_name 
                  FROM 
-                  type_item
-                 WHERE
-                  type_item.item_type_main= '$item_type' ";
+                  type_item ";
       $meQuery = mysqli_query($conn, $Showtype);
       while ($Result = mysqli_fetch_assoc($meQuery)) 
       {

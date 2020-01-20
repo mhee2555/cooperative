@@ -451,8 +451,8 @@ $FName = $_SESSION['FName'];
                     <input type="text" class =  "form-control " placeholder="ค้นหาจากชื่อรายการ" id="Search">
                 </div>
                 <div class="col-md-3  mt-2 ">
-                <button type="button" class="btn btn-primary btn-lg" onclick="Showitem()">ค้นหา</button>
-                    <button type="button"  data-toggle="modal" data-target="#add_item"  class="btn btn-success btn-lg ml-3" >&nbsp;เพิ่ม&nbsp;</button>
+                <button type="button" class="btn btn-primary btn-lg" onclick="Showitem()"><i class="icon-search3"></i>ค้นหา</button>
+                    <button type="button"  data-toggle="modal" data-target="#add_item"  class="btn btn-success btn-lg ml-3" ><i class="icon-person_add"></i>&nbsp;เพิ่ม&nbsp;</button>
                 </div>
             </div>
                 <div class="row my-3">
