@@ -352,7 +352,7 @@ function Savebill($conn, $DATA)
   $boolean = false;
   $count = 0;
 
-  $Sql = "UPDATE buy_product SET IsStatus = 1 WHERE buy_product.DocNo = '$DocNo'";
+  $Sql = "UPDATE buy_product SET IsStatus = 1 , Modify_Date = TIME(NOW())  WHERE buy_product.DocNo = '$DocNo'";
   mysqli_query($conn, $Sql);
 
   ShowSearch($conn, $DATA);
@@ -447,6 +447,7 @@ function ShowDocNo($conn, $DATA)
       die;
     }
 }
+
 function Deleteitem($conn, $DATA)
 {
   $DocNo  = $DATA["DocNo"];

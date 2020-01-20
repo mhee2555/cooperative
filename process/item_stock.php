@@ -2,7 +2,7 @@
 session_start();
 require '../connect/connect.php';
 
-function Showitem($conn, $DATA)
+  function Showitem($conn, $DATA)
   {
     $item_type = $DATA["item_type"];
     $item_type2 = $DATA["item_type2"];
@@ -74,23 +74,31 @@ function Showitem($conn, $DATA)
   {
     $item_type = $DATA["item_type"];
     $count=0;
-    $Showtype = "SELECT type_item.id,type_item.type_name FROM type_item
-                 WHERE type_item.item_type_main='$item_type'
-        ";
+    $Showtype = "SELECT 
+                  type_item.id,
+                  type_item.type_name 
+                 FROM 
+                  type_item
+                 WHERE
+                  type_item.item_type_main= '$item_type' ";
       $meQuery = mysqli_query($conn, $Showtype);
-      while ($Result = mysqli_fetch_assoc($meQuery)) {
+      while ($Result = mysqli_fetch_assoc($meQuery)) 
+      {
         $return[$count]['id']          = $Result['id'];
-        $return[$count]['type_name']          = $Result['type_name'];
+        $return[$count]['type_name']   = $Result['type_name'];
         $count++;
       }
       $return['count']  = $count;
-      if($count>0){
+      if($count>0)
+      {
         $return['status'] = "success";
         $return['form'] = "Showtype";
         echo json_encode($return);
         mysqli_close($conn);
         die;
-      }else{
+      }
+      else
+      {
         $return['status'] = "success";
         $return['form'] = "Showtype";
         echo json_encode($return);
@@ -103,9 +111,12 @@ function Showitem($conn, $DATA)
   $data = $_POST['DATA'];
   $DATA = json_decode(str_replace ('\"','"', $data), true);
 
-      if ($DATA['STATUS'] == 'Showitem'){
+      if ($DATA['STATUS'] == 'Showitem')
+      {
         Showitem($conn, $DATA);
-      }else if($DATA['STATUS'] == 'Showtype'){
+      }
+      else if($DATA['STATUS'] == 'Showtype')
+      {
         Showtype($conn, $DATA);
       }    
     else

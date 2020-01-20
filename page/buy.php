@@ -4,6 +4,7 @@ require '../connect/connect.php';
 date_default_timezone_set("Asia/Bangkok");
 $PmID = $_SESSION['PmID'];
 $Userid = $_SESSION['ID'];
+$FName = $_SESSION['FName'];
 
 // session_destroy();
 ?>
@@ -466,6 +467,43 @@ $Userid = $_SESSION['ID'];
                         $("#DocNo").attr('disabled' , true );
                         // 
 
+                        if(temp[0]['IsStatus'] == 9)
+                        {
+                            // disabled
+                            $("#C").attr('disabled' , true );
+                            $("#A").attr('disabled' , true );
+                            $("#S").attr('disabled' , true );
+                            $("#CB").attr('disabled' , true );
+                            $("#P").attr('disabled' , true );
+                            $("#D").attr('disabled' , true );
+
+                            // removeclass
+
+                            $("#HC").removeClass('boxshadowx');
+                            $("#HA").removeClass('boxshadowx');
+                            $("#HS").removeClass('boxshadowx');
+                            $("#HCB").removeClass('boxshadowx');
+                            $("#HP").removeClass('boxshadowx');
+                            $("#HD").removeClass('boxshadowx');
+                        }
+                        else
+                        {
+                            // disabled
+                            $("#C").attr('disabled' , false );
+                            $("#A").attr('disabled' , false );
+                            $("#S").attr('disabled' , false );
+                            $("#CB").attr('disabled' , false );
+                            $("#P").attr('disabled' , false );
+                            $("#D").attr('disabled' , false );
+
+                            // addclass
+                            $("#HC").addClass('boxshadowx');
+                            $("#HA").addClass('boxshadowx');
+                            $("#HS").addClass('boxshadowx');
+                            $("#HCB").addClass('boxshadowx');
+                            $("#HP").addClass('boxshadowx');
+                            $("#HD").addClass('boxshadowx');
+                        }
                         // 
                         ShowDetail();
                         // 
@@ -691,43 +729,43 @@ $Userid = $_SESSION['ID'];
 
             <div class="row box  col-md-12 my-3 d-flex justify-content-end">
 
-                            <div class=" ml-5 boxshadowx">
-                            <button type="button" class="btn "   onclick="Createdocument();">
+                            <div class=" ml-5 boxshadowx " id="HC">
+                            <button type="button" class="btn "   onclick="Createdocument();" id="C">
                                     <i class="icon-document-add2 blue accent-2 avatar-md circle avatar-letter"></i>
                                     <div class="pt-1">สร้างเอกสาร</div>
                             </button>
                             </div>
 
-                            <div class=" ml-5 boxshadowx">
-                            <button type="button" class="btn "  onclick="Additem();" >
+                            <div class=" ml-5 boxshadowx" id="HA">
+                            <button type="button" class="btn "  onclick="Additem();" id="A">
                                     <i class="icon-add_circle blue lighten-2 avatar-md circle avatar-letter"></i>
                                     <div class="pt-1">เพิ่มรายการ</div>
                             </button>
                             </div>
 
-                            <div class=" ml-5 boxshadowx">
-                            <button type="button" class="btn " onclick="Deleteitem()">
+                            <div class=" ml-5 boxshadowx" id="HD">
+                            <button type="button" class="btn " onclick="Deleteitem()" id="D">
                                     <i class="icon-delete  red lighten-2 avatar-md circle avatar-letter"></i>
                                     <div class="pt-1">ลบรายการ</div>
                             </button>
                             </div>
 
-                            <div class=" ml-5 boxshadowx">
-                            <button type="button" class="btn " onclick="Savebill()";>
+                            <div class=" ml-5 boxshadowx" id="HS">
+                            <button type="button" class="btn " onclick="Savebill()" id="S">
                                     <i class="icon-save2 green lighten-2 avatar-md circle avatar-letter"></i>
                                     <div class="pt-1">บันทึก</div>
                             </button>
                             </div>
 
-                            <div class=" ml-5 boxshadowx">
-                            <button type="button" class="btn " onclick="Cancelbill()">
+                            <div class=" ml-5 boxshadowx" id="HCB">
+                            <button type="button" class="btn " onclick="Cancelbill()" id="CB">
                                     <i class="icon-document-cancel2 red lighten-1 avatar-md circle avatar-letter"></i>
                                     <div class="pt-1">ยกเลิกเอกสาร</div>
                             </button>
                             </div>
 
-                            <div class=" ml-5 boxshadowx">
-                            <button type="button" class="btn " >
+                            <div class=" ml-5 boxshadowx" id="HP">
+                            <button type="button" class="btn "  id="P">
                                     <i class="icon-print orange lighten-2 avatar-md circle avatar-letter"></i>
                                     <div class="pt-1">พิมพ์รายงาน</div>
                             </button>
