@@ -48,6 +48,8 @@
                 <ul class="treeview-menu" >
                     <li><a href="buy.php"><i class="icon icon-folder5"></i>บันทึกการซื้อลำไย</a>
                     </li>
+                    <li><a href="buy_rice.php"><i class="icon icon-folder5"></i>บันทึกการซื้ข้าว</a>
+                    </li>
                     <li><a href="panel-page-dashboard1-rtl.html"><i class="icon icon-folder5"></i>Panel Dashboard 1 - RTL</a>
                     </li>
                     <li><a href="panel-page-dashboard2.html"><i class="icon icon-folder5"></i>Panel Dashboard 2</a>
