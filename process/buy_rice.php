@@ -133,11 +133,13 @@ function Importdata($conn, $DATA)
   $DocNo = $DATA["DocNo"];
   $item_code = $DATA["item_code"];
   $kilo = $DATA["kilo"];
+  $moisture = $DATA["moisture"];
   $total = $DATA["total"];
 
   #========================================
   $item_codex  = explode(",", $item_code);
   $kilox       = explode(",", $kilo);
+  $moisture    = explode(",", $moisture);
   $totalx      = explode(",", $total);
   #========================================
 
@@ -162,8 +164,8 @@ function Importdata($conn, $DATA)
                       Buy_DocNo = '$DocNo',
                       item_code = '$value',
                       kilo = '$kilox[$key]',
+                      moisture = '$moisture[$key]',
                       total = '$totalx[$key]' ";
-
                   mysqli_query($conn, $insert);
     }
     else
@@ -173,14 +175,14 @@ function Importdata($conn, $DATA)
                       Buy_DocNo = '$DocNo',
                       item_code = '$value',
                       kilo = ( kilo + '$kilox[$key]' ),
+                      moisture = ( moisture + '$moisture[$key]' ),
                       total = (total + '$totalx[$key]' ) 
                 WHERE
                       Buy_DocNo = '$DocNo'
                 AND    item_code = '$value'  ";
-
                   mysqli_query($conn, $update);
     }
-
+   
     # ผลรวม ราคา        
     $sumtotal +=$totalx[$key];
   }
@@ -194,17 +196,18 @@ function ShowDetail($conn, $DATA)
   $count = 0;
 
   $Detail = "SELECT
-  	          bpd.RowID,
-              bpd.item_code,
-              item.item_name,
-              bpd.kilo,
-              bpd.total,
-	            grade_price.Grade
-            FROM
-              buy_rice_detail bpd
-            INNER JOIN item ON item.item_code = bpd.item_code
-            INNER JOIN grade_price ON grade_price.item_code = item.item_code
-            WHERE Buy_DocNo = '$DocNo' ";
+                    bpd.RowID,
+                    bpd.item_code,
+                    item.item_name,
+                    bpd.kilo,
+                    bpd.total,
+                    bpd.moisture,
+                    grade_price_rice.Grade
+                  FROM
+                    buy_rice_detail bpd
+                  INNER JOIN item ON item.item_code = bpd.item_code
+                  INNER JOIN grade_price_rice ON grade_price_rice.item_code = item.item_code
+                  WHERE Buy_DocNo = '$DocNo' ";
             $meQuery = mysqli_query($conn, $Detail);
             while ($Result = mysqli_fetch_assoc($meQuery)) 
             {
@@ -212,6 +215,7 @@ function ShowDetail($conn, $DATA)
               $return[$count]['item_code']      = $Result['item_code'];
               $return[$count]['item_name']      = $Result['item_name'];
               $return[$count]['kilo']           = $Result['kilo'];
+              $return[$count]['moisture']           = $Result['moisture'];
               $return[$count]['total']          = $Result['total'];
               $return[$count]['Grade']          = $Result['Grade'];
               $Total += $Result['total'];
