@@ -93,7 +93,19 @@
                 </ul>
             </li>
             <!-- ================================== -->
+            <!-- ตั้งค่า ============================ -->
+            <li class="treeview"><a href="#"><i class="icon icon-settings2 pull-right-text s-18"></i>
+                  <span>ตั้งค่า</span>          
+            <i class="icon icon-angle-left s-18 pull-right"></i></a>
+                <ul class="treeview-menu">
+                    <li><a href="grade_price_LY.php"><i class="icon icon-mode_edit">เกณฑ์ราคาลำใย</i></a>
+                    </li>
+                    <li><a href="grade_price_RC.php"><i class="icon icon-mode_edit">เกณฑ์ราคาข้าว</i></a>
+                    </li>
 
+                </ul>
+            </li>
+            <!-- ================================== -->
             <!--    inbox================================ -->
             <!-- <li class="treeview "><a href="#"> <i class="icon icon-package light-green-text s-18"></i>
                     <span>พนักงาน</span> -->
