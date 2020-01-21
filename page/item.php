@@ -49,6 +49,7 @@ $FName = $_SESSION['FName'];
         };
         senddata(JSON.stringify(data));
     }
+
     function showmodal(ID,sel)
     {
         var data = 
@@ -59,6 +60,7 @@ $FName = $_SESSION['FName'];
         };
         senddata(JSON.stringify(data));
     } 
+    
     function edit_item()
     {
         var ID = $('#ID_edit').val();
