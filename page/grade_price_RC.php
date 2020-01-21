@@ -26,6 +26,7 @@ $FName = $_SESSION['FName'];
     <script type="text/javascript">
       $(document).ready(function(e){
         Showitem();
+        Showitem_rice();
         // ค้นหา
         $("#Search").on("keyup", function() 
         {
@@ -37,7 +38,15 @@ $FName = $_SESSION['FName'];
         });
         // 
     });
-
+    
+    function Get_item_rice()
+    {
+        var data = 
+        {
+            'STATUS': 'Get_item_rice'
+        };
+        senddata(JSON.stringify(data));
+    }
     function Showitem()
     {
         var data = 
@@ -46,7 +55,14 @@ $FName = $_SESSION['FName'];
         };
         senddata(JSON.stringify(data));
     }
-
+    function Showitem_rice()
+    {
+        var data = 
+        {
+            'STATUS': 'Showitem_rice'
+        };
+        senddata(JSON.stringify(data));
+    }
     function showmodal(ID,sel)
     {
         var data = 
@@ -116,10 +132,10 @@ $FName = $_SESSION['FName'];
     }
     function show_add_modal()
     {            
-            var item_name_add                = $('#item_name_add').val();
-            var item_type_add                  = $('#item_type_add').val();
+            var item_price_add                = $('#item_price_add').val();
+            var item_type_add_rice                  = $('#item_type_add_rice').val();
 
-            if(item_name_add=='' || item_type_add=='' ){
+            if(item_price_add=='' || item_type_add_rice=='' ){
                 swal({
                           title: '',
                           text: 'กรุณากรอกข้อมูลให้ครบ',
@@ -133,12 +149,12 @@ $FName = $_SESSION['FName'];
 
                 var data = 
                     {
-                    'STATUS': 'add_item',
-                    'item_name_add':item_name_add,
-                    'item_type_add':item_type_add
+                    'STATUS': 'add_item_rice',
+                    'item_price_add':item_price_add,
+                    'item_type_add_rice':item_type_add_rice
                     };
 
-                $('#add_item').modal('toggle');
+                $('#add_item_rice').modal('toggle');
 
                 setTimeout(() => {
                     senddata(JSON.stringify(data));
@@ -180,7 +196,7 @@ $FName = $_SESSION['FName'];
                               {
                                   var ShowEdit = "<a href='javascript:void(0)'  onclick='showmodal("+temp[i]['item_code']+","+'2'+");'><i class='icon-pencil'></i></a> <a href='javascript:void(0)' onclick='delete_item("+temp[i]['item_code']+");' style='margin-left:5%;'><i class='icon-delete_forever'></i></a>";
                                  
-                                 StrTR = "<tr ondblclick='showmodal("+temp[i]['ID_moisture']+","+'1'+");'>"+
+                                 StrTR = "<tr >"+
                                                 "<td >"+(i+1)+"</td>"+
                                                 "<td >"+temp[i]['moisture_name']+"</td>"+
                                                 "<td >"+temp[i]['deduct_price']+"%</td>"+
@@ -192,6 +208,37 @@ $FName = $_SESSION['FName'];
                                                 "</tr>";
    
                                    $('#Tableitem tbody').append( StrTR );
+                              }
+                    }
+                    else if( (temp["form"]=='Showitem_rice') )
+                    {
+                        $( "#Tableitem_rice tbody" ).empty();
+                              for (var i = 0; i < temp['count']; i++) 
+                              {
+                                  var ShowEdit = "<a href='javascript:void(0)'  onclick='showmodal("+temp[i]['ID_Grade']+","+'2'+");'><i class='icon-pencil'></i></a> <a href='javascript:void(0)' onclick='delete_item("+temp[i]['ID_Grade']+");' style='margin-left:5%;'><i class='icon-delete_forever'></i></a>";
+                                 
+                                 StrTR = "<tr>"+
+                                                "<td >"+temp[i]['ID_Grade']+"</td>"+
+                                                "<td >"+temp[i]['item_name']+"</td>"+
+                                                "<td >"+temp[i]['Grade'] +" /KK.</td>"+
+                                                "<td ></td>"+
+                                                "<td ></td>"+
+                                                "<td ></td>"+
+                                                "<td ></td>"+
+                                                "<td >"+ShowEdit+"</td>"+
+                                                "</tr>";
+   
+                                   $('#Tableitem_rice tbody').append( StrTR );
+                              }
+                        
+                    }
+                    else if( (temp["form"]=='Get_item_rice') )
+                    {
+                        $( "#item_type_add_rice" ).empty();
+                              for (var i = 0; i < temp['count']; i++) 
+                              {
+                                var StrTR = "<option value = '"+temp[i]['item_code']+"'> " + temp[i]['item_name'] + " </option>"
+                                $('#item_type_add_rice').append( StrTR );
                               }
                     }
                     else if( (temp["form"]=='show_detail_item') )
@@ -243,7 +290,7 @@ $FName = $_SESSION['FName'];
                         }, 1000);
                         
                     }
-                    else if( (temp["form"]=='add_item') )
+                    else if( (temp["form"]=='add_item_rice') )
                     {
                         swal({
                             title: '',
@@ -254,15 +301,15 @@ $FName = $_SESSION['FName'];
                             confirmButtonText: 'Ok',
                             showConfirmButton: false
                         });
+                        
+                        setTimeout(function() {
+                            Showitem_rice();
+                        }, 500);
+
                         // CLEAR ALL
-                        $('#item_name_add').val('');
+                        $('#item_price_add').val('');
                         $('#item_type_add').val('1');
                         // 
-
-                        setTimeout(function() {
-                            Showitem();
-                        }, 1000);
-                        
                     }
                 }
                 else if (temp['status']=="failed") 
@@ -416,18 +463,11 @@ $FName = $_SESSION['FName'];
                 <ul class="nav nav-material nav-material-white responsive-tab" id="v-pills-tab" role="tablist">
                     <li>
                         <a class="nav-link active" id="v-pills-all-tab" data-toggle="pill" href="#v-pills-all"
-                           role="tab" aria-controls="v-pills-all"><i class="icon icon-home2"></i>All Users</a>
+                           role="tab" aria-controls="v-pills-all"><i class="icon icon-home2">เกณฑ์ราคาข้าว</i></a>
                     </li>
                     <li>
                         <a class="nav-link" id="v-pills-buyers-tab" data-toggle="pill" href="#v-pills-buyers" role="tab"
-                           aria-controls="v-pills-buyers"><i class="icon icon-face"></i> Buyers</a>
-                    </li>
-                    <li>
-                        <a class="nav-link" id="v-pills-sellers-tab" data-toggle="pill" href="#v-pills-sellers" role="tab"
-                           aria-controls="v-pills-sellers"><i class="icon  icon-local_shipping"></i> Sellers</a>
-                    </li>
-                    <li class="float-right">
-                        <a class="nav-link"  href="panel-page-users-create.html" ><i class="icon icon-plus-circle"></i> Add New User</a>
+                           aria-controls="v-pills-buyers"><i class="icon icon-face"></i>เกณฑ์ความชื้น</a>
                     </li>
                 </ul>
             </div>
@@ -449,151 +489,81 @@ $FName = $_SESSION['FName'];
                 <!-- <div class="col-md-3 mt-2 ">
                     <input type="text" class =  "form-control " placeholder="ค้นหาจากชื่อรายการ" id="Search">
                 </div> -->
-                <div class="col-md-3  mt-2 ">
-                    <!-- <button type="button" class="btn btn-primary btn-lg" onclick="Showitem()"><i class="icon-search3"></i>ค้นหา</button> -->
-                    <spen style=" font-size:20px;margin-left:11%;">ราคาข้าวเปลือก กก. ละ</spen> <button type="button"  data-toggle="modal" data-target="#add_item"  class="btn btn-success btn-lg ml-3" ><i class="icon-person_add"></i>&nbsp;เพิ่ม&nbsp;</button>
+                <div class="col-md-10">
+                    <spen style=" font-size:20px;margin-left:4%;">เกณฑ์ราคาข้าว</spen> 
+                    <button type="button" style=" float: right;"  data-toggle="modal" data-target="#add_item_rice"  class="btn btn-success btn-lg ml-3"  onclick="Get_item_rice();"><i class="icon-add"></i>&nbsp;เพิ่ม เกณฑ์ราคาข้าว&nbsp;</button>
                 </div>
+                
             </div>
                 <div class="row my-3">
                     <div class="col-md-12">
                         <div class="card r-0 shadow">
                             <div class="table-responsive">
                                 <form>
-                                    <!-- SHOW USER -->
-                                    <table class="table table-striped table-hover r-0" id="Tableitem">
-                                    <h3 style=" margin-top:1%;margin-left:1%;">เกณฑ์ความชื้น หักราคาข้าว</h3>
-                                        <thead id="theadsum" >
-                                        <tr class="no-b">
-                                            <th>NO.</th>
-                                            <th>NAME</th>
-                                            <th>Deduct price</th>
-                                            <th hidden>ROLE</th>
-                                            <th></th>
-                                        </tr>
-                                        </thead>
+                                      <!-- SHOW USER -->
+                                      <table class="table table-striped table-hover r-0" id="Tableitem_rice">
+                                            <thead id="theadsum" >
+                                            <tr class="no-b">
+                                                <th>ID.</th>
+                                                <th>NAME</th>
+                                                <th>price</th>
+                                                <th hidden>ROLE</th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
 
-                                        <tbody  id="tbody"  >
+                                            <tbody  id="tbody"  >
 
-                                        <tr hidden>
-                                            <td >
-                                                <div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input checkSingle" id="user_id_1" required><label class="custom-control-label" for="user_id_1"></label></div>
-                                            </td>
+                                            
 
-                                            <td>
-                                                <div>
-                                                    <div>
-                                                        <strong>Alexander Pierce</strong>
-                                                    </div>
-                                                    <small> alexander@paper.com</small>
-                                                </div>
-                                            </td>
-
-                                            <td>2</td>
-                                            <td>256</td>
-
-                                            <td>+92 333 123 136</td>
-                                            <td hidden><span class="icon icon-circle s-12  mr-2 text-warning"></span> Inactive</td>
-                                            <td hidden><span class="r-3 badge badge-success ">Administrator</span></td>
-
-
-                                            <td>
-                                                <a href="panel-page-profile.html"><i class="icon-eye mr-3"></i></a>
-                                                <a href="panel-page-profile.html"><i class="icon-pencil"></i></a>
-                                            </td>
-                                        </tr>
-
-                                        <tr hidden>
-                                            <td>
-                                                <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" class="custom-control-input checkSingle"
-                                                           id="user_id_5" required><label
-                                                        class="custom-control-label" for="user_id_5"></label>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div class="avatar avatar-md mr-3 mt-1 float-left">
-                                                    <img  src="assets/img/dummy/u5.png" alt="">
-                                                </div>
-                                                <div>
-                                                    <div>
-                                                        <strong>Alexander Pierce</strong>
-                                                    </div>
-                                                    <small> alexander@paper.com</small>
-                                                </div>
-                                            </td>
-                                            <td>2</td>
-                                            <td>6,000</td>
-
-                                            <td>+92 333 123 136</td>
-                                            <td><span class="icon icon-circle s-12  mr-2 text-success"></span> Active</td>
-
-                                            <td><span class="r-3 badge badge-warning">Seller</span></td>
-                                            <td>
-                                                <a href="panel-page-profile.html"><i class="icon-eye mr-3"></i></a>
-                                                <a href="panel-page-profile.html"><i class="icon-pencil"></i></a>
-                                            </td>
-                                        </tr>
+                                            
+                                            </tbody>
+                                        </table>
+                                        <!-- =============== -->
                                     
-                                        </tbody>
-                                    </table>
-                                    <!-- =============== -->
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <nav class="my-3" aria-label="Page navigation">
-                    <ul class="pagination">
-                        <li class="page-item"><a class="page-link" href="#">Previous</a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="#">1</a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="#">2</a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="#">3</a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="#">Next</a>
-                        </li>
-                    </ul>
-                </nav>
             </div>
 
-            <!-- START BUYERS -->
+            <!-- START เกณฑ์ราคาข้าว -->
             <div class="tab-pane animated fadeInUpShort" id="v-pills-buyers" role="tabpanel" aria-labelledby="v-pills-buyers-tab">
                 <div class="row">
+                <div class="col-md-3  mt-2 ">
+                    <spen style=" font-size:20px;margin-left:11%;">เกณฑ์ความชื้น หักราคาข้าว</spen> 
+                </div>
+                   <!-- -------------------BODY----------------- -->
+                    <div class="col-md-12">
+                            <div class="card r-0 shadow">
+                                <div class="table-responsive">
+                                    <form>
+                                      <!-- SHOW USER -->
+                                        <table class="table table-striped table-hover r-0" id="Tableitem">
+                                            <thead id="theadsum" >
+                                            <tr class="no-b">
+                                                <th>NO.</th>
+                                                <th>NAME</th>
+                                                <th>Deduct price</th>
+                                                <th hidden>ROLE</th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
 
-                    <div class="col-md-3 my-3">
-                        <div class="card no-b">
-                            <div class="card-body text-center p-5">
-                                <div class="avatar avatar-xl mb-3">
-                                    <img  src="assets/img/dummy/u11.png" alt="User Image">
+                                            <tbody  id="tbody"  >
+
+                                            
+
+                                            
+                                            </tbody>
+                                        </table>
+                                    <!-- =============== -->
+                                    </form>
                                 </div>
-                                <div>
-                                    <h6 class="p-t-10">Alexander Pierce</h6>
-                                    alexander@paper.com
-                                </div>
-                                <a href="#" class="btn btn-success btn-sm mt-3">View Profile</a>
                             </div>
-                        </div>
                     </div>
-
-                    <div class="col-md-3 my-3">
-                        <div class="card no-b">
-                            <div class="card-body text-center p-5">
-                                <div class="avatar avatar-xl mb-3">
-                                    <img  src="assets/img/dummy/u12.png" alt="User Image">
-                                </div>
-                                <div>
-                                    <h6 class="p-t-10">Alexander Pierce</h6>
-                                    alexander@paper.com
-                                </div>
-                                <a href="#" class="btn btn-success btn-sm mt-3">View Profile</a>
-                            </div>
-                        </div>
-                    </div>
-
+                    <!-- ---------------- END BODY----------------- -->
                 </div>
             </div>
             <!-- END BUYERS -->
@@ -713,7 +683,7 @@ $FName = $_SESSION['FName'];
 </div>
 <!-------------------------- end Modal ----------------------------------------------->
 <!--------------------------------------- Modal add_customer  ------------------------------------------>
-<div class="modal fade" id="add_item" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="add_item_rice" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -724,17 +694,14 @@ $FName = $_SESSION['FName'];
       </div>
       <div class="modal-body">
             <div class="margin_input">
-            <label class="form-label mr-1" style="color:#000000;">ชื่อราการ *</label>
-            <input type="text" id="item_name_add" class="form-control " placeholder="ชื่อราการ">
+            <label class="form-label mr-1" style="color:#000000;">ประเภท</label>
+                <select class =  " custom-select  " id="item_type_add_rice">
+
+                </select>
             </div>
             <div class="margin_input">
-            <label class="form-label mr-1" style="color:#000000;">ประเภท</label>
-                <select class =  " custom-select  " id="item_type_add">
-                            <option value="1">ข้าว</option>
-                            <option value="2">ลำไย</option>
-                            <option value="3">ข้าวแปรรูป</option>
-                            <option value="4">ลำไยแปรรูป</option>
-                </select>
+            <label class="form-label mr-1" style="color:#000000;">ราคาต่อหน่วย</label>
+            <input type="text" id="item_price_add" class="form-control " placeholder="ราคาต่อหน่วย">
             </div>
       </div>
       <div class="modal-footer">

@@ -35,6 +35,43 @@ function Showitem($conn, $DATA)
     }
 
   }
+  function Showitem_rice($conn, $DATA)
+  {
+    $count = 0;
+
+        $Showitem = "SELECT
+                          grade_price_rice.ID_Grade,
+                          item.item_name,
+                          grade_price_rice.Grade
+                          
+                      FROM
+                          grade_price_rice
+                          INNER JOIN item ON grade_price_rice.item_code = item.item_code
+                      ";
+
+      $meQuery = mysqli_query($conn, $Showitem);
+      while ($Result = mysqli_fetch_assoc($meQuery)) {
+        $return[$count]['ID_Grade']          = $Result['ID_Grade'];
+        $return[$count]['item_name']          = $Result['item_name'];
+        $return[$count]['Grade']          = $Result['Grade'];
+        $count++;
+      }
+      $return['count']  = $count;
+    if($count>0){
+      $return['status'] = "success";
+      $return['form'] = "Showitem_rice";
+      echo json_encode($return);
+      mysqli_close($conn);
+      die;
+    }else{
+      $return['status'] = "notfound";
+      $return['msg'] = "notfound";
+      echo json_encode($return);
+      mysqli_close($conn);
+      die;
+    }
+
+  }
 function show_detail_item($conn, $DATA)
   {
     $ID = $DATA["ID"];
@@ -105,54 +142,63 @@ function show_detail_item($conn, $DATA)
     mysqli_close($conn);
     die;
   }
-  function add_item($conn, $DATA)
+  function add_item_rice($conn, $DATA)
   {
-    $item_name_add         = $DATA["item_name_add"];
-    $item_type_add           = $DATA["item_type_add"];
+    $item_price_add         = $DATA["item_price_add"];
+    $item_type_add_rice           = $DATA["item_type_add_rice"];
 
     // ===================
-    $Sql_ID = "SELECT
-                          (item_code) + 1 AS ID
-                        FROM
-                          item
-                        ORDER BY
-                          item_code DESC
-                        LIMIT 1";
-    $meQuery = mysqli_query($conn, $Sql_ID);
-    $Result = mysqli_fetch_assoc($meQuery); 
-    $ID =  $Result['ID'];
-    // ===================
-
-    if($ID==null){
-      $ID=1;
-    }else{
-      $ID =  $Result['ID']; 
-    }
-    
-    $addcustomer = "INSERT INTO item (
-                                    item_code,
-                                    item_name,
-                                    item_type
-                                  )
-                                  VALUES
-                                    (
-                                      $ID,
-                                      '$item_name_add',
-                                      $item_type_add
-                                    )
+    $addcustomer = "INSERT INTO grade_price_rice(
+                                                  item_code,
+                                                  Grade
+                                                )
+                                                VALUES
+                                                (
+                                                  '$item_type_add_rice',
+                                                  $item_price_add
+                                                )
             ";
 
     mysqli_query($conn, $addcustomer);
-
-
-
     $return['status'] = "success";
-    $return['form'] = "add_item";
+    $return['form'] = "add_item_rice";
     echo json_encode($return);
     mysqli_close($conn);
     die;
   }
+  function Get_item_rice($conn, $DATA)
+  {
+        $count = 0;
 
+        $Showitem = "SELECT
+                        item.item_name,
+                        item.item_code
+                    FROM
+                        item
+                    WHERE item.item_type =1
+                      ";
+
+        $meQuery = mysqli_query($conn, $Showitem);
+        while ($Result = mysqli_fetch_assoc($meQuery)) {
+          $return[$count]['item_code']          = $Result['item_code'];
+          $return[$count]['item_name']          = $Result['item_name'];
+          $count++;
+        }
+        $return['count']  = $count;
+      if($count>0){
+        $return['status'] = "success";
+        $return['form'] = "Get_item_rice";
+        echo json_encode($return);
+        mysqli_close($conn);
+        die;
+      }else{
+        $return['status'] = "notfound";
+        $return['msg'] = "notfound";
+        echo json_encode($return);
+        mysqli_close($conn);
+        die;
+      }
+  }
 
 
 
@@ -169,9 +215,13 @@ function show_detail_item($conn, $DATA)
         edit_item($conn, $DATA);  
       }elseif ($DATA['STATUS'] == 'delete_item') {
         delete_item($conn, $DATA);  
-      }elseif ($DATA['STATUS'] == 'add_item') {
-        add_item($conn, $DATA);  
-      }        
+      }elseif ($DATA['STATUS'] == 'add_item_rice') {
+        add_item_rice($conn, $DATA);  
+      }elseif ($DATA['STATUS'] == 'Showitem_rice') {
+        Showitem_rice($conn, $DATA);  
+      }elseif ($DATA['STATUS'] == 'Get_item_rice') {
+        Get_item_rice($conn, $DATA);  
+      }                  
     else
     {
         $return['status'] = "error";
