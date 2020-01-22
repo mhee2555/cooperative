@@ -75,29 +75,17 @@ function Showitem($conn, $DATA)
 function show_detail_item($conn, $DATA)
   {
     $ID = $DATA["ID"];
-    $sel = $DATA["sel"];
-    $Showcustomer = " SELECT
-                                      item.item_name,
-                                      item.item_code,
-	                                    type_item.type_name,
-                                      item.item_type
-                                    FROM
-                                      item 
-                                    INNER JOIN type_item ON type_item.id = item.item_type
-                                    WHERE item.item_code = '$ID'
-                                    ORDER BY
-                                      item.item_code DESC";
+    $Showcustomer = " SELECT ID_Grade,Grade 
+                      FROM grade_price_rice
+                      WHERE ID_Grade= $ID ";
     $meQuery = mysqli_query($conn, $Showcustomer);
     $Result = mysqli_fetch_assoc($meQuery); 
-      $return['item_name']    = $Result['item_name'];
-      $return['item_code'] = $Result['item_code'];
-      $return['type_name'] = $Result['type_name'];
-      $return['item_type'] = $Result['item_type'];
+      $return['ID_Grade']    = $Result['ID_Grade'];
+      $return['Grade'] = $Result['Grade'];
       $count=1;
       
     if($count>0){
       $return['status'] = "success";
-      $return['sel'] = $sel;
       $return['form'] = "show_detail_item";
       echo json_encode($return);
       mysqli_close($conn);
@@ -113,12 +101,11 @@ function show_detail_item($conn, $DATA)
   function edit_item($conn, $DATA)
   {
     $ID = $DATA["ID"];
-    $item_name_edit = $DATA["item_name_edit"];
-    $item_type_edit = $DATA["item_type_edit"];
+    $item_pirce_edit = $DATA["item_pirce_edit"];
 
 
-    $editcustomer = " UPDATE item SET item.item_name ='$item_name_edit',item.item_type ='$item_type_edit'
-                      WHERE item.item_code='$ID' ";
+    $editcustomer = " UPDATE grade_price_rice SET grade_price_rice.Grade =$item_pirce_edit
+                      WHERE grade_price_rice.ID_Grade = $ID ";
     mysqli_query($conn, $editcustomer);
 
 
@@ -132,8 +119,13 @@ function show_detail_item($conn, $DATA)
   function delete_item($conn, $DATA)
   {
     $ID = $DATA["ID"];
-
-    $delete_customer = "DELETE FROM item WHERE item_code = $ID  ";
+    $num = $DATA["num"];
+    if($num==2){
+      $delete_customer = "DELETE FROM grade_price_rice WHERE ID_Grade = $ID   ";
+    }else{
+      $delete_customer = "DELETE FROM moisture WHERE ID_moisture = $ID   ";
+    }
+    
     mysqli_query($conn, $delete_customer);
 
     $return['status'] = "success";

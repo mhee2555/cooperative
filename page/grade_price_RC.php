@@ -77,10 +77,8 @@ $FName = $_SESSION['FName'];
     function edit_item()
     {
         var ID = $('#ID_edit').val();
-        var item_name_edit = $('#item_name_edit').val();
-        var item_type_edit = $('#item_type_edit').val();
-        
-        if(item_name_edit=='' || item_type_edit=='' ){
+        var item_pirce_edit = $('#item_pirce_edit').val();
+        if(item_pirce_edit==''){
                 swal({
                           title: '',
                           text: 'กรุณากรอกข้อมูลให้ครบ',
@@ -95,15 +93,14 @@ $FName = $_SESSION['FName'];
                     {
                     'STATUS': 'edit_item',
                     'ID':ID,
-                    'item_name_edit':item_name_edit,
-                    'item_type_edit':item_type_edit
+                    'item_pirce_edit':item_pirce_edit
                     };
                 senddata(JSON.stringify(data));
 
         }
        
     }
-    function delete_item(ID)
+    function delete_item(ID,num)
     {
         swal({
           title: "",
@@ -121,7 +118,8 @@ $FName = $_SESSION['FName'];
             var data = 
                     {
                     'STATUS': 'delete_item',
-                    'ID':ID
+                    'ID':ID,
+                    'num':num
                     };
                 senddata(JSON.stringify(data));
           } else if (result.dismiss === 'cancel') {
@@ -194,7 +192,7 @@ $FName = $_SESSION['FName'];
                               $( "#Tableitem tbody" ).empty();
                               for (var i = 0; i < temp['count']; i++) 
                               {
-                                  var ShowEdit = "<a href='javascript:void(0)'  onclick='showmodal("+temp[i]['item_code']+","+'2'+");'><i class='icon-pencil'></i></a> <a href='javascript:void(0)' onclick='delete_item("+temp[i]['item_code']+");' style='margin-left:5%;'><i class='icon-delete_forever'></i></a>";
+                                  var ShowEdit = "<a href='javascript:void(0)'  onclick='showmodal("+temp[i]['item_code']+","+'2'+");'><i class='icon-pencil'></i></a> <a href='javascript:void(0)' onclick='delete_item("+temp[i]['item_code']+",1);' style='margin-left:5%;'><i class='icon-delete_forever'></i></a>";
                                  
                                  StrTR = "<tr >"+
                                                 "<td >"+(i+1)+"</td>"+
@@ -215,10 +213,10 @@ $FName = $_SESSION['FName'];
                         $( "#Tableitem_rice tbody" ).empty();
                               for (var i = 0; i < temp['count']; i++) 
                               {
-                                  var ShowEdit = "<a href='javascript:void(0)'  onclick='showmodal("+temp[i]['ID_Grade']+","+'2'+");'><i class='icon-pencil'></i></a> <a href='javascript:void(0)' onclick='delete_item("+temp[i]['ID_Grade']+");' style='margin-left:5%;'><i class='icon-delete_forever'></i></a>";
+                                  var ShowEdit = "<a href='javascript:void(0)'  onclick='showmodal("+temp[i]['ID_Grade']+");'><i class='icon-pencil'></i></a> <a href='javascript:void(0)' onclick='delete_item("+temp[i]['ID_Grade']+",2);' style='margin-left:5%;'><i class='icon-delete_forever'></i></a>";
                                  
                                  StrTR = "<tr>"+
-                                                "<td >"+temp[i]['ID_Grade']+"</td>"+
+                                                "<td >"+(i+1)+"</td>"+
                                                 "<td >"+temp[i]['item_name']+"</td>"+
                                                 "<td >"+temp[i]['Grade'] +" /KK.</td>"+
                                                 "<td ></td>"+
@@ -243,19 +241,9 @@ $FName = $_SESSION['FName'];
                     }
                     else if( (temp["form"]=='show_detail_item') )
                     {
-                        var sel = temp['sel'];
-                        if(sel==1){
-                            $('#show_item').modal('toggle');
-                            $('#ID').val(temp['item_code']);
-                            $('#item_name_show').val(temp['item_name']);
-                            $('#item_type_show').val(temp['type_name']);
-                        }else{
                             $('#show_item_edit').modal('toggle');
-                            $('#ID_edit').val(temp['item_code']);
-                            $('#item_name_edit').val(temp['item_name']);
-                            $('#item_type_edit').val(temp['item_type']);
-                        }
-                        
+                            $('#ID_edit').val(temp['ID_Grade']);
+                            $('#item_pirce_edit').val(temp['Grade']);
                     }
                     else if( (temp["form"]=='edit_item') )
                     {
@@ -271,7 +259,7 @@ $FName = $_SESSION['FName'];
                         $('#show_item_edit').modal('hide');
 
                         setTimeout(function() {
-                            Showitem();
+                            Showitem_rice();
                         }, 1000);
                     }
                     else if( (temp["form"]=='delete_item') )
@@ -286,8 +274,8 @@ $FName = $_SESSION['FName'];
                             showConfirmButton: false
                         });
                         setTimeout(function() {
-                            Showitem();
-                        }, 1000);
+                            Showitem_rice();
+                        }, 800);
                         
                     }
                     else if( (temp["form"]=='add_item_rice') )
@@ -661,17 +649,8 @@ $FName = $_SESSION['FName'];
             <input type="text" id="ID_edit" class="form-control " placeholder="ID" disabled>
             </div>
             <div class="margin_input">
-            <label class="form-label mr-1" style="color:#000000;">ชื่อรายการ *</label>
-            <input type="text" id="item_name_edit" class="form-control " placeholder="ชื่อรายการ">
-            </div>
-            <div class="margin_input">
-            <label class="form-label mr-1" style="color:#000000;">ประเภท</label>
-                <select class =  " custom-select  " id="item_type_edit">
-                            <option value="1">ข้าว</option>
-                            <option value="2">ลำไย</option>
-                            <option value="3">ข้าวแปรรูป</option>
-                            <option value="4">ลำไยแปรรูป</option>
-                </select>
+            <label class="form-label mr-1" style="color:#000000;">ราคา ต่อหน่วย *</label>
+            <input type="text" id="item_pirce_edit" class="form-control " placeholder="ราคา ต่อหน่วย">
             </div>
       </div>
       <div class="modal-footer">
