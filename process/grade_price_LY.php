@@ -4,25 +4,23 @@ require '../connect/connect.php';
 
 function Showitem($conn, $DATA)
   {
-    $item_type = $DATA["item_type"];
     $count = 0;
 
         $Showitem = "SELECT
-                                  item.item_name,
-                                  item.item_code
-                                FROM
-                                item";
+                      grade_price.ID_Grade,
+                      item.item_name,	
+                      grade_price.Grade 
+                    FROM
+                      grade_price
+                    INNER JOIN item ON 
+                    grade_price.item_code = item.item_code";
 
-        // ค้นหาจาก item_type
-        if($item_type > 0) {$Showitem .=" WHERE item.item_type = $item_type";}
-        // 
-
-      $Showitem.=" ORDER BY item.item_code DESC";
-
+ 
       $meQuery = mysqli_query($conn, $Showitem);
       while ($Result = mysqli_fetch_assoc($meQuery)) {
         $return[$count]['item_name']          = $Result['item_name'];
-        $return[$count]['item_code']          = $Result['item_code'];
+        $return[$count]['ID_Grade']          = $Result['ID_Grade'];
+        $return[$count]['Grade']          = $Result['Grade'];
         $count++;
       }
       $return['count']  = $count;
@@ -44,24 +42,20 @@ function Showitem($conn, $DATA)
 function show_detail_item($conn, $DATA)
   {
     $ID = $DATA["ID"];
-    $sel = $DATA["sel"];
     $Showcustomer = " SELECT
-                                      item.item_name,
-                                      item.item_code,
-	                                    type_item.type_name,
-                                      item.item_type
-                                    FROM
-                                      item 
-                                    INNER JOIN type_item ON type_item.id = item.item_type
-                                    WHERE item.item_code = '$ID'
-                                    ORDER BY
-                                      item.item_code DESC";
+                        grade_price.ID_Grade,
+                        item.item_name,	
+                        grade_price.Grade 
+                      FROM
+                        grade_price
+                      INNER JOIN item ON 
+                      grade_price.item_code = item.item_code
+                      WHERE grade_price.ID_Grade=  $ID ";
     $meQuery = mysqli_query($conn, $Showcustomer);
     $Result = mysqli_fetch_assoc($meQuery); 
-      $return['item_name']    = $Result['item_name'];
-      $return['item_code'] = $Result['item_code'];
-      $return['type_name'] = $Result['type_name'];
-      $return['item_type'] = $Result['item_type'];
+      $return['ID_Grade']    = $Result['ID_Grade'];
+      $return['item_name'] = $Result['item_name'];
+      $return['Grade'] = $Result['Grade'];
       $count=1;
       
     if($count>0){
@@ -82,12 +76,12 @@ function show_detail_item($conn, $DATA)
   function edit_item($conn, $DATA)
   {
     $ID = $DATA["ID"];
-    $item_name_edit = $DATA["item_name_edit"];
-    $item_type_edit = $DATA["item_type_edit"];
+    $item_price_edit = $DATA["item_price_edit"];
 
 
-    $editcustomer = " UPDATE item SET item.item_name ='$item_name_edit',item.item_type ='$item_type_edit'
-                      WHERE item.item_code='$ID' ";
+
+    $editcustomer = " UPDATE grade_price SET grade_price.Grade ='$item_price_edit'
+                      WHERE grade_price.ID_Grade='$ID' ";
     mysqli_query($conn, $editcustomer);
 
 
@@ -102,7 +96,7 @@ function show_detail_item($conn, $DATA)
   {
     $ID = $DATA["ID"];
 
-    $delete_customer = "DELETE FROM item WHERE item_code = $ID  ";
+    $delete_customer = "DELETE FROM grade_price WHERE ID_Grade = $ID  ";
     mysqli_query($conn, $delete_customer);
 
     $return['status'] = "success";

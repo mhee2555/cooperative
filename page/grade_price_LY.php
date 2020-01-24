@@ -40,23 +40,19 @@ $FName = $_SESSION['FName'];
 
     function Showitem()
     {
-        var item_type = $('#item_type').val();
-
         var data = 
         {
-            'STATUS': 'Showitem',
-            'item_type':item_type
+            'STATUS': 'Showitem'
         };
         senddata(JSON.stringify(data));
     }
 
-    function showmodal(ID,sel)
+    function showmodal(ID)
     {
         var data = 
         {
             'STATUS': 'show_detail_item',
-            'ID':ID,
-            'sel':sel
+            'ID':ID
         };
         senddata(JSON.stringify(data));
     } 
@@ -64,10 +60,9 @@ $FName = $_SESSION['FName'];
     function edit_item()
     {
         var ID = $('#ID_edit').val();
-        var item_name_edit = $('#item_name_edit').val();
-        var item_type_edit = $('#item_type_edit').val();
+        var item_price_edit = $('#item_price_edit').val();
         
-        if(item_name_edit=='' || item_type_edit=='' ){
+        if(item_price_edit=='' ){
                 swal({
                           title: '',
                           text: 'กรุณากรอกข้อมูลให้ครบ',
@@ -82,8 +77,7 @@ $FName = $_SESSION['FName'];
                     {
                     'STATUS': 'edit_item',
                     'ID':ID,
-                    'item_name_edit':item_name_edit,
-                    'item_type_edit':item_type_edit
+                    'item_price_edit':item_price_edit
                     };
                 senddata(JSON.stringify(data));
 
@@ -153,7 +147,7 @@ $FName = $_SESSION['FName'];
     {
          var form_data = new FormData();
          form_data.append("DATA",data);
-         var URL = '../process/item.php';
+         var URL = '../process/grade_price_LY.php';
          $.ajax
          ({
             url: URL,
@@ -181,12 +175,12 @@ $FName = $_SESSION['FName'];
                               $( "#Tableitem tbody" ).empty();
                               for (var i = 0; i < temp['count']; i++) 
                               {
-                                  var ShowEdit = "<a href='javascript:void(0)'  onclick='showmodal("+temp[i]['item_code']+","+'2'+");'><i class='icon-pencil'></i></a> <a href='javascript:void(0)' onclick='delete_item("+temp[i]['item_code']+");' style='margin-left:5%;'><i class='icon-delete_forever'></i></a>";
+                                  var ShowEdit = "<a href='javascript:void(0)'  onclick='showmodal("+temp[i]['ID_Grade']+");'><i class='icon-pencil'></i></a> <a href='javascript:void(0)' onclick='delete_item("+temp[i]['ID_Grade']+");' style='margin-left:5%;'><i class='icon-delete_forever'></i></a>";
 
-                                 StrTR = "<tr ondblclick='showmodal("+temp[i]['item_code']+","+'1'+");'>"+
+                                 StrTR = "<tr>"+
                                                 "<td >"+(i+1)+"</td>"+
                                                 "<td >"+temp[i]['item_name']+"</td>"+
-                                                "<td ></td>"+
+                                                "<td >"+temp[i]['Grade']+"</td>"+
                                                 "<td ></td>"+
                                                 "<td ></td>"+
                                                 "<td ></td>"+
@@ -199,19 +193,10 @@ $FName = $_SESSION['FName'];
                     }
                     else if( (temp["form"]=='show_detail_item') )
                     {
-                        var sel = temp['sel'];
-                        if(sel==1){
-                            $('#show_item').modal('toggle');
-                            $('#ID').val(temp['item_code']);
-                            $('#item_name_show').val(temp['item_name']);
-                            $('#item_type_show').val(temp['type_name']);
-                        }else{
                             $('#show_item_edit').modal('toggle');
-                            $('#ID_edit').val(temp['item_code']);
+                            $('#ID_edit').val(temp['ID_Grade']);
                             $('#item_name_edit').val(temp['item_name']);
-                            $('#item_type_edit').val(temp['item_type']);
-                        }
-                        
+                            $('#item_price_edit').val(temp['Grade']);                    
                     }
                     else if( (temp["form"]=='edit_item') )
                     {
@@ -224,7 +209,7 @@ $FName = $_SESSION['FName'];
                             confirmButtonText: 'Ok',
                             showConfirmButton: false
                         });
-                        $('#show_item_edit').modal('hide');
+                        $('#show_item_edit').modal('toggle');
 
                         setTimeout(function() {
                             Showitem();
@@ -419,19 +404,9 @@ $FName = $_SESSION['FName'];
                 <ul class="nav nav-material nav-material-white responsive-tab" id="v-pills-tab" role="tablist">
                     <li>
                         <a class="nav-link active" id="v-pills-all-tab" data-toggle="pill" href="#v-pills-all"
-                           role="tab" aria-controls="v-pills-all"><i class="icon icon-home2"></i>All Users</a>
+                           role="tab" aria-controls="v-pills-all"><i class="icon icon-home2"></i>เกณฑ์ราคาลำใย</a>
                     </li>
-                    <li>
-                        <a class="nav-link" id="v-pills-buyers-tab" data-toggle="pill" href="#v-pills-buyers" role="tab"
-                           aria-controls="v-pills-buyers"><i class="icon icon-face"></i> Buyers</a>
-                    </li>
-                    <li>
-                        <a class="nav-link" id="v-pills-sellers-tab" data-toggle="pill" href="#v-pills-sellers" role="tab"
-                           aria-controls="v-pills-sellers"><i class="icon  icon-local_shipping"></i> Sellers</a>
-                    </li>
-                    <li class="float-right">
-                        <a class="nav-link"  href="panel-page-users-create.html" ><i class="icon icon-plus-circle"></i> Add New User</a>
-                    </li>
+           
                 </ul>
             </div>
         </div>
@@ -440,21 +415,10 @@ $FName = $_SESSION['FName'];
         <div class="tab-content my-3" id="v-pills-tabContent">
             <div class="tab-pane animated fadeInUpShort show active" id="v-pills-all" role="tabpanel" aria-labelledby="v-pills-all-tab">
             <div class="row">
-                <div class="col-md-3 mt-2 ">
-                    <select class =  " custom-select  "  id="item_type" onchange="Showitem()">
-                        <option value="0">ค้นหาตามประเภท</option>
-                        <option value="1">ข้าว</option>
-                        <option value="2">ลำไย</option>
-                        <option value="3">ข้าวแปรรูป</option>
-                        <option value="4">ลำไยแปรรูป</option>
-                    </select>
-                </div>
-                <div class="col-md-3 mt-2 ">
-                    <input type="text" class =  "form-control " placeholder="ค้นหาจากชื่อรายการ" id="Search">
-                </div>
-                <div class="col-md-3  mt-2 ">
-                <button type="button" class="btn btn-primary btn-lg" onclick="Showitem()"><i class="icon-search3"></i>ค้นหา</button>
-                    <button type="button"  data-toggle="modal" data-target="#add_item"  class="btn btn-success btn-lg ml-3" ><i class="icon-person_add"></i>&nbsp;เพิ่ม&nbsp;</button>
+
+                <div class="col-md-10">
+                    <spen style=" font-size:20px;margin-left:4%;">เกณฑ์ราคาลำใย</spen> 
+                    <!-- <button type="button" style=" float: right;"  data-toggle="modal" data-target="#add_item_rice"  class="btn btn-success btn-lg ml-3"  onclick="Get_item_rice();"><i class="icon-add"></i>&nbsp;เพิ่ม เกณฑ์ราคาลำใย&nbsp;</button> -->
                 </div>
             </div>
                 <div class="row my-3">
@@ -468,6 +432,7 @@ $FName = $_SESSION['FName'];
                                         <tr class="no-b">
                                             <th>NO.</th>
                                             <th>NAME</th>
+                                            <th>PRICE</th>
                                             <th hidden>ROLE</th>
                                             <th></th>
                                         </tr>
@@ -645,64 +610,29 @@ $FName = $_SESSION['FName'];
          immediately after the control sidebar -->
 <div class="control-sidebar-bg shadow white fixed"></div>
 </div>
-<!--------------------------------------- Modal show_customer ------------------------------------------>
-<div class="modal fade" id="show_item" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">ข้อมูล รายการ</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-            <div class="margin_input">
-            <label class="form-label mr-1" style="color:#000000;">ID Code</label>
-            <input type="text" id="ID" class="form-control " placeholder="ID">
-            </div>
-            <div class="margin_input">
-            <label class="form-label mr-1" style="color:#000000;">รายการ</label>
-            <input type="text" id="item_name_show" class="form-control " placeholder="ชื่อรายการ">
-            </div>
-            <div class="margin_input">
-            <label class="form-label mr-1" style="color:#000000;">ประเภท</label>
-            <input type="text" id="item_type_show" class="form-control " placeholder="Type">
-            </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-success " data-dismiss="modal">OK</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-------------------------- end Modal ----------------------------------------------->
+
 <!--------------------------------------- Modal show_customer edit ------------------------------------------>
 <div class="modal fade" id="show_item_edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">แก้ไข รายการ</h5>
+        <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">แก้ไข ราคาลำใย</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-            <div class="margin_input">
+            <div class="margin_input"hidden>
             <label class="form-label mr-1" style="color:#000000;">ID Code</label>
             <input type="text" id="ID_edit" class="form-control " placeholder="ID" disabled>
             </div>
             <div class="margin_input">
             <label class="form-label mr-1" style="color:#000000;">ชื่อรายการ *</label>
-            <input type="text" id="item_name_edit" class="form-control " placeholder="ชื่อรายการ">
+            <input type="text" id="item_name_edit" class="form-control " placeholder="ชื่อรายการ" disabled>
             </div>
             <div class="margin_input">
-            <label class="form-label mr-1" style="color:#000000;">ประเภท</label>
-                <select class =  " custom-select  " id="item_type_edit">
-                            <option value="1">ข้าว</option>
-                            <option value="2">ลำไย</option>
-                            <option value="3">ข้าวแปรรูป</option>
-                            <option value="4">ลำไยแปรรูป</option>
-                </select>
+            <label class="form-label mr-1" style="color:#000000;">ราคาต่อหน่วย</label>
+            <input type="text" id="item_price_edit" class="form-control " placeholder="ราคาต่อหน่วย">
             </div>
       </div>
       <div class="modal-footer">
@@ -723,21 +653,16 @@ $FName = $_SESSION['FName'];
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
+
             <div class="margin_input">
-            <label class="form-label mr-1" style="color:#000000;">ชื่อราการ *</label>
-            <input type="text" id="item_name_add" class="form-control " placeholder="ชื่อราการ">
+            <label class="form-label mr-1" style="color:#000000;">ชื่อรายการ *</label>
+            <input type="text" id="item_name_add" class="form-control " placeholder="ชื่อรายการ">
             </div>
             <div class="margin_input">
-            <label class="form-label mr-1" style="color:#000000;">ประเภท</label>
-                <select class =  " custom-select  " id="item_type_add">
-                            <option value="1">ข้าว</option>
-                            <option value="2">ลำไย</option>
-                            <option value="3">ข้าวแปรรูป</option>
-                            <option value="4">ลำไยแปรรูป</option>
-                </select>
+            <label class="form-label mr-1" style="color:#000000;">ราคาต่อหน่วย</label>
+            <input type="text" id="item_price_add" class="form-control " placeholder="ราคาต่อหน่วย">
             </div>
-      </div>
+
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button type="button"onclick="show_add_modal()" class="btn btn-success">Save</button>

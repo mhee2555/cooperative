@@ -65,13 +65,24 @@ $FName = $_SESSION['FName'];
     }
     function showmodal(ID,sel)
     {
-        var data = 
-        {
-            'STATUS': 'show_detail_item',
-            'ID':ID,
-            'sel':sel
-        };
-        senddata(JSON.stringify(data));
+        if(sel==1){
+            var data = 
+                {
+                    'STATUS': 'show_detail_item',
+                    'ID':ID,
+                    'sel':sel
+                };
+                senddata(JSON.stringify(data));
+        }else{
+            var data = 
+                {
+                    'STATUS': 'show_detail_moisture',
+                    'ID':ID,
+                    'sel':sel
+                };
+                senddata(JSON.stringify(data));
+        }
+       
     } 
     
     function edit_item()
@@ -94,6 +105,32 @@ $FName = $_SESSION['FName'];
                     'STATUS': 'edit_item',
                     'ID':ID,
                     'item_pirce_edit':item_pirce_edit
+                    };
+                senddata(JSON.stringify(data));
+
+        }
+       
+    }
+    function edit_moisture()
+    {
+        var ID = $('#ID_edit').val();
+        var deduct_price_edit = $('#deduct_price_edit').val();
+        if(deduct_price_edit==''){
+                swal({
+                          title: '',
+                          text: 'กรุณากรอกข้อมูลให้ครบ',
+                          type: 'info',
+                          showCancelButton: false,
+                          showConfirmButton: false,
+                          timer: 1500,
+                          confirmButtonText: 'Ok'
+                    }); 
+        }else{
+                var data = 
+                    {
+                    'STATUS': 'edit_moisture',
+                    'ID':ID,
+                    'deduct_price_edit':deduct_price_edit
                     };
                 senddata(JSON.stringify(data));
 
@@ -192,7 +229,7 @@ $FName = $_SESSION['FName'];
                               $( "#Tableitem tbody" ).empty();
                               for (var i = 0; i < temp['count']; i++) 
                               {
-                                  var ShowEdit = "<a href='javascript:void(0)'  onclick='showmodal("+temp[i]['item_code']+","+'2'+");'><i class='icon-pencil'></i></a> <a href='javascript:void(0)' onclick='delete_item("+temp[i]['item_code']+",1);' style='margin-left:5%;'><i class='icon-delete_forever'></i></a>";
+                                  var ShowEdit = "<a href='javascript:void(0)'  onclick='showmodal("+temp[i]['ID_moisture']+","+'2'+");'><i class='icon-pencil'></i></a> <a href='javascript:void(0)' onclick='delete_item("+temp[i]['ID_moisture']+",1);' style='margin-left:5%;'><i class='icon-delete_forever'></i></a>";
                                  
                                  StrTR = "<tr >"+
                                                 "<td >"+(i+1)+"</td>"+
@@ -213,7 +250,7 @@ $FName = $_SESSION['FName'];
                         $( "#Tableitem_rice tbody" ).empty();
                               for (var i = 0; i < temp['count']; i++) 
                               {
-                                  var ShowEdit = "<a href='javascript:void(0)'  onclick='showmodal("+temp[i]['ID_Grade']+");'><i class='icon-pencil'></i></a> <a href='javascript:void(0)' onclick='delete_item("+temp[i]['ID_Grade']+",2);' style='margin-left:5%;'><i class='icon-delete_forever'></i></a>";
+                                  var ShowEdit = "<a href='javascript:void(0)'  onclick='showmodal("+temp[i]['ID_Grade']+","+'1'+");'><i class='icon-pencil'></i></a> <a href='javascript:void(0)' onclick='delete_item("+temp[i]['ID_Grade']+",2);' style='margin-left:5%;'><i class='icon-delete_forever'></i></a>";
                                  
                                  StrTR = "<tr>"+
                                                 "<td >"+(i+1)+"</td>"+
@@ -245,6 +282,13 @@ $FName = $_SESSION['FName'];
                             $('#ID_edit').val(temp['ID_Grade']);
                             $('#item_pirce_edit').val(temp['Grade']);
                     }
+                    else if( (temp["form"]=='show_detail_moisture') )
+                    {
+                            $('#show_moisture_edit').modal('toggle');
+                            $('#ID_edit').val(temp['ID_moisture']);
+                            $('#name_edit').val(temp['moisture_name']);
+                            $('#deduct_price_edit').val(temp['deduct_price']);
+                    }
                     else if( (temp["form"]=='edit_item') )
                     {
                         swal({
@@ -256,10 +300,27 @@ $FName = $_SESSION['FName'];
                             confirmButtonText: 'Ok',
                             showConfirmButton: false
                         });
-                        $('#show_item_edit').modal('hide');
+                        $('#show_item_edit').modal('toggle');
 
                         setTimeout(function() {
                             Showitem_rice();
+                        }, 1000);
+                    }
+                    else if( (temp["form"]=='edit_moisture') )
+                    {
+                        swal({
+                            title: '',
+                            text: 'บันทึกข้อมูลเรียบร้อยแล้ว',
+                            type: 'success',
+                            showCancelButton: false,
+                            timer: 1000,
+                            confirmButtonText: 'Ok',
+                            showConfirmButton: false
+                        });
+                        $('#show_moisture_edit').modal('toggle');
+
+                        setTimeout(function() {
+                            Showitem();
                         }, 1000);
                     }
                     else if( (temp["form"]=='delete_item') )
@@ -275,6 +336,7 @@ $FName = $_SESSION['FName'];
                         });
                         setTimeout(function() {
                             Showitem_rice();
+                            Showitem();
                         }, 800);
                         
                     }
@@ -602,37 +664,7 @@ $FName = $_SESSION['FName'];
          immediately after the control sidebar -->
 <div class="control-sidebar-bg shadow white fixed"></div>
 </div>
-<!--------------------------------------- Modal show_customer ------------------------------------------>
-<div class="modal fade" id="show_item" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">ข้อมูล รายการ</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-            <div class="margin_input">
-            <label class="form-label mr-1" style="color:#000000;">ID Code</label>
-            <input type="text" id="ID" class="form-control " placeholder="ID">
-            </div>
-            <div class="margin_input">
-            <label class="form-label mr-1" style="color:#000000;">รายการ</label>
-            <input type="text" id="item_name_show" class="form-control " placeholder="ชื่อรายการ">
-            </div>
-            <div class="margin_input">
-            <label class="form-label mr-1" style="color:#000000;">ประเภท</label>
-            <input type="text" id="item_type_show" class="form-control " placeholder="Type">
-            </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-success " data-dismiss="modal">OK</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-------------------------- end Modal ----------------------------------------------->
+
 <!--------------------------------------- Modal show_customer edit ------------------------------------------>
 <div class="modal fade" id="show_item_edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -656,6 +688,35 @@ $FName = $_SESSION['FName'];
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button type="button" onclick='edit_item();' class="btn btn-success">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-------------------------- end Modal ----------------------------------------------->
+<!--------------------------------------- Modal show_moisture edit ------------------------------------------>
+<div class="modal fade" id="show_moisture_edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">แก้ไข รายการ</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">ค่าความชื้น</label>
+            <input type="text" id="ID_edit" class="form-control " hidden>
+            <input type="text" id="name_edit" class="form-control " placeholder="ค่าความชื้น" disabled>
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">เปอร์เซน การหักราคา *</label>
+            <input type="text" id="deduct_price_edit" class="form-control " placeholder="เปอร์เซน การหักราคา">
+            </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" onclick='edit_moisture();' class="btn btn-success">Save</button>
       </div>
     </div>
   </div>
