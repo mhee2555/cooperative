@@ -3,6 +3,7 @@ session_start();
 require '../connect/connect.php';
 date_default_timezone_set("Asia/Bangkok");
 $FName = $_SESSION['FName'];
+$PmID = $_SESSION['PmID'];
 // session_destroy();
 ?>
 
@@ -18,13 +19,18 @@ $FName = $_SESSION['FName'];
     <!-- <link href="../dist/css/sweetalert2.css" rel="stylesheet"> -->
     <script src="../dist/js/sweetalert2.min.js"></script>
     <script src="../dist/js/jquery-3.3.1.min.js"></script>
+    <script src="../datepicker/dist/js/datepicker-en.js"></script>
+    <link href="../datepicker/dist/css/datepicker.min.css" rel="stylesheet" type="text/css">
+    <script src="../datepicker/dist/js/datepicker.th.js"></script>
+    <script src="../datepicker/dist/js/i18n/datepicker.en.js"></script>
 
     <title>คลังสินค้า</title>
     <!-- CSS -->
     <link rel="stylesheet" href="assets/css/app.css">
 
     <script type="text/javascript">
-      $(document).ready(function(e){
+    $(document).ready(function(e)
+    {
         Showtype();
         setTimeout(() => {
             Showitem();
@@ -32,7 +38,7 @@ $FName = $_SESSION['FName'];
         // ค้นหา
         $("#Search").on("keyup", function() 
         {
-        var value = $(this).val().toLowerCase();
+            var value = $(this).val().toLowerCase();
             $("#Tableitem tbody tr").filter(function() 
             {
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
@@ -60,6 +66,26 @@ $FName = $_SESSION['FName'];
         };
         senddata(JSON.stringify(data));
     }
+    function ShowSearch()
+    {
+        var datepicker = $("#datepicker").val();
+        var data = 
+        {
+          'STATUS'  	: 'ShowSearch',
+          'datepicker' : datepicker
+
+        };
+        senddata(JSON.stringify(data));
+    }
+    function showdetaildraw(DocNo)
+    {
+        var data = 
+        {
+            'STATUS'  : 'showdetaildraw',
+            'DocNo'	  : DocNo
+        };
+        senddata(JSON.stringify(data));     
+    }
 //-----------------------------------------------------------------------------------------
     function senddata(data)
     {
@@ -79,7 +105,7 @@ $FName = $_SESSION['FName'];
             {
                 try 
                 {
-                var temp = $.parseJSON(result);
+                    var temp = $.parseJSON(result);
                 } 
                 catch (e) 
                 {
@@ -112,43 +138,101 @@ $FName = $_SESSION['FName'];
                             $("#type").append(StrTr);
                         }
                     }
-            //------------------------------------------------------------------------------
+                    else if(temp["form"]=='ShowSearch')
+                    {
+                        $( "#TableSearch tbody" ).empty();
+                                for (var i = 0; i < temp['Row']; i++) 
+                                {                                    
+                                    if(temp[i]['IsStatus']==1)
+                                    {
+                                        Status = "ยังไม่ได้อนุมัติ";
+                                        Style  = "style='color: #FF6633;'";
+                                    }
+                                    else if(temp[i]['IsStatus']==2)
+                                    {
+                                        Status = "อนุมัติสำเร็จ";
+                                        Style  = "style='color: #20B80E;'";
+                                    }
+                                    StrTR =   "<tr ondblclick='showdetaildraw(\""+temp[i]['DocNo']+"\");'>"+
+                                                "<td>"+temp[i]['DocNo']+"</td>"+
+                                                "<td>"+temp[i]['DocDate']+"</td>"+
+                                                "<td>"+temp[i]['Modify_Date']+"</td>"+
+                                                "<td>"+temp[i]['employee']+"</td>"+
+                                                "<td " +Style+ ">"+Status+"</td>"+
+
+                                                "</tr>";
+
+                                    $('#TableSearch tbody').append( StrTR );
+                                }
+                    }
+                    else if(temp["form"]=='showdetaildraw')
+                    {
+                        $( "#Tabledetail tbody" ).empty();
+                              for (var i = 0; i < temp['Row']; i++) 
+                              {
+                                var cc = temp[i]['item_ccqty'];
+                                var kilo = temp[i]['kilo'];
+                                if(cc >= kilo)
+                                {
+                                    var sum = kilo;
+                                }
+                                else if (kilo > cc)
+                                {
+                                    var sum = cc;
+                                }
+                                var give = "<input type='text' id='Detail_give_"+i+"' class='form-control ' autocomplete='off'  name='giveArray'  placeholder='0.00' value="+sum+" disabled>  ";
+                                var datetime = "<div><strong>"+temp[i]['date']+"<strong></div><small>"+temp[i]['time']+"</small>";
+
+                                 StrTR = "<tr>"+
+                                                "<td style='width: 20%;'>"+temp[i]['item_name']+"</td>"+
+                                                "<td style='width: 20%;'>"+datetime+"</td>"+
+                                                "<td style='width: 20%;'>"+temp[i]['item_ccqty']+"</td>"+
+                                                "<td style='width: 20%;'>"+temp[i]['kilo']+"</td>"+
+                                                "<td style='width: 20%;'>"+give+"</td>"+
+                                                "</tr>";
+   
+                                   $('#Tabledetail tbody').append( StrTR );
+                              }
+                                      $('#showdetaildraw').modal('show');
+
+                    }
+                    //------------------------------------------------------------------------------
                 }
                 else if (temp['status']=="failed") 
                 {
                     switch (temp['msg']) 
                     {
-                    case "notchosen":
-                                temp['msg'] = "<?php echo $array['choosemsg'][$language]; ?>";
+                        case "searchfailed":
+                                temp['msg'] = "ไม่พบเอกสารของวันที่ "+temp['date']+" ";
                         break;
-                    case "cantcreate":
+                        case "cantcreate":
                                 temp['msg'] = "<?php echo $array['cantcreatemsg'][$language]; ?>";
                         break;
-                    case "noinput":
+                        case "noinput":
                                 temp['msg'] = "<?php echo $array['noinputmsg'][$language]; ?>";
                         break;
-                    case "notfound":
+                        case "notfound":
                                 temp['msg'] = "<?php echo $array['notfoundmsg'][$language]; ?>";
                         break;
-                    case "addsuccess":
-                        temp['msg'] = "<?php echo $array['addsuccessmsg'][$language]; ?>";
+                        case "addsuccess":
+                                temp['msg'] = "<?php echo $array['addsuccessmsg'][$language]; ?>";
                         break;
-                    case "addfailed":
+                        case "addfailed":
                                 temp['msg'] = "<?php echo $array['addfailedmsg'][$language]; ?>";
                         break;
-                    case "editsuccess":
+                        case "editsuccess":
                                 temp['msg'] = "<?php echo $array['editsuccessmsg'][$language]; ?>";
                         break;
-                    case "editfailed":
+                        case "editfailed":
                                 temp['msg'] = "<?php echo $array['editfailedmsg'][$language]; ?>";
                         break;
-                    case "cancelsuccess":
+                        case "cancelsuccess":
                                 temp['msg'] = "<?php echo $array['cancelsuccessmsg'][$language]; ?>";
                         break;
-                    case "cancelfailed":
+                        case "cancelfailed":
                                 temp['msg'] = "<?php echo $array['cancelfailed'][$language]; ?>";
                         break;
-                    case "nodetail": 
+                        case "nodetail": 
                                 temp['msg'] = "<?php echo $array['nodetail'][$language]; ?>";
                         break;
                         case "adduserfacfailed":
@@ -172,7 +256,7 @@ $FName = $_SESSION['FName'];
     }
     </script>
     <style>
-       body{
+       body, .swal2-popup{
             font-family: 'Krub', sans-serif;
         }
         .loader {
@@ -265,18 +349,11 @@ $FName = $_SESSION['FName'];
                 <ul class="nav nav-material nav-material-white responsive-tab" id="v-pills-tab" role="tablist">
                     <li>
                         <a class="nav-link active" id="v-pills-all-tab" data-toggle="pill" href="#v-pills-all"
-                           role="tab" aria-controls="v-pills-all"><i class="icon icon-home2"></i>All Users</a>
+                           role="tab" aria-controls="v-pills-all"><i class="icon icon-home2"></i>คลังสินค้า</a>
                     </li>
                     <li>
                         <a class="nav-link" id="v-pills-buyers-tab" data-toggle="pill" href="#v-pills-buyers" role="tab"
-                           aria-controls="v-pills-buyers"><i class="icon icon-face"></i> Buyers</a>
-                    </li>
-                    <li>
-                        <a class="nav-link" id="v-pills-sellers-tab" data-toggle="pill" href="#v-pills-sellers" role="tab"
-                           aria-controls="v-pills-sellers"><i class="icon  icon-local_shipping"></i> Sellers</a>
-                    </li>
-                    <li class="float-right">
-                        <a class="nav-link"  href="panel-page-users-create.html" ><i class="icon icon-plus-circle"></i> Add New User</a>
+                           aria-controls="v-pills-buyers"><i class="icon icon-face"></i>การขอเบิก</a>
                     </li>
                 </ul>
             </div>
@@ -313,69 +390,7 @@ $FName = $_SESSION['FName'];
                                         </tr>
                                         </thead>
 
-                                        <tbody  id="tbody"  >
-
-                                        <tr hidden>
-                                            <td >
-                                                <div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input checkSingle" id="user_id_1" required><label class="custom-control-label" for="user_id_1"></label></div>
-                                            </td>
-
-                                            <td>
-                                                <div>
-                                                    <div>
-                                                        <strong>Alexander Pierce</strong>
-                                                    </div>
-                                                    <small> alexander@paper.com</small>
-                                                </div>
-                                            </td>
-
-                                            <td>2</td>
-                                            <td>256</td>
-
-                                            <td>+92 333 123 136</td>
-                                            <td hidden><span class="icon icon-circle s-12  mr-2 text-warning"></span> Inactive</td>
-                                            <td hidden><span class="r-3 badge badge-success ">Administrator</span></td>
-
-
-                                            <td>
-                                                <a href="panel-page-profile.html"><i class="icon-eye mr-3"></i></a>
-                                                <a href="panel-page-profile.html"><i class="icon-pencil"></i></a>
-                                            </td>
-                                        </tr>
-
-                                        <tr hidden>
-                                            <td>
-                                                <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" class="custom-control-input checkSingle"
-                                                           id="user_id_5" required><label
-                                                        class="custom-control-label" for="user_id_5"></label>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div class="avatar avatar-md mr-3 mt-1 float-left">
-                                                    <img  src="assets/img/dummy/u5.png" alt="">
-                                                </div>
-                                                <div>
-                                                    <div>
-                                                        <strong>Alexander Pierce</strong>
-                                                    </div>
-                                                    <small> alexander@paper.com</small>
-                                                </div>
-                                            </td>
-                                            <td>2</td>
-                                            <td>6,000</td>
-
-                                            <td>+92 333 123 136</td>
-                                            <td><span class="icon icon-circle s-12  mr-2 text-success"></span> Active</td>
-
-                                            <td><span class="r-3 badge badge-warning">Seller</span></td>
-                                            <td>
-                                                <a href="panel-page-profile.html"><i class="icon-eye mr-3"></i></a>
-                                                <a href="panel-page-profile.html"><i class="icon-pencil"></i></a>
-                                            </td>
-                                        </tr>
-                                    
+                                        <tbody  id="tbody"  >                                    
                                         </tbody>
                                     </table>
                                     <!-- =============== -->
@@ -483,79 +498,48 @@ $FName = $_SESSION['FName'];
                 </nav>
             </div>
 
-            <!-- START BUYERS -->
+            <!-- SEARCH -->
             <div class="tab-pane animated fadeInUpShort" id="v-pills-buyers" role="tabpanel" aria-labelledby="v-pills-buyers-tab">
                 <div class="row">
-
-                    <div class="col-md-3 my-3">
-                        <div class="card no-b">
-                            <div class="card-body text-center p-5">
-                                <div class="avatar avatar-xl mb-3">
-                                    <img  src="assets/img/dummy/u11.png" alt="User Image">
-                                </div>
-                                <div>
-                                    <h6 class="p-t-10">Alexander Pierce</h6>
-                                    alexander@paper.com
-                                </div>
-                                <a href="#" class="btn btn-success btn-sm mt-3">View Profile</a>
+                    <div class="col-md-3 mt-2 ">
+                    <input type="text" autocomplete="off" class ="form-control datepicker-here" id="datepicker" data-language='en' data-date-format='yyyy-mm-dd' placeholder="ค้นหาจากวันที่">
+                    </div>
+                    <div class="col-md-3 mt-2 ">
+                        <input type="text" class =  "form-control " placeholder="ค้นหา" id="Search">
+                    </div>
+                    <div class="col-md-3  mt-2 ">
+                    <button type="button" class="btn btn-primary btn-lg" onclick="ShowSearch()">
+                    <i class="icon-search3"></i> ค้นหา </button>
+                    </div>
+                </div>
+                <div class="row my-3">
+                    <div class="col-md-12">
+                        <div class="card r-0 shadow">
+                            <div class="table-responsive">
+                                <form>
+                                    <!-- SHOW USER -->
+                                    <table class="table table-striped table-hover r-0" id="TableSearch">
+                                        <thead id="theadsum" >
+                                        <tr class="no-b">
+                                            <th>เลขที่เอกสาร</th>
+                                            <th>วันที่เอกสาร</th>
+                                            <th>วันที่บันทึก</th>
+                                            <th>ผู้บันทึก</th>
+                                            <th>สถานะ</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody  id="tbody">                                    
+                                        </tbody>
+                                    </table>
+                                    <!-- =============== -->
+                                </form>
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-md-3 my-3">
-                        <div class="card no-b">
-                            <div class="card-body text-center p-5">
-                                <div class="avatar avatar-xl mb-3">
-                                    <img  src="assets/img/dummy/u12.png" alt="User Image">
-                                </div>
-                                <div>
-                                    <h6 class="p-t-10">Alexander Pierce</h6>
-                                    alexander@paper.com
-                                </div>
-                                <a href="#" class="btn btn-success btn-sm mt-3">View Profile</a>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
+
             <!-- END BUYERS -->
-
-            <div class="tab-pane animated fadeInUpShort" id="v-pills-sellers" role="tabpanel" aria-labelledby="v-pills-sellers-tab">
-                <div class="row">
-
-                    <div class="col-md-3 mb-3">
-                        <div class="card no-b p-3">
-                            <div>
-                                <div class="image mr-3 avatar-lg float-left">
-                                    <span class="avatar-letter avatar-letter-a avatar-lg  circle"></span>
-                                </div>
-                                <div class="mt-1">
-                                    <div>
-                                        <strong>Alexander Pierce</strong>
-                                    </div>
-                                    <small> alexander@paper.com</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="card no-b p-3">
-                            <div>
-                                <div class="image mr-3 avatar-lg float-left">
-                                    <span class="avatar-letter avatar-letter-c avatar-lg  circle"></span>
-                                </div>
-                                <div class="mt-1">
-                                    <div>
-                                        <strong>Clexander Pierce</strong>
-                                    </div>
-                                    <small>clexander@paper.com</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
     <!--Add New Message Fab Button-->
@@ -567,6 +551,45 @@ $FName = $_SESSION['FName'];
          immediately after the control sidebar -->
 <div class="control-sidebar-bg shadow white fixed"></div>
 </div>
+
+
+
+<div class="modal fade" id="showdetaildraw" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content" >
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">รายละเอียดการขอเบิก</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <table class="table table-striped table-hover r-0" id="Tabledetail">
+                                        <thead id="theadsum" >
+                                        <tr class="no-b">
+                                            <th>ชื่อรายการ</th>
+                                            <th>วันที่หมดอายุ</th>
+                                            <th>จำนวนคงเหลือ(กก)</th>
+                                            <th>จำนวนขอเบิก(กก)</th>
+                                            <th>จำนวนที่ให้(กก)</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody  id="tbody">
+                                        </tbody>
+                                    </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="cancelbill()">ไม่อนุมัติ</button>
+        <button type="button"  class="btn btn-success" onclick="comfirmbill()">อนุมัติ</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
 
 <!--/#app -->
 <script src="assets/js/app.js"></script>

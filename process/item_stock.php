@@ -92,6 +92,110 @@ require '../connect/connect.php';
         die;
       }
   }
+
+  function ShowSearch($conn, $DATA)
+  {
+    $datepicker  = $DATA["datepicker"]==''?date('Y-m-d'):$DATA["datepicker"];
+    $boolean = false;
+    $count = 0;
+
+    $Showsearch = "SELECT
+                    d.DocNo,
+                    d.DocDate,
+                    TIME(d.Modify_Date) AS  Modify_Date, 
+                    emp.FName AS employee ,
+                    d.IsStatus
+                  FROM
+                    draw d
+                  INNER JOIN employee emp ON emp.ID = d.Employee_ID
+                  WHERE d.DocDate = '$datepicker' AND IsStatus = 1 ORDER BY d.DocNo DESC ";
+
+      $meQuery = mysqli_query($conn, $Showsearch);
+      while ($Result = mysqli_fetch_assoc($meQuery)) 
+      {
+        $return[$count]['DocNo']         = $Result['DocNo'];
+        $return[$count]['DocDate']       = $Result['DocDate'];
+        $return[$count]['Modify_Date']   = $Result['Modify_Date'];
+        $return[$count]['employee']      = $Result['employee'];
+        $return[$count]['IsStatus']      = $Result['IsStatus'];
+
+        $count ++ ;
+        $boolean = true;
+    
+      }
+      $return['Row'] = $count;
+
+    if ($boolean) 
+    {
+      $return['status'] = "success";
+      $return['form'] = "ShowSearch";
+      echo json_encode($return);
+      mysqli_close($conn);
+      die;
+    }
+    else
+    {
+      $return['status'] = "failed";
+      $return['msg'] = "searchfailed";
+      $return['status'] = "failed";
+      $return['date'] = $datepicker;
+      echo json_encode($return);
+      mysqli_close($conn);
+      die;
+    }
+  }
+
+  function showdetaildraw($conn, $DATA)
+  {
+    $count = 0;
+    $boolean = false;
+    $DocNo   = $DATA["DocNo"] ;
+
+    $Sql = "SELECT
+              dds.draw_DocNo,
+              dds.kilo,
+              item.item_name ,
+              sup.item_ccqty,
+              DATE(sup.Date_exp) as date,
+              TIME(sup.Date_exp) as time
+            FROM draw_detail_sub dds
+            INNER JOIN item ON item.item_code = dds.item_code
+            INNER JOIN stock_unprocess sup ON sup.stock_code = dds.stock_code 
+            WHERE dds.draw_DocNo = '$DocNo' ";
+
+      $meQuery = mysqli_query($conn, $Sql);
+      while ($Result = mysqli_fetch_assoc($meQuery)) 
+      {
+        $return[$count]['kilo'] = $Result['kilo'];
+        $return[$count]['item_name'] = $Result['item_name'];
+        $return[$count]['item_ccqty'] = $Result['item_ccqty'];
+        $return[$count]['date'] = $Result['date'];
+        $return[$count]['time'] = $Result['time'];
+        $count++;
+        $boolean = true;
+      }
+      $return['Row'] = $count;
+
+      if ($boolean)
+      {
+        $return['sql'] = $Sql;
+        $return['status'] = "success";
+        $return['form'] = "showdetaildraw";
+        echo json_encode($return);
+        mysqli_close($conn);
+        die;
+      } 
+      else 
+      {
+        $return['sql'] = $Sql;
+        $return['status'] = "success";
+        $return['form'] = "showdetaildraw";
+        echo json_encode($return);
+        mysqli_close($conn);
+        die;
+      }
+
+  }
 //-----------------------------------------------------------------------
 
   $data = $_POST['DATA'];
@@ -104,7 +208,15 @@ require '../connect/connect.php';
       else if($DATA['STATUS'] == 'Showtype')
       {
         Showtype($conn, $DATA);
-      }    
+      } 
+      else if($DATA['STATUS'] == 'ShowSearch')
+      {
+        ShowSearch($conn, $DATA);
+      } 
+      else if($DATA['STATUS'] == 'showdetaildraw')
+      {
+        showdetaildraw($conn, $DATA);
+      }         
     else
     {
         $return['status'] = "error";

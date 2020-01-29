@@ -25,13 +25,21 @@ $FName = $_SESSION['FName'];
     <link href="../datepicker/dist/css/datepicker.min.css" rel="stylesheet" type="text/css">
     <script src="../datepicker/dist/js/datepicker.th.js"></script>
     <script src="../datepicker/dist/js/i18n/datepicker.en.js"></script>
-    <title>บันทึกการซื้อ</title>
+    <title>บันทึกกาขอเบิก</title>
     <!-- CSS -->
     <link rel="stylesheet" href="assets/css/app.css">
 
     <script type="text/javascript">
     $(document).ready(function(e)
     {
+      // ===========DATE ITEM =======
+      var d = new Date();
+      var month = d.getMonth()+1;
+      var day = d.getDate();
+      var output = d.getFullYear() + '-' +
+          ((''+month).length<2 ? '0' : '') + month + '-' +
+          ((''+day).length<2 ? '0' : '') + day;
+      $("#datestock").val(output);
         // ========
         Showuser();
         ShowSearch();
@@ -47,10 +55,11 @@ $FName = $_SESSION['FName'];
         });
         // 
     });
+    // 
+    
     // Function 
     function Createdocument()
     {
-        var Customer = $("#Customer").val();
         var userid = '<?php echo $Userid; ?>';
         swal({
           title: "",
@@ -65,56 +74,72 @@ $FName = $_SESSION['FName'];
           closeOnConfirm: false,
           closeOnCancel: false,
           showCancelButton: true}).then(result => {
-            if (result.value) {
-            var data = {
-              'STATUS'    : 'CreateDocument',
-              'userid'	: userid,
-              'Customer'	: Customer
-            };
-            senddata(JSON.stringify(data));
-          } else if (result.dismiss === 'cancel') {
-            swal.close();
-          } 
+            if (result.value) 
+            {
+                var data = 
+                {
+                    'STATUS'    : 'CreateDocument',
+                    'userid'	: userid
+                };
+                senddata(JSON.stringify(data));
+            }
+            else if (result.dismiss === 'cancel')
+            {
+                swal.close();
+            } 
           })
-
     }
     function Additem()
     {
         var DocNo = $("#DocNo").val();
-
         if(DocNo != "")
         {
             $('#Additem').modal('show');
-
             ShowItem();
         }
-
     }
     function ShowItem()
     {
+        var datestock = $("#datestock").val();
         var data = 
         {
-            'STATUS'  : 'ShowItem'
+            'STATUS'  : 'ShowItem',
+            'datestock'	: datestock
         };
         senddata(JSON.stringify(data));
-    }
-    function Sumitem(grade , rowid)
+    }   
+    function Sumitem(ccqty ,rowid)
     {
-        var Kilo =  parseFloat($("#Kilo_"+rowid).val());
-        var SUM =parseFloat( Kilo * grade );
-        if(isNaN(SUM) )
+        // ค่าเบิิก
+        var draw =  parseFloat($("#draw_"+rowid).val());
+
+        // เก็บคงเหลือ
+        var fix =  parseFloat($("#fix_"+rowid).val());
+
+        //หักลบ
+        var total = parseFloat(ccqty - draw);
+
+        if(total <= 0)
         {
-            SUM = 0;
+          $("#draw_"+rowid).val(ccqty); 
+          $("#ccqty_total_"+rowid).val(0); 
         }
-        $("#Total_"+rowid).val(SUM);
+        else
+        {
+          if(isNaN(total))
+          {
+            total = fix;
+          }
+          $("#ccqty_total_"+rowid).val(total); 
+        }
+
     }
     function Importdata()
     {
         var DocNo = $("#DocNo").val();
-        /* declare an checkbox array */
         var iArray = [];
         var kiloArray = [];
-        var totalArray = [];
+        var stock_codeArray = [];
         var item_codeArray = [];
         
         $(".checkitem:checked").each(function() 
@@ -125,22 +150,24 @@ $FName = $_SESSION['FName'];
         for(var j=0;j<iArray.length; j++)
         {
             item_codeArray.push( $("#item_code_"+iArray[j]).val() );
-            kiloArray.push( $("#Kilo_"+iArray[j]).val() );
-            totalArray.push( $("#Total_"+iArray[j]).val() );
+            kiloArray.push( $("#draw_"+iArray[j]).val() );
+            stock_codeArray.push( $("#stock_code_"+iArray[j]).val() );
         }
         // =======================================================
         var item_code = item_codeArray.join(',') ;
         var kilo = kiloArray.join(',') ;
-        var total = totalArray.join(',') ;
+        var stock_code = stock_codeArray.join(',') ;
         // =======================================================
+
         $( "#TableDetail tbody" ).empty();
+
         var data = 
         {
           'STATUS'  	: 'Importdata',
           'item_code'   : item_code,
           'kilo'		: kilo,
-          'total'	  	: total,
-          'DocNo'		: DocNo
+          'DocNo'		: DocNo,
+          'stock_code'  : stock_code
         };
         $('#Additem').modal('toggle');
         senddata(JSON.stringify(data));
@@ -152,13 +179,6 @@ $FName = $_SESSION['FName'];
         var data = {
             'STATUS'  : 'ShowDetail',
             'DocNo'   : DocNo
-        };
-        senddata(JSON.stringify(data));
-    }
-    function Showuser()
-    {
-        var data = {
-            'STATUS'  : 'Showuser'
         };
         senddata(JSON.stringify(data));
     }
@@ -176,30 +196,6 @@ $FName = $_SESSION['FName'];
     }
     function Savebill()
     {
-
-        // =======================================================
-        var ItemCodeArray = [];
-        var KiloArray = [];
-
-        $('input[name="detailrow"]').each(function() 
-        {
-          if($(this).val()!="")
-          {
-              ItemCodeArray.push($(this).val());
-          }
-        });
-        var ItemCode = ItemCodeArray.join(',') ;
-        // ========================================================
-        $('input[name="KiloArray"]').each(function() 
-        {
-          if($(this).val()!="")
-          {
-            KiloArray.push($(this).val());
-          }
-        });
-        var Kilo = KiloArray.join(',') ;
-        // ========================================================
-
         var DocNo = $("#DocNo").val();
         swal({
           title: "",
@@ -220,9 +216,7 @@ $FName = $_SESSION['FName'];
                 var data = 
                 {
                     'STATUS'      : 'Savebill',
-                    'DocNo'      : DocNo ,
-                    'ItemCode'      : ItemCode ,
-                    'Kilo'      : Kilo
+                    'DocNo'      : DocNo 
                 };
                 senddata(JSON.stringify(data));
                 $('#v-pills-buyers-tab').tab('show');
@@ -327,7 +321,7 @@ $FName = $_SESSION['FName'];
     {
          var form_data = new FormData();
          form_data.append("DATA",data);
-         var URL = '../process/buy.php';
+         var URL = '../process/draw.php';
          $.ajax
          ({
             url: URL,
@@ -378,17 +372,22 @@ $FName = $_SESSION['FName'];
                         $( "#Tableitem tbody" ).empty();
                               for (var i = 0; i < temp['Row']; i++) 
                               {
-                                  var chkinput = "<div class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input checkSingle checkitem'  value='"+i+"'  id= ' item_id_"+i+" ' required><label class='custom-control-label ' for=' item_id_"+i+" ' style='margin-top: 15px;'></label></div> <input type='hidden' id='item_code_"+i+"' value='"+temp[i]['item_code']+"'>";
-                                  var Kilo = "<input type='text' id='Kilo_"+i+"' class='form-control ' autocomplete='off'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['Grade']+"\" , \""+i+"\" ) '>  ";
-                                  var Total = "<input type='text' id='Total_"+i+"' class='form-control ' autocomplete='off'  value='0.00' disabled>  ";
-
+                                  var chkinput = "<div class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input checkSingle checkitem'  value='"+i+"'  id= ' item_id_"+i+" ' required><label class='custom-control-label ' for=' item_id_"+i+" ' style='margin-top: 15px;'></label></div> <input type='hidden' id='item_code_"+i+"' value='"+temp[i]['item_code']+"'><input type='hidden' id='stock_code_"+i+"' value='"+temp[i]['stock_code']+"'>";
+                                  var draw = "<input type='text' id='draw_"+i+"' class='form-control ' autocomplete='off'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['item_ccqty']+"\" , \""+i+"\" ) '>  ";
+                                  var qty_total = "<input type='text' id='qty_total_"+i+"' class='form-control ' autocomplete='off'  placeholder='0.00' value='"+temp[i]['item_qty']+"'  disabled>  ";
+                                  var qty_cc = "<input type='text' id='ccqty_total_"+i+"' class='form-control ' autocomplete='off'  placeholder='0.00' value='"+temp[i]['item_ccqty']+"'  disabled>  ";
+                                  
+                                  // hidden
+                                  var fix = "<input type='hidden' id='fix_"+i+"' value='"+temp[i]['item_ccqty']+"'  >  ";
 
                                  StrTR = "<tr>"+
                                                 "<td >"+chkinput+"</td>"+
-                                                "<td style=' width: 20%; '>"+temp[i]['item_name']+"</td>"+
-                                                "<td style=' width: 25%; ' >"+temp[i]['Grade']+"</td>"+
-                                                "<td >"+Kilo+"</td>"+
-                                                "<td >"+Total+"</td>"+
+                                                "<td style='width: 20%;'>"+temp[i]['item_name']+"</td>"+
+                                                "<td >"+qty_total+"</td>"+
+                                                "<td >"+qty_cc+"</td>"+
+                                                "<td style='width: 22%;'>"+temp[i]['date_exp']+"</td>"+
+                                                "<td >"+draw+"</td>"+
+                                                "<td hidden>"+fix+"</td>"+
                                                 "</tr>";
    
                                    $('#Tableitem tbody').append( StrTR );
@@ -404,28 +403,15 @@ $FName = $_SESSION['FName'];
                               {
                                   var chkinput = "<div class='custom-control custom-radio'><input type='radio' class='custom-control-input checkSingle checkdetail' name='detailrow'  value='"+temp[i]['item_code']+"'  id= ' Detail_id_"+i+" ' required><label class='custom-control-label ' for=' Detail_id_"+i+" ' style='margin-top: 15px;'></label></div> ";
                                   var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' autocomplete='off'  name='KiloArray'  placeholder='0.00' value='"+temp[i]['kilo']+"' style='width: 40%;'>  ";
-                                  var Total = "<input type='text' id='Detail_Total_"+i+"' class='form-control ' autocomplete='off'  value='"+temp[i]['total']+"' disabled style='width: 40%;'>  ";
 
                                    StrTR =   "<tr>"+
                                                 "<td >"+chkinput+"</td>"+
                                                 "<td style=' width: 20%; '>"+temp[i]['item_name']+"</td>"+
-                                                "<td style=' width: 25%; ' >"+temp[i]['Grade']+"</td>"+
                                                 "<td >"+Kilo+"</td>"+
-                                                "<td >"+Total+"</td>"+
                                                 "</tr>";
    
                                    $('#TableDetail tbody').append( StrTR );
                               }
-                    }
-                    else if(temp["form"]=='Showuser')
-                    {
-                        $("#Customer").empty();
-
-                        for (var i = 0; i < temp['Row']; i++) 
-                        {
-                            var Str = "<option value="+temp[i]['ID']+">"+temp[i]['FName']+"</option>";
-                            $("#Customer").append(Str);
-                        }
                     }
                     else if(temp["form"]=='ShowSearch')
                     {
@@ -456,7 +442,6 @@ $FName = $_SESSION['FName'];
                                                 "<td>"+temp[i]['DocDate']+"</td>"+
                                                 "<td>"+temp[i]['Modify_Date']+"</td>"+
                                                 "<td>"+temp[i]['employee']+"</td>"+
-                                                "<td>"+temp[i]['customer']+"</td>"+
                                                 "<td " +Style+ ">"+Status+"</td>"+
 
                                                 "</tr>";
@@ -466,15 +451,6 @@ $FName = $_SESSION['FName'];
                     }
                     else if(temp["form"]=='ShowDocNo')
                     {
-                        // SELECT USER
-                        $("#Customer").empty();
-
-                        for (var i = 0; i < temp['Rowuser']; i++) 
-                        {
-                            var Str = "<option value="+temp[i]['ID']+">"+temp[i]['FName']+"</option>";
-                            $("#Customer").append(Str);
-                        }
-                        // 
 
                         // CLEAR DETAIL
                         $( "#TableDetail tbody" ).empty();
@@ -483,7 +459,6 @@ $FName = $_SESSION['FName'];
                         $("#DocNo").val(temp[0]['DocNo']);
                         $("#docdate").val(temp[0]['DocDate']);
                         $("#ModifyDate").val(temp[0]['Modify_Date']);
-                        $("#Customer").val(temp[0]['customer']);
                         $("#Employee").val(temp[0]['employee']);
 
                         // DISABLED INPUT
@@ -617,12 +592,18 @@ $FName = $_SESSION['FName'];
             top: 50%;
             left: 50%;
         }
+
         .boxshadowx button{
             box-shadow: none  !important;
         }
         .boxshadowx button:hover{
             color: #bcaaa4 !important;
           }
+        .datepicker{
+          z-index:9999 !important
+        }
+
+
     </style>
     <!-- Js -->
     <!--
@@ -689,7 +670,7 @@ $FName = $_SESSION['FName'];
                 <div class="col">
                     <h4>
                         <i class="icon icon-folder5"></i>
-                        บันทึกการซื้อลำไย
+                        บันทึกการขอเบิก
                     </h4>
                 </div>
             </div>
@@ -697,7 +678,7 @@ $FName = $_SESSION['FName'];
                 <ul class="nav nav-material nav-material-white responsive-tab" id="v-pills-tab" role="tablist">
                     <li>
                         <a class="nav-link active" id="v-pills-all-tab" data-toggle="pill" href="#v-pills-all" role="tab" 
-                        aria-controls="v-pills-all"><i class="icon icon-home2"></i>การซื้อลำไย</a>
+                        aria-controls="v-pills-all"><i class="icon icon-home2"></i>การขอเบิก</a>
                     </li>
                     <li>
                         <a class="nav-link" id="v-pills-buyers-tab" data-toggle="pill" href="#v-pills-buyers" role="tab"
@@ -738,21 +719,6 @@ $FName = $_SESSION['FName'];
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class='form-group row  text-black'>
-                        <label class=" col-sm-4 form-label  h4" >ลูกค้า</label>
-                        <select  autocomplete="off"   class=" col-sm-7 form-control " id="Customer"   placeholder="ลูกค้า" > </select>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class='form-group row  text-black'>
-                        <label class=" col-sm-4 form-label h4" >จำนวนเงินทั้งหมด</label>
-                        <input type="text" autocomplete="off"   class=" col-sm-7 form-control " id="Total"  placeholder="จำนวนเงินทั้งหมด" disabled="true">
-                    </div>
-                </div>
-            </div>
-
             <div class="row box  col-md-12 my-3 d-flex justify-content-end">
 
                             <div class=" ml-5 boxshadowx " id="HC">
@@ -808,11 +774,9 @@ $FName = $_SESSION['FName'];
                                     <table class="table table-striped table-hover r-0" id="TableDetail">
                                         <thead id="theadsum" >
                                         <tr class="no-b">
-                                            <th>NO.</th>
-                                            <th>ชื่อรายการ</th>
-                                            <th>ราคาต่อหน่วย</th>
-                                            <th>กิโล</th>
-                                            <th>ราคารวม</th>
+                                            <th style="width: 10%;">NO.</th>
+                                            <th style="width: 70%;">ชื่อรายการ</th>
+                                            <th>ขอเบิก</th>
                                         </tr>
                                         </thead>
 
@@ -857,7 +821,6 @@ $FName = $_SESSION['FName'];
                                             <th>วันที่เอกสาร</th>
                                             <th>วันที่บันทึก</th>
                                             <th>ผู้บันทึก</th>
-                                            <th>ลูกค้า</th>
                                             <th>สถานะ</th>
                                         </tr>
                                         </thead>
@@ -887,7 +850,7 @@ $FName = $_SESSION['FName'];
 <!--------------------------------------- Modal add_customer  ------------------------------------------>
 <div class="modal fade" id="Additem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
+    <div class="modal-content" >
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">เพิ่ม รายการ</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -895,19 +858,27 @@ $FName = $_SESSION['FName'];
         </button>
       </div>
       <div class="modal-body">
+        <div class="row ">
+          <div class="col-md-4 mt-2 ">
+            <input type="text" autocomplete="off" class ="form-control datepicker-here" id="datestock" data-language='en' data-date-format='yyyy-mm-dd' placeholder="ค้นหาจากวันที่">
+        </div>
+          <div class="col-md-4  mt-2 ">
+            <button type="button" class="btn btn-primary btn-lg" onclick="ShowItem()">
+            <i class="icon-search3"></i> ค้นหา </button>
+          </div>
+      </div>
       <table class="table table-striped table-hover r-0" id="Tableitem">
                                         <thead id="theadsum" >
                                         <tr class="no-b">
                                             <th></th>
                                             <th>ชื่อรายการ</th>
-                                            <th>ราคาต่อหน่วย</th>
-                                            <th>กิโล</th>
-                                            <th>ราคารวม</th>
+                                            <th>จำนวนทั้งหมด(กก)</th>
+                                            <th>คงเหลือ(กก)</th>
+                                            <th>หมดอายุ</th>
+                                            <th>ขอเบิก(กก)</th>
                                         </tr>
                                         </thead>
-
-                                        <tbody  id="tbody"  >
-
+                                        <tbody  id="tbody">
                                         </tbody>
                                     </table>
       </div>

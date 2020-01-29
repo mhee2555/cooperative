@@ -17,7 +17,7 @@
                         <img class="user_avatar" src="assets/img/dummy/u2.png" alt="User Image">
                     </div>
                     <div class="float-left info">
-                        <h6 class="font-weight-light mt-2 mb-1"><?php echo $FName   ?></h6>
+                        <h6 class="font-weight-light mt-2 mb-1"><?php echo $FName ?></h6>
                         <a href="#"><i class="icon-circle text-primary blink"></i> Online</a>
                     </div>
                 </div>
@@ -46,15 +46,13 @@
                 <i class="icon icon-angle-left s-18 pull-right"></i></a>
                 <!-- เมนูข้างใน แดชบอร์ด -->
                 <ul class="treeview-menu" >
-                    <li><a href="buy.php"><i class="icon icon-folder5"></i>บันทึกการซื้อลำไย</a>
+                    <li><a href="buy.php"<?php if($PmID <> 4 && $PmID <> 1) echo 'hidden'; ?>><i class="icon icon-folder5"></i>บันทึกการซื้อลำไย</a>
                     </li>
-                    <li><a href="buy_rice.php"><i class="icon icon-folder5"></i>บันทึกการซื้ข้าว</a>
+                    <li><a href="buy_rice.php" <?php if($PmID <> 4 && $PmID <> 1) echo 'hidden'; ?>><i class="icon icon-folder5"></i>บันทึกการซื้อข้าว</a>
                     </li>
-                    <li><a href="panel-page-dashboard1-rtl.html"><i class="icon icon-folder5"></i>Panel Dashboard 1 - RTL</a>
+                    <li><a href="draw.php" <?php if($PmID <> 3 ) echo 'hidden'; ?>><i class="icon icon-folder5"></i>บันทึกการขอเบิกลำไย</a>
                     </li>
-                    <li><a href="panel-page-dashboard2.html"><i class="icon icon-folder5"></i>Panel Dashboard 2</a>
-                    </li>
-                    <li><a href="panel-page-dashboard3.html"><i class="icon icon-folder5"></i>Panel Dashboard 3</a>
+                    <li><a href="panel-page-dashboard2.html" <?php if($PmID <> 3 ) echo 'hidden'; ?>><i class="icon icon-folder5"></i>บันทึกการขอเบิกข้าว</a>
                     </li>
                 </ul>
             </li>
@@ -62,7 +60,7 @@
 
 
         <!-- โปรดักสินค้า ========================== -->
-            <li class="treeview"><a href="#">
+            <li class="treeview" <?php if($PmID <> 4 && $PmID <> 1) echo 'hidden'; ?>><a href="#">
                 <i class="icon icon icon-package blue-text s-18"></i>
                 <span>สินค้า</span>
                 <i class="icon icon-angle-left s-18 pull-right"></i></a>
@@ -72,15 +70,12 @@
                     </li>
                     <li><a href="item_stock.php"><i class="icon icon-circle-o"></i>คลังสินค้า</a>
                     </li>
-                    <li><a href="panel-page-products-create.html"><i class="icon icon-add"></i>Add
-                        New </a>
-                    </li>
                 </ul>
             </li>
             <!-- ================================= -->
 
             <!-- ผู้ใช้งาน ============================ -->
-            <li class="treeview"><a href="#"><i class="icon icon-account_box light-green-text s-18"></i>
+            <li class="treeview"<?php if( $PmID <> 1) echo 'hidden'; ?>><a href="#"><i class="icon icon-account_box light-green-text s-18"></i>
                   <span>ผู้ใช้งาน</span>          
             <i class="icon icon-angle-left s-18 pull-right"></i></a>
                 <ul class="treeview-menu">
@@ -88,13 +83,11 @@
                     </li>
                     <li><a href="employee.php"><i class="icon icon-user"></i>ข้อมูลพนักงาน</a>
                     </li>
-                    <li><a href="panel-page-profile.html"><i class="icon icon-user"></i>User Profile </a>
-                    </li>
                 </ul>
             </li>
             <!-- ================================== -->
             <!-- ตั้งค่า ============================ -->
-            <li class="treeview"><a href="#"><i class="icon icon-settings2 pull-right-text s-18"></i>
+            <li class="treeview"<?php if( $PmID <> 1) echo 'hidden'; ?>><a href="#"><i class="icon icon-settings2 pull-right-text s-18"></i>
                   <span>ตั้งค่า</span>          
             <i class="icon icon-angle-left s-18 pull-right"></i></a>
                 <ul class="treeview-menu">
