@@ -5,6 +5,7 @@ date_default_timezone_set("Asia/Bangkok");
 $PmID = $_SESSION['PmID'];
 $Userid = $_SESSION['ID'];
 $FName = $_SESSION['FName'];
+$Permission = $_SESSION['Permission'];
 
 // session_destroy();
 ?>

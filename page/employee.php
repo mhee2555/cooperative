@@ -3,6 +3,8 @@ session_start();
 require '../connect/connect.php';
 date_default_timezone_set("Asia/Bangkok");
 $FName = $_SESSION['FName'];
+$PmID = $_SESSION['PmID'];
+$Permission = $_SESSION['Permission'];
 // session_destroy();
 ?>
 

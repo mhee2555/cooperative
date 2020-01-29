@@ -13,9 +13,11 @@ function checklogin($conn,$DATA)
     $Sql = "SELECT
                     employee.ID,
                     employee.FName,
-                    employee.PmID
+                    employee.PmID,
+										Permission.Permission
                 FROM
                     employee 
+                INNER JOIN permission ON permission.PmID = employee.PmID 
                 WHERE 
                     employee.UserName = '$username' 
                     AND employee.`Password` = '$password' ";
@@ -27,6 +29,7 @@ function checklogin($conn,$DATA)
         $_SESSION['PmID']        = $Result['PmID'];
         $_SESSION['FName']     = $Result['FName'];
         $_SESSION['ID']             = $Result['ID'];
+        $_SESSION['Permission']       = $Result['Permission'];
         $boolean = true;
       }
       if($boolean)
