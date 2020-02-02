@@ -428,8 +428,18 @@ $Permission = $_SESSION['Permission'];
                                     }
                                     else if(temp[i]['IsStatus']==1)
                                     {
-                                        Status = "บันทึกสำเร็จ";
+                                        Status = "รออนุมัติ";
+                                        Style  = "style='color: #FF6633;'";
+                                    }
+                                    else if(temp[i]['IsStatus']==2)
+                                    {
+                                        Status = "อนุมัติเรียบร้อย";
                                         Style  = "style='color: #20B80E;'";
+                                    }
+                                    else if(temp[i]['IsStatus']==8)
+                                    {
+                                        Status = "ปฎิเสธการขอเบิก";
+                                        Style  = "style='color: #990000;'";
                                     }
                                     else if(temp[i]['IsStatus']==9)
                                     {

@@ -16,7 +16,7 @@ function CreateDocument($conn, $DATA)
   $Sql = "SELECT CONCAT('LY',SUBSTRING(YEAR(DATE(NOW())),3,4),LPAD(MONTH(DATE(NOW())),2,0),'-',
   LPAD( (COALESCE(MAX(CONVERT(SUBSTRING(DocNo,10,5),UNSIGNED INTEGER)),0)+1) ,5,0)) AS DocNo,DATE(NOW()) AS DocDate,
   CURRENT_TIME() AS RecNow
-  FROM buy_product
+  FROM buy_Longan
   WHERE DocNo Like CONCAT('LY',SUBSTRING(YEAR(DATE(NOW())),3,4),LPAD(MONTH(DATE(NOW())),2,0),'%')
   ORDER BY DocNo DESC LIMIT 1";
 
@@ -32,7 +32,7 @@ function CreateDocument($conn, $DATA)
 
   if ($count == 1) 
   {
-      $Sqlx = "INSERT INTO buy_product (
+      $Sqlx = "INSERT INTO buy_Longan (
                     DocNo,
                     DocDate,
                     Modify_Date,
@@ -149,7 +149,7 @@ function Importdata($conn, $DATA)
     $count = " SELECT
                 COUNT(*) AS Cnt
                FROM
-                buy_product_detail
+                buy_Longan_detail
                WHERE
                 Buy_DocNo = '$DocNo'
                AND item_code = '$value' ";
@@ -159,7 +159,7 @@ function Importdata($conn, $DATA)
 
     if ($chkUpdate == 0) 
     {
-      $insert = "INSERT INTO  buy_product_detail
+      $insert = "INSERT INTO  buy_Longan_detail
                   SET 
                       Buy_DocNo = '$DocNo',
                       item_code = '$value',
@@ -170,7 +170,7 @@ function Importdata($conn, $DATA)
     }
     else
     {
-      $update = "UPDATE  buy_product_detail
+      $update = "UPDATE  buy_Longan_detail
                  SET 
                       Buy_DocNo = '$DocNo',
                       item_code = '$value',
@@ -203,7 +203,7 @@ function ShowDetail($conn, $DATA)
               bpd.total,
 	            grade_price.Grade
             FROM
-              buy_product_detail bpd
+              buy_Longan_detail bpd
             INNER JOIN item ON item.item_code = bpd.item_code
             INNER JOIN grade_price ON grade_price.item_code = item.item_code
             WHERE Buy_DocNo = '$DocNo' ";
@@ -225,7 +225,7 @@ function ShowDetail($conn, $DATA)
 
                       
             #UPDATE TOTAL
-            $updatetotal = "UPDATE buy_product 
+            $updatetotal = "UPDATE buy_Longan 
             SET 
                 Total = $Total 
             WHERE DocNo ='$DocNo' ";
@@ -307,7 +307,7 @@ function ShowSearch($conn, $DATA)
                   emp.FName AS employee ,
                   bp.IsStatus
                 FROM
-                  buy_product bp
+                  buy_Longan bp
                 INNER JOIN employee emp ON emp.ID = bp.Employee_ID
                 INNER JOIN users ON users.ID = bp.Customer_ID
                 WHERE bp.DocDate = '$datepicker' ORDER BY bp.DocNo DESC ";
@@ -362,7 +362,7 @@ function Savebill($conn, $DATA)
   // ========================================
 
 
-// INSERT STOCK
+  // INSERT STOCK
   foreach ($ItemCode as $key => $value)
   {
     $INSERT_STOCK = "INSERT INTO 
@@ -378,7 +378,7 @@ function Savebill($conn, $DATA)
   }
 
   //UPDATE STATUS 
-  $Sql = "UPDATE buy_product SET IsStatus = 1 , Modify_Date = TIME(NOW())  WHERE buy_product.DocNo = '$DocNo'";
+  $Sql = "UPDATE buy_Longan SET IsStatus = 1 , Modify_Date = TIME(NOW())  WHERE buy_Longan.DocNo = '$DocNo'";
   mysqli_query($conn, $Sql);
 
 
@@ -393,7 +393,7 @@ function Cancelbill($conn, $DATA)
   $boolean = false;
   $count = 0;
 
-  $Sql = "UPDATE buy_product SET IsStatus = 9 WHERE buy_product.DocNo = '$DocNo'";
+  $Sql = "UPDATE buy_Longan SET IsStatus = 9 WHERE buy_Longan.DocNo = '$DocNo'";
   mysqli_query($conn, $Sql);
 
   ShowSearch($conn, $DATA);
@@ -416,7 +416,7 @@ function ShowDocNo($conn, $DATA)
                   emp.FName AS employee ,
                   bp.IsStatus
                 FROM
-                  buy_product bp
+                  buy_Longan bp
                 INNER JOIN employee emp ON emp.ID = bp.Employee_ID
                 INNER JOIN users ON users.ID = bp.Customer_ID
                 WHERE bp.DocNo = '$DocNo' ";
@@ -481,7 +481,7 @@ function Deleteitem($conn, $DATA)
   $DocNo  = $DATA["DocNo"];
   $itemcode  = $DATA["itemcode"];
 
-  $Delete = "DELETE FROM buy_product_detail WHERE item_code = '$itemcode' AND Buy_DocNo = '$DocNo' ";
+  $Delete = "DELETE FROM buy_Longan_detail WHERE item_code = '$itemcode' AND Buy_DocNo = '$DocNo' ";
   mysqli_query($conn, $Delete);
 
   ShowDetail($conn, $DATA);
