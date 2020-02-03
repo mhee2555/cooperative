@@ -47,6 +47,20 @@ $Permission = $_SESSION['Permission'];
             });
         });
         // 
+
+        $("#v-pills-all-tab").click(function(){
+            // location.reload();
+            $( "#TableDetail tbody" ).empty();
+            $("#DocNo").val("");
+            $("#docdate").val("");
+            $("#ModifyDate").val("");
+            $("#Customer").val("1");
+            $("#Employee").val("");
+            $("#Total").val("");
+         });
+         $("#v-pills-buyers-tab").click(function(){
+            ShowSearch();
+         });
     });
     // Function 
     function Createdocument()

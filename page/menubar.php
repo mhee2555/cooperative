@@ -52,7 +52,7 @@
                     </li>
                     <li><a href="draw.php" <?php if($PmID <> 3 ) echo 'hidden'; ?>><i class="icon icon-folder5"></i>บันทึกการขอเบิกลำไย</a>
                     </li>
-                    <li><a href="panel-page-dashboard2.html" <?php if($PmID <> 3 ) echo 'hidden'; ?>><i class="icon icon-folder5"></i>บันทึกการขอเบิกข้าว</a>
+                    <li><a href="draw_rice.php" <?php if($PmID <> 3 ) echo 'hidden'; ?>><i class="icon icon-folder5"></i>บันทึกการขอเบิกข้าว</a>
                     </li>
                     <li><a href="panel-page-dashboard2.html" ><i class="icon icon-folder5"></i>บันทึกการแปรรูปลำไย</a>
                     </li>
