@@ -352,14 +352,41 @@ function ShowSearch($conn, $DATA)
 
 function Savebill($conn, $DATA)
 {
+  $KiloArray  = $DATA["Kilo"];
+  $ItemCodeArray  = $DATA["ItemCode"];
   $DocNo  = $DATA["DocNo"];
   $boolean = false;
   $count = 0;
 
+  // ========================================
+  $ItemCode = explode(",", $ItemCodeArray);
+  $Kilo = explode(",", $KiloArray);
+  // ========================================
+
+
+  // INSERT STOCK
+  foreach ($ItemCode as $key => $value)
+  {
+    $INSERT_STOCK = "INSERT INTO 
+                        stock_unprocess
+                    SET  
+                        item_code = '$value',
+                        item_qty = '$Kilo[$key]',
+                        item_ccqty = '$Kilo[$key]',
+                        Date_start = NOW(),
+                        Date_exp = NOW() + INTERVAL 1 DAY ";  
+
+    mysqli_query($conn, $INSERT_STOCK);
+  }
+
+  //UPDATE STATUS 
   $Sql = "UPDATE buy_rice SET IsStatus = 1 , Modify_Date = TIME(NOW())  WHERE buy_rice.DocNo = '$DocNo'";
   mysqli_query($conn, $Sql);
 
+
+  // Show SEARCH
   ShowSearch($conn, $DATA);
+
 
 }
 
