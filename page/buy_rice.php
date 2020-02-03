@@ -205,6 +205,30 @@ $Permission = $_SESSION['Permission'];
     }
     function Savebill()
     {
+       
+        // =======================================================
+        var ItemCodeArray = [];
+        var KiloArray = [];
+
+        $('input[name="detailrow"]').each(function() 
+        {
+          if($(this).val()!="")
+          {
+              ItemCodeArray.push($(this).val());
+          }
+        });
+        var ItemCode = ItemCodeArray.join(',') ;
+        // ========================================================
+        $('input[name="KiloArray"]').each(function() 
+        {
+          if($(this).val()!="")
+          {
+            KiloArray.push($(this).val());
+          }
+        });
+        var Kilo = KiloArray.join(',') ;
+        // ========================================================
+
         var DocNo = $("#DocNo").val();
         swal({
           title: "",
@@ -225,7 +249,9 @@ $Permission = $_SESSION['Permission'];
                 var data = 
                 {
                     'STATUS'      : 'Savebill',
-                    'DocNo'      : DocNo
+                    'DocNo'      : DocNo ,
+                    'ItemCode'      : ItemCode ,
+                    'Kilo'      : Kilo
                 };
                 senddata(JSON.stringify(data));
                 $('#v-pills-buyers-tab').tab('show');
@@ -415,7 +441,7 @@ $Permission = $_SESSION['Permission'];
                               for (var i = 0; i < temp['Row']; i++) 
                               {
                                   var chkinput = "<div class='custom-control custom-radio'><input type='radio' class='custom-control-input checkSingle checkdetail' name='detailrow'  value='"+temp[i]['item_code']+"'  id= ' Detail_id_"+i+" ' required><label class='custom-control-label ' for=' Detail_id_"+i+" ' style='margin-top: 15px;'></label></div> ";
-                                  var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' autocomplete='off'  placeholder='0.00' value='"+temp[i]['kilo']+"' style='width: 40%;'>  ";
+                                  var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' autocomplete='off' name='KiloArray' placeholder='0.00' value='"+temp[i]['kilo']+"' style='width: 40%;'>  ";
                                   var moisture = "<input type='text' id='Detail_moisture_"+i+"' class='form-control ' autocomplete='off'  placeholder='0.00' value='"+temp[i]['moisture']+"' style='width: 40%;'>  ";
                                   var Total = "<input type='text' id='Detail_Total_"+i+"' class='form-control ' autocomplete='off'  value='"+temp[i]['total']+"' disabled style='width: 40%;'>  ";
 
