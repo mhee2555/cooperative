@@ -108,7 +108,7 @@ require '../connect/connect.php';
                   FROM
                     draw d
                   INNER JOIN employee emp ON emp.ID = d.Employee_ID
-                  WHERE d.DocDate = '$datepicker' AND IsStatus = 1 ORDER BY d.DocNo DESC ";
+                  WHERE d.DocDate = '$datepicker' AND IsStatus <> 0 AND IsStatus <> 9  ORDER BY d.DocNo DESC ";
 
       $meQuery = mysqli_query($conn, $Showsearch);
       while ($Result = mysqli_fetch_assoc($meQuery)) 
@@ -157,7 +157,9 @@ require '../connect/connect.php';
               item.item_name ,
               sup.item_ccqty,
               DATE(sup.Date_exp) as date,
-              TIME(sup.Date_exp) as time
+              TIME(sup.Date_exp) as time,
+              dds.stock_code,
+              dds.draw_DocNo
             FROM draw_detail_sub dds
             INNER JOIN item ON item.item_code = dds.item_code
             INNER JOIN stock_unprocess sup ON sup.stock_code = dds.stock_code 
@@ -171,6 +173,8 @@ require '../connect/connect.php';
         $return[$count]['item_ccqty'] = $Result['item_ccqty'];
         $return[$count]['date'] = $Result['date'];
         $return[$count]['time'] = $Result['time'];
+        $return[$count]['stock_code'] = $Result['stock_code'];
+        $return[$count]['draw_DocNo'] = $Result['draw_DocNo'];
         $count++;
         $boolean = true;
       }
@@ -196,6 +200,67 @@ require '../connect/connect.php';
       }
 
   }
+
+  function approve($conn, $DATA)
+  {
+    $stock_code   = $DATA["stock_code"] ;
+    $give   = $DATA["give"] ;
+    $DocNo   = $DATA["DocNo"] ;
+    $status   = $DATA["status"] ;
+    $ID = $_SESSION['ID'];
+
+    #========================================
+    $stock_codex  = explode(",", $stock_code);
+    $givex       = explode(",", $give);
+    #========================================
+
+    if($status ==2)
+    {
+      // Update status = 2
+      $updateSTATUS = "UPDATE draw SET IsStatus = '$status' WHERE DocNo = '$DocNo'";
+      mysqli_query($conn, $updateSTATUS);
+
+      foreach ($givex as $key => $value)
+      {
+        $updateSTOCK="UPDATE stock_unprocess SET item_ccqty = (item_ccqty - $value) WHERE stock_code = '$stock_codex[$key]' ";
+        mysqli_query($conn, $updateSTOCK);
+
+        $updateDRAWSUB="UPDATE draw_detail_sub SET give = $value WHERE stock_code = '$stock_codex[$key]' AND draw_detail_sub.draw_DocNo = '$DocNo' ";
+        mysqli_query($conn, $updateDRAWSUB);
+      }
+
+        // UPDATE ผลรวมเข้า Detail
+        $sum = "SELECT
+                  SUM( give ) AS givex,
+                  item_code 
+                FROM
+                  draw_detail_sub 
+                WHERE
+                  draw_DocNo = 'DW2002-00001' 
+                GROUP BY
+                  item_code ";
+        $meQuery = mysqli_query($conn, $sum);
+        while ($Result = mysqli_fetch_assoc($meQuery))
+        {
+          $givex          = $Result['givex'];
+          $item_code      = $Result['item_code'];
+
+          $updatedetail = " UPDATE draw_detail SET kilo = '$givex' WHERE item_code = '$item_code' AND draw_DocNo = '$DocNo' ";
+          mysqli_query($conn, $updatedetail);
+        }
+
+        
+        $updateuserAP = " UPDATE draw SET Approver_ID = '$ID' WHERE DocNo = '$DocNo' ";
+        mysqli_query($conn, $updateuserAP);
+    }
+    else
+    {
+      // Update status = 9
+      $updateSTATUS = "UPDATE draw SET IsStatus = '$status' WHERE DocNo = '$DocNo' ";
+      mysqli_query($conn, $updateSTATUS);
+    }
+    ShowSearch($conn, $DATA);
+  }
 //-----------------------------------------------------------------------
 
   $data = $_POST['DATA'];
@@ -217,6 +282,10 @@ require '../connect/connect.php';
       {
         showdetaildraw($conn, $DATA);
       }         
+      else if($DATA['STATUS'] == 'approve')
+      {
+        approve($conn, $DATA);
+      }     
     else
     {
         $return['status'] = "error";

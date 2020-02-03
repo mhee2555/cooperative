@@ -57,7 +57,6 @@ $Permission = $_SESSION['Permission'];
         };
         senddata(JSON.stringify(data));
     }
-
     function Showtype()
     {
         var data = 
@@ -85,6 +84,40 @@ $Permission = $_SESSION['Permission'];
             'DocNo'	  : DocNo
         };
         senddata(JSON.stringify(data));     
+    }
+    function approve(status)
+    {
+        var stock_code_Array = [];
+        var Detail_give_Array = [];
+        var DocNo = "";
+        $('input[name="stock_code_Array"]').each(function() 
+        {
+            stock_code_Array.push($(this).val());
+        });
+
+        $('input[name="giveArray"]').each(function() 
+        {
+            Detail_give_Array.push($(this).val());
+        });
+
+        $('input[name="docno_detail"]').each(function() 
+        {
+            DocNo = $(this).val();
+        });
+
+        var give = Detail_give_Array.join(',') ;
+        var stock_code = stock_code_Array.join(',') ;
+
+        var data = 
+        {
+            'STATUS'  : 'approve',
+            'stock_code': stock_code ,
+            'give'	  : give ,
+            'DocNo'	  : DocNo,
+            'status'	  : status
+        };
+        $('#showdetaildraw').modal('toggle');
+        senddata(JSON.stringify(data));    
     }
 //-----------------------------------------------------------------------------------------
     function senddata(data)
@@ -150,8 +183,13 @@ $Permission = $_SESSION['Permission'];
                                     }
                                     else if(temp[i]['IsStatus']==2)
                                     {
-                                        Status = "อนุมัติสำเร็จ";
+                                        Status = "อนุมัติเรียบร้อย";
                                         Style  = "style='color: #20B80E;'";
+                                    }
+                                    else if(temp[i]['IsStatus']==8)
+                                    {
+                                        Status = "ปฎิเสธการขอเบิก";
+                                        Style  = "style='color: #990000;'";
                                     }
                                     StrTR =   "<tr ondblclick='showdetaildraw(\""+temp[i]['DocNo']+"\");'>"+
                                                 "<td>"+temp[i]['DocNo']+"</td>"+
@@ -170,8 +208,8 @@ $Permission = $_SESSION['Permission'];
                         $( "#Tabledetail tbody" ).empty();
                               for (var i = 0; i < temp['Row']; i++) 
                               {
-                                var cc = temp[i]['item_ccqty'];
-                                var kilo = temp[i]['kilo'];
+                                var cc = parseFloat(temp[i]['item_ccqty']);
+                                var kilo = parseFloat(temp[i]['kilo']);
                                 if(cc >= kilo)
                                 {
                                     var sum = kilo;
@@ -180,9 +218,9 @@ $Permission = $_SESSION['Permission'];
                                 {
                                     var sum = cc;
                                 }
-                                var give = "<input type='text' id='Detail_give_"+i+"' class='form-control ' autocomplete='off'  name='giveArray'  placeholder='0.00' value="+sum+" disabled>  ";
+                                var give = "<input type='text' id='Detail_give_"+i+"' class='form-control ' autocomplete='off'  name='giveArray'  placeholder='0.00' value="+sum+" disabled><input type='hidden' name='stock_code_Array'  id='stock_code_"+i+"' value='"+temp[i]['stock_code']+"'><input type='hidden' name='docno_detail'   value='"+temp[i]['draw_DocNo']+"'>  ";
                                 var datetime = "<div><strong>"+temp[i]['date']+"<strong></div><small>"+temp[i]['time']+"</small>";
-
+                                
                                  StrTR = "<tr>"+
                                                 "<td style='width: 20%;'>"+temp[i]['item_name']+"</td>"+
                                                 "<td style='width: 20%;'>"+datetime+"</td>"+
@@ -579,8 +617,8 @@ $Permission = $_SESSION['Permission'];
                                     </table>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" onclick="cancelbill()">ไม่อนุมัติ</button>
-        <button type="button"  class="btn btn-success" onclick="comfirmbill()">อนุมัติ</button>
+        <button type="button" class="btn btn-secondary" onclick="approve(8)">ไม่อนุมัติ</button>
+        <button type="button"  class="btn btn-success" onclick="approve(2)">อนุมัติ</button>
       </div>
     </div>
   </div>
