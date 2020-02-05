@@ -101,7 +101,7 @@ function ShowItem($conn, $DATA)
           FROM
           stock_unprocess sup
           INNER JOIN item ON item.item_code = sup.item_code 
-          WHERE item.item_type = 2 
+          WHERE item.item_type = 1
           AND sup.item_ccqty <> 0 
           AND TIMEDIFF(sup.Date_exp , NOW() ) > 0
           AND DATE(sup.Date_start) = '$datestock'";
