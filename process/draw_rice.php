@@ -158,7 +158,7 @@ function Importdata($conn, $DATA)
   {
 
     // insert_chk
-    $insert_chk = "INSERT INTO  draw_detail_sub
+    $insert_chk = "INSERT INTO  draw_rice_detail_sub
     SET 
         draw_DocNo = '$DocNo',
         item_code = '$value',
@@ -170,7 +170,7 @@ function Importdata($conn, $DATA)
     $count = " SELECT
                 COUNT(*) AS Cnt
                FROM
-                draw_detail
+               draw_rice_detail
                WHERE
                 draw_DocNo = '$DocNo'
                AND item_code = '$value' ";
@@ -180,7 +180,7 @@ function Importdata($conn, $DATA)
 
     if ($chkUpdate == 0) 
     {
-      $insert = "INSERT INTO  draw_detail
+      $insert = "INSERT INTO  draw_rice_detail
                   SET 
                       draw_DocNo = '$DocNo',
                       item_code = '$value',
@@ -190,7 +190,7 @@ function Importdata($conn, $DATA)
     }
     else
     {
-      $update = "UPDATE  draw_detail
+      $update = "UPDATE  draw_rice_detail
                  SET 
                       draw_DocNo = '$DocNo',
                       item_code = '$value',
@@ -218,7 +218,7 @@ function ShowDetail($conn, $DATA)
               item.item_name,
               dd.kilo
             FROM
-              draw_detail dd
+            draw_rice_detail dd
             INNER JOIN item ON item.item_code = dd.item_code
             WHERE dd.draw_DocNo = '$DocNo' ";
             $meQuery = mysqli_query($conn, $Detail);
@@ -394,7 +394,7 @@ function Deleteitem($conn, $DATA)
   $DocNo  = $DATA["DocNo"];
   $itemcode  = $DATA["itemcode"];
 
-  $Delete = "DELETE FROM draw_detail WHERE item_code = '$itemcode' AND draw_DocNo = '$DocNo' ";
+  $Delete = "DELETE FROM draw_rice_detail WHERE item_code = '$itemcode' AND draw_DocNo = '$DocNo' ";
   mysqli_query($conn, $Delete);
 
   ShowDetail($conn, $DATA);
