@@ -343,7 +343,7 @@ $Permission = $_SESSION['Permission'];
     {
          var form_data = new FormData();
          form_data.append("DATA",data);
-         var URL = '../process/buy.php';
+         var URL = '../process/buy_Longan.php';
          $.ajax
          ({
             url: URL,
