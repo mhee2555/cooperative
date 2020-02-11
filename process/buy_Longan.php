@@ -111,6 +111,20 @@ function ShowItem($conn, $DATA)
     }
     $return['Row'] = $count;
 
+
+
+
+    $cntUnit = 0;
+    $xSql = "SELECT item_unit.UnitCode,item_unit.UnitName
+      FROM item_unit  ";
+      $xQuery = mysqli_query($conn, $xSql);
+      while ($xResult = mysqli_fetch_assoc($xQuery))
+      {
+        $return['Unit'][$cntUnit]['UnitCode'] = $xResult['UnitCode'];
+        $return['Unit'][$cntUnit]['UnitName'] = $xResult['UnitName'];
+        $cntUnit++;
+      }
+
     if ($boolean)
     {
       $return['status'] = "success";
@@ -136,11 +150,13 @@ function Importdata($conn, $DATA)
   $item_code = $DATA["item_code"];
   $kilo = $DATA["kilo"];
   $total = $DATA["total"];
+  $unit = $DATA["xunit"];
 
   #========================================
   $item_codex  = explode(",", $item_code);
   $kilox       = explode(",", $kilo);
   $totalx      = explode(",", $total);
+  $unitx      = explode(",", $unit);
   #========================================
 
   foreach ($item_codex as $key => $value)
@@ -164,7 +180,8 @@ function Importdata($conn, $DATA)
                       Buy_DocNo = '$DocNo',
                       item_code = '$value',
                       kilo = '$kilox[$key]',
-                      total = '$totalx[$key]' ";
+                      total = '$totalx[$key]',
+                      UnitCode = '$unitx[$key]' ";
 
                   mysqli_query($conn, $insert);
     }
@@ -175,14 +192,14 @@ function Importdata($conn, $DATA)
                       Buy_DocNo = '$DocNo',
                       item_code = '$value',
                       kilo = ( kilo + '$kilox[$key]' ),
-                      total = (total + '$totalx[$key]' ) 
+                      total = (total + '$totalx[$key]' ) ,
+                      UnitCode = '$unitx[$key]'
                 WHERE
                       Buy_DocNo = '$DocNo'
                 AND    item_code = '$value'  ";
 
                   mysqli_query($conn, $update);
     }
-
     # ผลรวม ราคา        
     $sumtotal +=$totalx[$key];
   }
@@ -201,6 +218,7 @@ function ShowDetail($conn, $DATA)
               item.item_name,
               bpd.kilo,
               bpd.total,
+              bpd.UnitCode,
 	            grade_price.Grade
             FROM
               buy_Longan_detail bpd
@@ -213,6 +231,7 @@ function ShowDetail($conn, $DATA)
               $return[$count]['RowID']          = $Result['RowID'];
               $return[$count]['item_code']      = $Result['item_code'];
               $return[$count]['item_name']      = $Result['item_name'];
+              $return[$count]['UnitCode']      = $Result['UnitCode'];
               $return[$count]['kilo']           = $Result['kilo'];
               $return[$count]['total']          = $Result['total'];
               $return[$count]['Grade']          = $Result['Grade'];
@@ -231,6 +250,21 @@ function ShowDetail($conn, $DATA)
             WHERE DocNo ='$DocNo' ";
           mysqli_query($conn, $updatetotal);
           // 
+
+
+          $cntUnit = 0;
+          $xSql = "SELECT item_unit.UnitCode,item_unit.UnitName
+            FROM item_unit  ";
+            $xQuery = mysqli_query($conn, $xSql);
+            while ($xResult = mysqli_fetch_assoc($xQuery))
+            {
+              $return['Unit'][$cntUnit]['UnitCode'] = $xResult['UnitCode'];
+              $return['Unit'][$cntUnit]['UnitName'] = $xResult['UnitName'];
+              $cntUnit++;
+            }
+
+
+
 
   if ($boolean) 
   {

@@ -123,6 +123,7 @@ $Permission = $_SESSION['Permission'];
             SUM = 0;
         }
         $("#Total_"+rowid).val(SUM);
+
     }
     function Importdata()
     {
@@ -132,6 +133,7 @@ $Permission = $_SESSION['Permission'];
         var kiloArray = [];
         var totalArray = [];
         var item_codeArray = [];
+        var unitArray = [];
         
         $(".checkitem:checked").each(function() 
         {
@@ -143,11 +145,13 @@ $Permission = $_SESSION['Permission'];
             item_codeArray.push( $("#item_code_"+iArray[j]).val() );
             kiloArray.push( $("#Kilo_"+iArray[j]).val() );
             totalArray.push( $("#Total_"+iArray[j]).val() );
+            unitArray.push( $("#iUnit_"+iArray[j]).val() );
         }
         // =======================================================
         var item_code = item_codeArray.join(',') ;
         var kilo = kiloArray.join(',') ;
         var total = totalArray.join(',') ;
+        var xunit = unitArray.join(',') ;
         // =======================================================
         $( "#TableDetail tbody" ).empty();
         var data = 
@@ -156,7 +160,8 @@ $Permission = $_SESSION['Permission'];
           'item_code'   : item_code,
           'kilo'		: kilo,
           'total'	  	: total,
-          'DocNo'		: DocNo
+          'DocNo'		: DocNo ,
+          'xunit'		: xunit
         };
         $('#Additem').modal('toggle');
         senddata(JSON.stringify(data));
@@ -394,16 +399,31 @@ $Permission = $_SESSION['Permission'];
                         $( "#Tableitem tbody" ).empty();
                               for (var i = 0; i < temp['Row']; i++) 
                               {
+                                var chkunit ="<select  class='form-control'  id='iUnit_"+i+"'>";
+                                    $.each(temp['Unit'], function(key, val)
+                                    {
+                                        if(temp[i]['UnitCode']==val.UnitCode)
+                                        {
+                                            chkunit += '<option selected value=" '+val.UnitCode+' ">'+val.UnitName+'</option>';
+                                        }
+                                        else
+                                        {
+                                            chkunit += '<option value="' +val.UnitCode+' ">'+val.UnitName+'</option>';
+                                        }
+                                    });
+                                    chkunit += "</select>";
+
                                   var chkinput = "<div class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input checkSingle checkitem'  value='"+i+"'  id= ' item_id_"+i+" ' required><label class='custom-control-label ' for=' item_id_"+i+" ' style='margin-top: 15px;'></label></div> <input type='hidden' id='item_code_"+i+"' value='"+temp[i]['item_code']+"'>";
-                                  var Kilo = "<input type='text' id='Kilo_"+i+"' class='form-control ' autocomplete='off'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['Grade']+"\" , \""+i+"\" ) '>  ";
-                                  var Total = "<input type='text' id='Total_"+i+"' class='form-control ' autocomplete='off'  value='0.00' disabled>  ";
+                                  var Kilo = "<input type='text' id='Kilo_"+i+"' class='form-control ' autocomplete='off' style='text-align:right'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['Grade']+"\" , \""+i+"\" ) '>  ";
+                                  var Total = "<input type='text' id='Total_"+i+"' class='form-control ' autocomplete='off' style='text-align:right'  value='0.00' disabled>  ";
 
 
                                  StrTR = "<tr>"+
                                                 "<td >"+chkinput+"</td>"+
                                                 "<td style=' width: 20%; '>"+temp[i]['item_name']+"</td>"+
                                                 "<td style=' width: 25%; ' >"+temp[i]['Grade']+"</td>"+
-                                                "<td >"+Kilo+"</td>"+
+                                                "<td style=' width: 120px; '>"+Kilo+"</td>"+
+                                                "<td style=' width: 130px; '>"+chkunit+"</td>"+
                                                 "<td >"+Total+"</td>"+
                                                 "</tr>";
    
@@ -414,19 +434,34 @@ $Permission = $_SESSION['Permission'];
                     {
                         $( "#TableDetail tbody" ).empty();
                         // total
-                        $("#Total").val(temp['Total']);
+                        $("#Total").val(temp['Total'].toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         // 
                               for (var i = 0; i < temp['Row']; i++) 
                               {
+                                var chkunit ="<select  class='form-control'  id='detailUnit_"+i+"' disabled>";
+                                    $.each(temp['Unit'], function(key, val)
+                                    {
+                                        if(temp[i]['UnitCode']==val.UnitCode)
+                                        {
+                                            chkunit += '<option selected value=" '+val.UnitCode+' ">'+val.UnitName+'</option>';
+                                        }
+                                        else
+                                        {
+                                            chkunit += '<option value="' +val.UnitCode+' ">'+val.UnitName+'</option>';
+                                        }
+                                    });
+                                    chkunit += "</select>";
+
                                   var chkinput = "<div class='custom-control custom-radio'><input type='radio' class='custom-control-input checkSingle checkdetail' name='detailrow'  value='"+temp[i]['item_code']+"'  id= ' Detail_id_"+i+" ' required><label class='custom-control-label ' for=' Detail_id_"+i+" ' style='margin-top: 15px;'></label></div> ";
-                                  var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' autocomplete='off'  name='KiloArray'  placeholder='0.00' value='"+temp[i]['kilo']+"' style='width: 40%;'>  ";
-                                  var Total = "<input type='text' id='Detail_Total_"+i+"' class='form-control ' autocomplete='off'  value='"+temp[i]['total']+"' disabled style='width: 40%;'>  ";
+                                  var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' style='text-align:right' autocomplete='off'  name='KiloArray'  placeholder='0.00' value='"+temp[i]['kilo']+"' disabled>  ";
+                                  var Total = "<input type='text' id='Detail_Total_"+i+"' class='form-control ' style='text-align:right' autocomplete='off'  value='"+temp[i]['total']+"' disabled >  ";
 
                                    StrTR =   "<tr>"+
                                                 "<td >"+chkinput+"</td>"+
                                                 "<td style=' width: 20%; '>"+temp[i]['item_name']+"</td>"+
                                                 "<td style=' width: 25%; ' >"+temp[i]['Grade']+"</td>"+
                                                 "<td >"+Kilo+"</td>"+
+                                                "<td >"+chkunit+"</td>"+
                                                 "<td >"+Total+"</td>"+
                                                 "</tr>";
    
@@ -828,7 +863,8 @@ $Permission = $_SESSION['Permission'];
                                             <th>NO.</th>
                                             <th>ชื่อรายการ</th>
                                             <th>ราคาต่อหน่วย</th>
-                                            <th>กิโล</th>
+                                            <th>ปริมาณ</th>
+                                            <th>หน่วยนับ</th>
                                             <th>ราคารวม</th>
                                         </tr>
                                         </thead>
@@ -918,7 +954,8 @@ $Permission = $_SESSION['Permission'];
                                             <th></th>
                                             <th>ชื่อรายการ</th>
                                             <th>ราคาต่อหน่วย</th>
-                                            <th>กิโล</th>
+                                            <th>ปริมาณ</th>
+                                            <th>หน่วยนับ</th>
                                             <th>ราคารวม</th>
                                         </tr>
                                         </thead>

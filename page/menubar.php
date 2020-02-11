@@ -46,7 +46,7 @@
                 <i class="icon icon-angle-left s-18 pull-right"></i></a>
                 <!-- เมนูข้างใน แดชบอร์ด -->
                 <ul class="treeview-menu" >
-                    <li><a href="buy.php"<?php if($PmID <> 4 && $PmID <> 1) echo 'hidden'; ?>><i class="icon icon-folder5"></i>บันทึกการซื้อลำไย</a>
+                    <li><a href="buy_Longan.php"<?php if($PmID <> 4 && $PmID <> 1) echo 'hidden'; ?>><i class="icon icon-folder5"></i>บันทึกการซื้อลำไย</a>
                     </li>
                     <li><a href="buy_rice.php" <?php if($PmID <> 4 && $PmID <> 1) echo 'hidden'; ?>><i class="icon icon-folder5"></i>บันทึกการซื้อข้าว</a>
                     </li>
