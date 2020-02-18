@@ -172,49 +172,11 @@ function ShowSearch($conn, $DATA)
     die;
   }
 }
-function Savebill($conn, $DATA)
-{
-  $KiloArray  = $DATA["Kilo"];
-  $ItemCodeArray  = $DATA["ItemCode"];
-  $DocNo  = $DATA["DocNo"];
-  $boolean = false;
-  $count = 0;
-
-  // comment ไว้ก่อน เด๊่ยวมาแก้
-
-  // ========================================
-  // $ItemCode = explode(",", $ItemCodeArray);
-  // $Kilo = explode(",", $KiloArray);
-  // ========================================
-
-
-  // foreach ($ItemCode as $key => $value)
-  // {
-  //   $INSERT_STOCK = "INSERT INTO 
-  //                       stock_unprocess
-  //                   SET  
-  //                       item_code = '$value',
-  //                       item_qty = '$Kilo[$key]',
-  //                       item_ccqty = '$Kilo[$key]',
-  //                       Date_start = NOW(),
-  //                       Date_exp = NOW() + INTERVAL 1 DAY ";  
-
-  //   mysqli_query($conn, $INSERT_STOCK);
-  // }
-
-  //UPDATE STATUS 
-  $Sql = "UPDATE process_longan SET IsStatus = 1 , Modify_Date = TIME(NOW())  WHERE process_longan.DocNo = '$DocNo'";
-  mysqli_query($conn, $Sql);
-
-
-  // Show SEARCH
-  ShowSearch($conn, $DATA);
-
-}
 function ShowRefDocNo($conn, $DATA)
 {
   $count = 0;
   $boolean = false;
+  $dateRefDocNo  = $DATA["dateRefDocNo"]==''?date('Y-m-d'):$DATA["dateRefDocNo"];
   // ===========================================
   $SelectDraw = "SELECT
                   DocNo,
@@ -222,7 +184,7 @@ function ShowRefDocNo($conn, $DATA)
                 FROM
                   draw 
                 WHERE
-                  IsStatus = 2 AND IsRef = 0 ";
+                  IsStatus = 2 AND IsRef = 0 AND DocDate = '$dateRefDocNo' ";
       $meQuery = mysqli_query($conn, $SelectDraw);
       while ($Result = mysqli_fetch_assoc($meQuery)) 
       {
@@ -246,7 +208,7 @@ function ShowRefDocNo($conn, $DATA)
     else
     {
       $return['sql'] = $SelectDraw;
-      $return['status'] = "failed";
+      $return['status'] = "success";
       $return['form'] = "ShowRefDocNo";
       $return['msg'] = "Reffail";
       echo json_encode($return);
@@ -286,10 +248,23 @@ function SaveRefDocNo($conn, $DATA)
         $boolean = true;
       }
 
-  if($boolean)
-  {
-    ShowDetail($conn, $DATA);
-  }
+      if ($boolean) 
+      {
+        $return['RefDocNo'] = $RefDocNo;
+        $return['status'] = "success";
+        $return['form'] = "SaveRefDocNo";
+        echo json_encode($return);
+        mysqli_close($conn);
+        die;
+      }
+      else
+      {
+        $return['status'] = "failed";
+        $return['form'] = "SaveRefDocNo";
+        echo json_encode($return);
+        mysqli_close($conn);
+        die;
+      }
 
 }
 function Cancelbill($conn, $DATA)
@@ -299,6 +274,88 @@ function Cancelbill($conn, $DATA)
   $count = 0;
 
   $Sql = "UPDATE process_longan SET IsStatus = 9 WHERE process_longan.DocNo = '$DocNo'";
+  mysqli_query($conn, $Sql);
+
+  ShowSearch($conn, $DATA);
+
+}
+function Startprocess($conn, $DATA)
+{
+  $DocNo  = $DATA["DocNo"];
+  $boolean = false;
+  $count = 0;
+
+  $Sql = "UPDATE process_longan SET start_process = NOW() , IsStatus = 1 WHERE process_longan.DocNo = '$DocNo' ";
+  mysqli_query($conn, $Sql);
+
+
+  // SELECT DATE 
+  $selectdate = "SELECT start_process FROM process_longan WHERE process_longan.DocNo = '$DocNo' ";
+  $meQuery = mysqli_query($conn, $selectdate);
+  $Result = mysqli_fetch_assoc($meQuery);
+  $return['start_process'] = $Result['start_process'];
+
+  if (mysqli_query($conn, $Sql)) 
+  {
+    $return['status'] = "success";
+    $return['form'] = "Startprocess";
+    echo json_encode($return);
+    mysqli_close($conn);
+    die;
+  }
+  else
+  {
+    $return['status'] = "failed";
+    $return['form'] = "Startprocess";
+    echo json_encode($return);
+    mysqli_close($conn);
+    die;
+  }
+
+
+}
+function Endprocess($conn, $DATA)
+{
+  $DocNo  = $DATA["DocNo"];
+  $boolean = false;
+  $count = 0;
+
+  $Sql = "UPDATE process_longan SET end_process = NOW() , IsStatus = 2 WHERE process_longan.DocNo = '$DocNo' ";
+  mysqli_query($conn, $Sql);
+
+
+  // SELECT DATE 
+  $selectdate = "SELECT end_process FROM process_longan WHERE process_longan.DocNo = '$DocNo' ";
+  $meQuery = mysqli_query($conn, $selectdate);
+  $Result = mysqli_fetch_assoc($meQuery);
+  $return['end_process'] = $Result['end_process'];
+
+  if (mysqli_query($conn, $Sql)) 
+  {
+    $return['status'] = "success";
+    $return['form'] = "Endprocess";
+    echo json_encode($return);
+    mysqli_close($conn);
+    die;
+  }
+  else
+  {
+    $return['status'] = "failed";
+    $return['form'] = "Endprocess";
+    echo json_encode($return);
+    mysqli_close($conn);
+    die;
+  }
+
+
+}
+function Successprocess($conn, $DATA)
+{
+  $DocNo  = $DATA["DocNo"];
+  $boolean = false;
+  $count = 0;
+
+  $Sql = "UPDATE process_longan SET IsStatus = 3 WHERE process_longan.DocNo = '$DocNo' ";
   mysqli_query($conn, $Sql);
 
   ShowSearch($conn, $DATA);
@@ -318,7 +375,9 @@ function ShowDocNo($conn, $DATA)
                   TIME(pl.Modify_Date) AS  Modify_Date, 
                   emp.FName AS employee ,
                   pl.IsStatus ,
-                  pl.RefDocNo
+                  pl.RefDocNo ,
+                  pl.start_process ,
+                  pl.end_process 
                 FROM
                   process_longan pl
                 INNER JOIN employee emp ON emp.ID = pl.Employee_ID
@@ -333,6 +392,9 @@ function ShowDocNo($conn, $DATA)
       $return[$count]['Modify_Date']   = $Result['Modify_Date'];
       $return[$count]['employee']      = $Result['employee'];
       $return[$count]['IsStatus']      = $Result['IsStatus'];
+      $return[$count]['start_process']      = $Result['start_process']==null?"":$Result['start_process'];
+      $return[$count]['end_process']      = $Result['end_process']==null?"":$Result['end_process'];
+
 
       $count ++ ;
       $boolean = true;
@@ -429,6 +491,19 @@ function Deleteitem($conn, $DATA)
       {
         SaveRefDocNo($conn, $DATA);
       }
+      else if ($DATA['STATUS'] == 'Startprocess') 
+      {
+        Startprocess($conn, $DATA);
+      }
+      else if ($DATA['STATUS'] == 'Endprocess') 
+      {
+        Endprocess($conn, $DATA);
+      }
+      else if ($DATA['STATUS'] == 'Successprocess') 
+      {
+        Successprocess($conn, $DATA);
+      }
+      
       else
       {
           $return['status'] = "error";

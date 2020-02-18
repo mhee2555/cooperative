@@ -35,7 +35,6 @@ $Permission = $_SESSION['Permission'];
     {
         // ========
         Showuser();
-        ShowSearch();
         // ========
         // ค้นหา
         $("#Search").on("keyup", function() 
@@ -48,8 +47,8 @@ $Permission = $_SESSION['Permission'];
         });
         // 
 
-        $("#v-pills-all-tab").click(function(){
-            // location.reload();
+        $("#v-pills-all-tab").click(function()
+        {
             $( "#TableDetail tbody" ).empty();
             $("#DocNo").val("");
             $("#docdate").val("");
@@ -59,7 +58,8 @@ $Permission = $_SESSION['Permission'];
             $("#Total").val("");
          });
 
-         $("#v-pills-buyers-tab").click(function(){
+         $("#v-pills-buyers-tab").click(function()
+         {
             ShowSearch();
          });
     });

@@ -83,6 +83,8 @@ $Permission = $_SESSION['Permission'];
                     'userid'	: userid
                 };
                 senddata(JSON.stringify(data));
+                // clear detail
+                $( "#TableDetail tbody" ).empty();
             }
             else if (result.dismiss === 'cancel')
             {

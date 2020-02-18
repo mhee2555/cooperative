@@ -2,12 +2,13 @@
 session_start();
 require '../connect/connect.php';
 date_default_timezone_set("Asia/Bangkok");
-$FName = $_SESSION['FName'];
 $PmID = $_SESSION['PmID'];
+$Userid = $_SESSION['ID'];
+$FName = $_SESSION['FName'];
 $Permission = $_SESSION['Permission'];
 
+// session_destroy();
 ?>
-
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
@@ -17,13 +18,160 @@ $Permission = $_SESSION['Permission'];
     <meta name="author" content="">
     <link rel="icon" href="assets/img/basic/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css?family=Krub&display=swap" rel="stylesheet">
+    <!-- <link href="../dist/css/sweetalert2.css" rel="stylesheet"> -->
+    <script src="../dist/js/sweetalert2.min.js"></script>
+    <script src="../dist/js/jquery-3.3.1.min.js"></script>
+    <script src="../datepicker/dist/js/datepicker-en.js"></script>
+    <link href="../datepicker/dist/css/datepicker.min.css" rel="stylesheet" type="text/css">
+    <script src="../datepicker/dist/js/datepicker.th.js"></script>
+    <script src="../datepicker/dist/js/i18n/datepicker.en.js"></script>
     <title>Paper</title>
     <!-- CSS -->
     <link rel="stylesheet" href="assets/css/app.css">
-    <style>
-        body{
-            font-family: 'Krub', sans-serif;
+
+    <script type="text/javascript">
+        $(document).ready(function(e)
+        {
+            showchartbuy();
+        });
+
+        function showchartbuy()
+        {
+            var data = 
+                {
+                    'STATUS'      : 'showchartbuy'
+                };
+                senddata(JSON.stringify(data));
         }
+
+
+        // END FUNCTION
+
+        function senddata(data)
+        {
+            var form_data = new FormData();
+            form_data.append("DATA",data);
+            var URL = '../process/main.php';
+            $.ajax
+            ({
+                url: URL,
+                dataType: 'text',
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: form_data,
+                type: 'post',
+                success: function (result) 
+                {
+                    try 
+                    {
+                        var temp = $.parseJSON(result);
+                    } 
+                    catch (e) 
+                    {
+                        console.log('Error#542-decode error');
+                    }
+                    swal.close();
+                    if(temp["status"]=='success')
+                    {
+                        if(temp["form"]=='showchartbuy')
+                        {
+
+                            var showdatebuy = "ยอดซื้อประจำวัน ( "+temp[0]['DocDate']+" ) "
+                            $("#datebuy").text(showdatebuy);
+
+
+                            
+                            var name = [];
+                            var marks = [];
+                            for (var i = 0; i < temp['Row']; i++) 
+                            {
+                                name.push(temp[i]['item_name']);
+                                marks.push(temp[i]['kilo']);
+                            }
+                                         var chartdata = {
+                                            labels: name,
+                                            datasets: [
+                                                {
+                                                    label: 'ยอดซื้อเข้า (กก)',
+                                                    backgroundColor: '#49e2ff',
+                                                    borderColor: '#46d5f1',
+                                                    hoverBackgroundColor: '#CCCCCC',
+                                                    hoverBorderColor: '#666666',
+                                                    data: marks
+                                                }
+                                            ]
+                                        };
+
+                                        var graphTarget = $("#graphCanvas");
+                                        var barGraph = new Chart(graphTarget, {
+                                            type: 'bar',
+                                            data: chartdata
+                                        });
+                        }
+
+                    }
+                    else if (temp['status']=="failed") 
+                    {
+                        switch (temp['msg']) 
+                        {
+                        case "searchfailed":
+                                    temp['msg'] = "ไม่พบเอกสารของวันที่ "+temp['date']+" ";
+                            break;
+                        case "Detailfail":
+                                    $( "#TableDetail tbody" ).empty();
+                                    temp['msg'] = "เอกสาร "+temp['DocNo']+" ไม่มีรายละเอียด ";
+                            break;
+                        case "noinput":
+                                    temp['msg'] = "<?php echo $array['noinputmsg'][$language]; ?>";
+                            break;
+                        case "notfound":
+                                    temp['msg'] = "<?php echo $array['notfoundmsg'][$language]; ?>";
+                            break;
+                        case "addsuccess":
+                            temp['msg'] = "<?php echo $array['addsuccessmsg'][$language]; ?>";
+                            break;
+                        case "addfailed":
+                                    temp['msg'] = "<?php echo $array['addfailedmsg'][$language]; ?>";
+                            break;
+                        case "editsuccess":
+                                    temp['msg'] = "<?php echo $array['editsuccessmsg'][$language]; ?>";
+                            break;
+                        case "editfailed":
+                                    temp['msg'] = "<?php echo $array['editfailedmsg'][$language]; ?>";
+                            break;
+                        case "cancelsuccess":
+                                    temp['msg'] = "<?php echo $array['cancelsuccessmsg'][$language]; ?>";
+                            break;
+                        case "cancelfailed":
+                                    temp['msg'] = "<?php echo $array['cancelfailed'][$language]; ?>";
+                            break;
+                        case "nodetail": 
+                                    temp['msg'] = "<?php echo $array['nodetail'][$language]; ?>";
+                            break;
+                            case "adduserfacfailed":
+                                    temp['msg'] = "<?php echo $array['adduserfacfailed'][$language]; ?>";
+                            break;
+                        }
+                            swal({
+                            title: '',
+                            text: temp['msg'],
+                            type: 'warning',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            showConfirmButton: false,
+                            timer: 2000,
+                            confirmButtonText: 'Ok'
+                            })
+                    }
+                },
+            });
+        }
+    </script>
+
+
+    <style>
         .loader {
             position: fixed;
             left: 0;
@@ -41,13 +189,10 @@ $Permission = $_SESSION['Permission'];
             left: 50%;
         }
     </style>
-    <!-- Js -->
-    <!--
-    --- Head Part - Use Jquery anywhere at page.
-    --- http://writing.colin-gourlay.com/safely-using-ready-before-including-jquery/
-    -->
     <script>(function(w,d,u){w.readyQ=[];w.bindReadyQ=[];function p(x,y){if(x=="ready"){w.bindReadyQ.push(y);}else{w.readyQ.push(x);}};var a={ready:p,bind:p};w.$=w.jQuery=function(f){if(f===d||f===u){return a}else{p(f)}}})(window,document)</script>
 </head>
+
+
 <body class="light">
 <!-- Pre loader -->
 <div id="loader" class="loader">
@@ -94,40 +239,87 @@ $Permission = $_SESSION['Permission'];
             </div>
         </div>
     </div>
-  </div>
+</div>
+<div id="app">
 
+<?php include 'menubar.php';?>
 
-  <div id="app" >
-
-  <?php include 'menubar.php';?>
-
-<!-- ============================== -->
-<div class="page has-sidebar-left"  hidden>
-    <header class="my-3">
-        <div class="container-fluid">
-            <div class="row">
+<div class="page has-sidebar-left">
+    <header class="blue accent-3 relative nav-sticky">
+        <div class="container-fluid text-white">
+            <div class="row p-t-b-10 ">
                 <div class="col">
-                    <h1 class="s-24">
-                        <i class="icon-pages"></i>
-                        Blank <span class="s-14">Get Started</span>
-                    </h1>
+                    <h4>
+                        <i class="icon icon-bubble_chart"></i>
+                        หน้าหลัก
+                    </h4>
                 </div>
             </div>
+            <div class="row">
+                    <ul class="nav responsive-tab nav-material nav-material-white">
+                            <li>
+                                <a class="nav-link active" href="panel-element-morris.html">
+                                    <i class="icon icon-bubble_chart"></i>หน้าหลัก</a>
+                            </li>
+                        </ul>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row my-3">
+            <!-- bar chart -->
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="card " id="chartbuy">
+                    <div class='card-header white'> 
+                        <strong id="datebuy"> </strong>
+                    </div>
+                    <div class="card-body p-0">
+                        <div style="height: 450px">
+                            <canvas  id="graphCanvas"></canvas>
+                        </div>                    
+                    </div>
+                </div>
+            </div>
+            <!-- /bar charts -->
+
+            <!-- bar charts group -->
+            <!-- <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="card ">
+                    <div class="card-header white">
+                            <strong>ยอดขายประจำวัน <small>( 2020-02-16 )</small> </strong>
+                    </div>
+                    <div class="card-body p-0">
+                        <div style="height: 450px">
+                            <canvas
+                                data-chart="bar"
+                                data-dataset="[[0,10,20,30,40]]"
+                                data-labels="['ลำไย A','ลำไย B','ลำไย C','ลำไย D','ข้าวเปลือก']"
+                                data-dataset-options="[{ label:'ขาย', borderColor:  'rgba(255,99,132,1)', backgroundColor: 'red'}]">
+                            </canvas>
+                        </div>                    
+                    </div>
+                </div>
+            </div> -->
         </div>
 
-    </header>
-    <div class="container-fluid my-3">
-        <p>You are the boss make something great.</p>
+
+
+
+
+            <!-- /line graph -->
+        </div>
     </div>
 </div>
-<!-- ================================== -->
 
-<!-- Right Sidebar -->
+
+
 <!-- /.right-sidebar -->
 <!-- Add the sidebar's background. This div must be placed
          immediately after the control sidebar -->
 <div class="control-sidebar-bg shadow white fixed"></div>
 </div>
+<!--/#app -->
 <script src="assets/js/app.js"></script>
 
 
