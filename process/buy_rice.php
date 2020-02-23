@@ -97,7 +97,8 @@ function ShowItem($conn, $DATA)
               grade_price_rice.Grade
             FROM
               item
-            INNER JOIN grade_price_rice ON grade_price_rice.item_code = item.item_code  ";
+            INNER JOIN grade_price_rice ON grade_price_rice.item_code = item.item_code
+            WHERE item.item_code='RI-UN-001'  ";
     $meQuery = mysqli_query($conn, $Sql);
     while ($Result = mysqli_fetch_assoc($meQuery)) 
     {

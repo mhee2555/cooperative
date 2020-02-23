@@ -15,7 +15,7 @@ function CreateDocument($conn, $DATA)
   $Sql = "SELECT CONCAT('DW',SUBSTRING(YEAR(DATE(NOW())),3,4),LPAD(MONTH(DATE(NOW())),2,0),'-',
   LPAD( (COALESCE(MAX(CONVERT(SUBSTRING(DocNo,10,5),UNSIGNED INTEGER)),0)+1) ,5,0)) AS DocNo,DATE(NOW()) AS DocDate,
   CURRENT_TIME() AS RecNow
-  FROM draw
+  FROM draw_rice
   WHERE DocNo Like CONCAT('DW',SUBSTRING(YEAR(DATE(NOW())),3,4),LPAD(MONTH(DATE(NOW())),2,0),'%')
   ORDER BY DocNo DESC LIMIT 1";
 
@@ -31,7 +31,7 @@ function CreateDocument($conn, $DATA)
 
   if ($count == 1) 
   {
-      $Sql = "INSERT INTO draw (
+      $Sql = "INSERT INTO draw_rice (
                     DocNo,
                     DocDate,
                     Modify_Date,
@@ -266,7 +266,7 @@ function ShowSearch($conn, $DATA)
                   emp.FName AS employee ,
                   d.IsStatus
                 FROM
-                  draw d
+                draw_rice d
                 INNER JOIN employee emp ON emp.ID = d.Employee_ID
                 WHERE d.DocDate = '$datepicker' ORDER BY d.DocNo DESC ";
 
@@ -313,7 +313,7 @@ function Savebill($conn, $DATA)
 
 
   //UPDATE STATUS 
-  $Sql = "UPDATE draw SET IsStatus = 1 , Modify_Date = TIME(NOW())  WHERE draw.DocNo = '$DocNo'";
+  $Sql = "UPDATE draw_rice SET IsStatus = 1 , Modify_Date = TIME(NOW())  WHERE draw_rice.DocNo = '$DocNo'";
   mysqli_query($conn, $Sql);
 
 
@@ -328,7 +328,7 @@ function Cancelbill($conn, $DATA)
   $boolean = false;
   $count = 0;
 
-  $Sql = "UPDATE draw SET IsStatus = 9 WHERE draw.DocNo = '$DocNo'";
+  $Sql = "UPDATE draw_rice SET IsStatus = 9 WHERE draw_rice.DocNo = '$DocNo'";
   mysqli_query($conn, $Sql);
 
   ShowSearch($conn, $DATA);
@@ -350,7 +350,7 @@ function ShowDocNo($conn, $DATA)
                   emp.FName AS employee ,
                   d.IsStatus
                 FROM
-                  draw d
+                draw_rice d
                 INNER JOIN employee emp ON emp.ID = d.Employee_ID
                 WHERE d.DocNo = '$DocNo' ";
 

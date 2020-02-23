@@ -76,11 +76,31 @@ $Permission = $_SESSION['Permission'];
         };
         senddata(JSON.stringify(data));
     }
+    function ShowSearch_rice()
+    {
+        var datepicker = $("#datepicker2").val();
+        var data = 
+        {
+          'STATUS'  	: 'ShowSearch_rice',
+          'datepicker' : datepicker
+
+        };
+        senddata(JSON.stringify(data));
+    }
     function showdetaildraw(DocNo)
     {
         var data = 
         {
             'STATUS'  : 'showdetaildraw',
+            'DocNo'	  : DocNo
+        };
+        senddata(JSON.stringify(data));     
+    }
+    function showdetaildraw_rice(DocNo)
+    {
+        var data = 
+        {
+            'STATUS'  : 'showdetaildraw_rice',
             'DocNo'	  : DocNo
         };
         senddata(JSON.stringify(data));     
@@ -117,6 +137,40 @@ $Permission = $_SESSION['Permission'];
             'status'	  : status
         };
         $('#showdetaildraw').modal('toggle');
+        senddata(JSON.stringify(data));    
+    }
+    function approve_rice(status)
+    {
+        var stock_code_Array = [];
+        var Detail_give_Array = [];
+        var DocNo = "";
+        $('input[name="stock_code_Array2"]').each(function() 
+        {
+            stock_code_Array.push($(this).val());
+        });
+
+        $('input[name="giveArray2"]').each(function() 
+        {
+            Detail_give_Array.push($(this).val());
+        });
+
+        $('input[name="docno_detail2"]').each(function() 
+        {
+            DocNo = $(this).val();
+        });
+
+        var give = Detail_give_Array.join(',') ;
+        var stock_code = stock_code_Array.join(',') ;
+
+        var data = 
+        {
+            'STATUS'  : 'approve_rice',
+            'stock_code': stock_code ,
+            'give'	  : give ,
+            'DocNo'	  : DocNo,
+            'status'	  : status
+        };
+        $('#showdetaildraw_rice').modal('toggle');
         senddata(JSON.stringify(data));    
     }
 //-----------------------------------------------------------------------------------------
@@ -203,6 +257,38 @@ $Permission = $_SESSION['Permission'];
                                     $('#TableSearch tbody').append( StrTR );
                                 }
                     }
+                    else if(temp["form"]=='ShowSearch_rice')
+                    {
+                        $( "#TableSearch_rice tbody" ).empty();
+                                for (var i = 0; i < temp['Row']; i++) 
+                                {                                    
+                                    if(temp[i]['IsStatus']==1)
+                                    {
+                                        Status = "ยังไม่ได้อนุมัติ";
+                                        Style  = "style='color: #FF6633;'";
+                                    }
+                                    else if(temp[i]['IsStatus']==2)
+                                    {
+                                        Status = "อนุมัติเรียบร้อย";
+                                        Style  = "style='color: #20B80E;'";
+                                    }
+                                    else if(temp[i]['IsStatus']==8)
+                                    {
+                                        Status = "ปฎิเสธการขอเบิก";
+                                        Style  = "style='color: #990000;'";
+                                    }
+                                    StrTR =   "<tr ondblclick='showdetaildraw_rice(\""+temp[i]['DocNo']+"\");'>"+
+                                                "<td>"+temp[i]['DocNo']+"</td>"+
+                                                "<td>"+temp[i]['DocDate']+"</td>"+
+                                                "<td>"+temp[i]['Modify_Date']+"</td>"+
+                                                "<td>"+temp[i]['employee']+"</td>"+
+                                                "<td " +Style+ ">"+Status+"</td>"+
+
+                                                "</tr>";
+
+                                    $('#TableSearch_rice tbody').append( StrTR );
+                                }
+                    }
                     else if(temp["form"]=='showdetaildraw')
                     {
                         $( "#Tabledetail tbody" ).empty();
@@ -232,6 +318,37 @@ $Permission = $_SESSION['Permission'];
                                    $('#Tabledetail tbody').append( StrTR );
                               }
                                       $('#showdetaildraw').modal('show');
+
+                    }
+                    else if(temp["form"]=='showdetaildraw_rice')
+                    {
+                        $( "#Tabledetail_rice tbody" ).empty();
+                              for (var i = 0; i < temp['Row']; i++) 
+                              {
+                                var cc = parseFloat(temp[i]['item_ccqty']);
+                                var kilo = parseFloat(temp[i]['kilo']);
+                                if(cc >= kilo)
+                                {
+                                    var sum = kilo;
+                                }
+                                else if (kilo > cc)
+                                {
+                                    var sum = cc;
+                                }
+                                var give = "<input type='text' id='Detail_give_"+i+"' class='form-control ' autocomplete='off'  name='giveArray2'  placeholder='0.00' value="+sum+" disabled><input type='hidden' name='stock_code_Array2'  id='stock_code_"+i+"' value='"+temp[i]['stock_code']+"'><input type='hidden' name='docno_detail2'   value='"+temp[i]['draw_DocNo']+"'>  ";
+                                var datetime = "<div><strong>"+temp[i]['date']+"<strong></div><small>"+temp[i]['time']+"</small>";
+                                
+                                 StrTR = "<tr>"+
+                                                "<td style='width: 20%;'>"+temp[i]['item_name']+"</td>"+
+                                                "<td style='width: 20%;'>"+datetime+"</td>"+
+                                                "<td style='width: 20%;'>"+temp[i]['item_ccqty']+"</td>"+
+                                                "<td style='width: 20%;'>"+temp[i]['kilo']+"</td>"+
+                                                "<td style='width: 20%;'>"+give+"</td>"+
+                                                "</tr>";
+   
+                                   $('#Tabledetail_rice tbody').append( StrTR );
+                              }
+                                      $('#showdetaildraw_rice').modal('show');
 
                     }
                     //------------------------------------------------------------------------------
@@ -391,7 +508,11 @@ $Permission = $_SESSION['Permission'];
                     </li>
                     <li>
                         <a class="nav-link" id="v-pills-buyers-tab" data-toggle="pill" href="#v-pills-buyers" role="tab"
-                           aria-controls="v-pills-buyers"><i class="icon icon-face"></i>การขอเบิก</a>
+                           aria-controls="v-pills-buyers"><i class="icon icon-face"></i>การขอเบิกลำใย</a>
+                    </li>
+                    <li>
+                        <a class="nav-link" id="v-pills-buyers-tab2" data-toggle="pill" href="#v-pills-buyers2" role="tab"
+                           aria-controls="v-pills-buyers"><i class="icon icon-face"></i>การขอเบิกข้าว</a>
                     </li>
                 </ul>
             </div>
@@ -578,6 +699,49 @@ $Permission = $_SESSION['Permission'];
             </div>
 
             <!-- END BUYERS -->
+
+               <!-- SEARCH2 -->
+               <div class="tab-pane animated fadeInUpShort" id="v-pills-buyers2" role="tabpanel" aria-labelledby="v-pills-buyers-tab2">
+                <div class="row">
+                    <div class="col-md-3 mt-2 ">
+                    <input type="text" autocomplete="off" class ="form-control datepicker-here" id="datepicker2" data-language='en' data-date-format='yyyy-mm-dd' placeholder="ค้นหาจากวันที่">
+                    </div>
+                    <div class="col-md-3 mt-2 ">
+                        <input type="text" class =  "form-control " placeholder="ค้นหา" id="Search_rice">
+                    </div>
+                    <div class="col-md-3  mt-2 ">
+                    <button type="button" class="btn btn-primary btn-lg" onclick="ShowSearch_rice()">
+                    <i class="icon-search3"></i> ค้นหา </button>
+                    </div>
+                </div>
+                <div class="row my-3">
+                    <div class="col-md-12">
+                        <div class="card r-0 shadow">
+                            <div class="table-responsive">
+                                <form>
+                                    <!-- SHOW USER -->
+                                    <table class="table table-striped table-hover r-0" id="TableSearch_rice">
+                                        <thead id="theadsum" >
+                                        <tr class="no-b">
+                                            <th>เลขที่เอกสาร</th>
+                                            <th>วันที่เอกสาร</th>
+                                            <th>วันที่บันทึก</th>
+                                            <th>ผู้บันทึก</th>
+                                            <th>สถานะ</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody  id="tbody">                                    
+                                        </tbody>
+                                    </table>
+                                    <!-- =============== -->
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- END BUYERS -->
         </div>
     </div>
     <!--Add New Message Fab Button-->
@@ -626,7 +790,37 @@ $Permission = $_SESSION['Permission'];
 
 
 
-
+<div class="modal fade" id="showdetaildraw_rice" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content" >
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">รายละเอียดการขอเบิก</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <table class="table table-striped table-hover r-0" id="Tabledetail_rice">
+                                        <thead id="theadsum" >
+                                        <tr class="no-b">
+                                            <th>ชื่อรายการ55</th>
+                                            <th>วันที่หมดอายุ</th>
+                                            <th>จำนวนคงเหลือ(กก)</th>
+                                            <th>จำนวนขอเบิก(กก)</th>
+                                            <th>จำนวนที่ให้(กก)</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody  id="tbody">
+                                        </tbody>
+                                    </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="approve_rice(8)">ไม่อนุมัติ</button>
+        <button type="button"  class="btn btn-success" onclick="approve_rice(2)">อนุมัติ</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 <!--/#app -->

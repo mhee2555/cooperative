@@ -7,7 +7,7 @@ date_default_timezone_set("Asia/Bangkok");
 $cfHost = "localhost";
 $cfUser = "root";
 $cfPassword = "A$192dijd";
-$cfDatabase = "cooper";
+$cfDatabase = "cooper2";
 
 // A$192dijd
 
