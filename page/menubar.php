@@ -64,6 +64,10 @@
                     </li>
                     <li><a href="panel-page-dashboard2.html" ><i class="icon icon-folder5"></i>บันทึกการรับเข้าข้าวแปรรูป</a>
                     </li>
+                    <li><a href="packing_lg.php" ><i class="icon icon-folder5"></i>สั่งบรรจุภัณฑ์ลำไย</a>
+                    </li>
+                    <li><a href="panel-page-dashboard2.html" ><i class="icon icon-folder5"></i>สั่งบรรจุภัณฑ์ข้าว</a>
+                    </li>
                 </ul>
             </li>
             <!-- ================================= -->
