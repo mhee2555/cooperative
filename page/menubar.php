@@ -48,13 +48,13 @@
                 <ul class="treeview-menu" >
                     <li><a href="main.php" ><i class="icon icon-folder5"></i>หน้าหลัก</a>
                     </li>
-                    <li><a href="buy_Longan.php"<?php if($PmID <> 4 && $PmID <> 1) echo 'hidden'; ?>><i class="icon icon-folder5"></i>บันทึกการซื้อลำไย</a>
+                    <li><a href="buy_Longan.php"><i class="icon icon-folder5"></i>บันทึกการซื้อลำไย</a>
                     </li>
-                    <li><a href="buy_rice.php" <?php if($PmID <> 4 && $PmID <> 1) echo 'hidden'; ?>><i class="icon icon-folder5"></i>บันทึกการซื้อข้าว</a>
+                    <li><a href="buy_rice.php"><i class="icon icon-folder5"></i>บันทึกการซื้อข้าว</a>
                     </li>
-                    <li><a href="draw.php" <?php if($PmID <> 3 ) echo 'hidden'; ?>><i class="icon icon-folder5"></i>บันทึกการขอเบิกลำไย</a>
+                    <li><a href="draw.php" ><i class="icon icon-folder5"></i>บันทึกการขอเบิกลำไย</a>
                     </li>
-                    <li><a href="draw_rice.php" <?php if($PmID <> 3 ) echo 'hidden'; ?>><i class="icon icon-folder5"></i>บันทึกการขอเบิกข้าว</a>
+                    <li><a href="draw_rice.php" ><i class="icon icon-folder5"></i>บันทึกการขอเบิกข้าว</a>
                     </li>
                     <li><a href="process_lg.php" ><i class="icon icon-folder5"></i>บันทึกการแปรรูปลำไย</a>
                     </li>

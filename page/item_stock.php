@@ -304,7 +304,7 @@ $Permission = $_SESSION['Permission'];
                                 {
                                     var sum = cc;
                                 }
-                                var give = "<input type='text' id='Detail_give_"+i+"' class='form-control ' autocomplete='off'  name='giveArray'  placeholder='0.00' value="+sum+" disabled><input type='hidden' name='stock_code_Array'  id='stock_code_"+i+"' value='"+temp[i]['stock_code']+"'><input type='hidden' name='docno_detail'   value='"+temp[i]['draw_DocNo']+"'>  ";
+                                var give = "<input type='text' id='Detail_give_"+i+"' class='form-control ' autocomplete='off'  name='giveArray'  placeholder='0.00' value="+sum+" disabled style='text-align: right;'><input type='hidden' name='stock_code_Array'  id='stock_code_"+i+"' value='"+temp[i]['stock_code']+"'><input type='hidden' name='docno_detail'   value='"+temp[i]['draw_DocNo']+"'>  ";
                                 var datetime = "<div><strong>"+temp[i]['date']+"<strong></div><small>"+temp[i]['time']+"</small>";
                                 
                                  StrTR = "<tr>"+

@@ -400,7 +400,7 @@ $Permission = $_SESSION['Permission'];
                                   var chkinput = "<div class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input checkSingle checkitem'  value='"+i+"'  id= ' item_id_"+i+" ' required><label class='custom-control-label ' for=' item_id_"+i+" ' style='margin-top: 15px;'></label></div> <input type='hidden' id='item_code_"+i+"' value='"+temp[i]['item_code']+"'>";
                                   var Kilo = "<input type='text' id='Kilo_"+i+"' class='form-control ' autocomplete='off' style='text-align:right'  placeholder='0.00' >  ";
                                  StrTR = "<tr>"+
-                                                "<td >"+chkinput+"</td>"+
+                                                "<td style=' width: 5%; '>"+chkinput+"</td>"+
                                                 "<td style=' width: 20%; '>"+temp[i]['item_name']+"</td>"+
                                                 "<td style=' width: 25%; ' >"+temp[i]['Grade']+"</td>"+
                                                 "<td style=' width: 120px; '>"+Kilo+"</td>"+

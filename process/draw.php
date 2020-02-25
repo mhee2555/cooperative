@@ -348,6 +348,7 @@ function ShowDocNo($conn, $DATA)
                   d.DocDate,
                   TIME(d.Modify_Date) AS  Modify_Date, 
                   emp.FName AS employee ,
+                  d.IsStatus ,
                   d.IsStatus
                 FROM
                   draw d
