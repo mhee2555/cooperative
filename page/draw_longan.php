@@ -324,7 +324,7 @@ $Permission = $_SESSION['Permission'];
     {
          var form_data = new FormData();
          form_data.append("DATA",data);
-         var URL = '../process/draw.php';
+         var URL = '../process/draw_longan.php';
          $.ajax
          ({
             url: URL,
