@@ -11,11 +11,11 @@ function CreateDocument($conn, $DATA)
   $Employee_ID   = $DATA["userid"];
   // ============CREATEDOCUMENT====================
 
-  $Sql = "SELECT CONCAT('PLG',SUBSTRING(YEAR(DATE(NOW())),3,4),LPAD(MONTH(DATE(NOW())),2,0),'-',
+  $Sql = "SELECT CONCAT('PRC',SUBSTRING(YEAR(DATE(NOW())),3,4),LPAD(MONTH(DATE(NOW())),2,0),'-',
   LPAD( (COALESCE(MAX(CONVERT(SUBSTRING(DocNo,10,5),UNSIGNED INTEGER)),0)+1) ,5,0)) AS DocNo,DATE(NOW()) AS DocDate,
   CURRENT_TIME() AS RecNow
-  FROM process_longan
-  WHERE DocNo Like CONCAT('PLG',SUBSTRING(YEAR(DATE(NOW())),3,4),LPAD(MONTH(DATE(NOW())),2,0),'%')
+  FROM process_rice
+  WHERE DocNo Like CONCAT('PRC',SUBSTRING(YEAR(DATE(NOW())),3,4),LPAD(MONTH(DATE(NOW())),2,0),'%')
   ORDER BY DocNo DESC LIMIT 1";
 
   $meQuery = mysqli_query($conn, $Sql);
@@ -30,7 +30,7 @@ function CreateDocument($conn, $DATA)
 
   if ($count == 1) 
   {
-      $Sqlx = "INSERT INTO process_longan (
+      $Sqlx = "INSERT INTO process_rice (
                     DocNo,
                     DocDate,
                     Modify_Date,
@@ -85,9 +85,9 @@ function ShowDetail($conn, $DATA)
               item.item_name,
               pld.kilo
             FROM
-              process_longan_detail pld
+            process_rice_detail pld
             INNER JOIN item ON item.item_code = pld.item_code
-            WHERE Lg_DocNo = '$DocNo' ";
+            WHERE RC_DocNo = '$DocNo' ";
             $meQuery = mysqli_query($conn, $Detail);
             while ($Result = mysqli_fetch_assoc($meQuery)) 
             {
@@ -133,7 +133,7 @@ function ShowSearch($conn, $DATA)
                   pl.IsStatus ,
                   pl.RefDocNo
                 FROM
-                  process_longan pl
+                process_rice pl
                 INNER JOIN employee emp ON emp.ID = pl.Employee_ID
                 WHERE pl.DocDate = '$datepicker' ORDER BY pl.DocNo DESC ";
 
@@ -182,7 +182,7 @@ function ShowRefDocNo($conn, $DATA)
                   DocNo,
                   DocDate 
                 FROM
-                  draw 
+                  draw_rice 
                 WHERE
                   IsStatus = 2 AND IsRef = 0 AND DocDate = '$dateRefDocNo' ";
       $meQuery = mysqli_query($conn, $SelectDraw);
@@ -223,16 +223,16 @@ function SaveRefDocNo($conn, $DATA)
   $RefDocNo  = $DATA["RefDocNo"];
   $DocNo  = $DATA["DocNo"];
   // ===========================================
-  $updateRef = "UPDATE process_longan , Draw SET RefDocNo = '$RefDocNo' , IsRef = 1 WHERE process_longan.DocNo = '$DocNo' AND draw.DocNo = '$RefDocNo' "; 
+  $updateRef = "UPDATE process_rice , Draw SET RefDocNo = '$RefDocNo' , IsRef = 1 WHERE process_rice.DocNo = '$DocNo' AND draw_rice.DocNo = '$RefDocNo' "; 
   mysqli_query($conn, $updateRef);
 
   // ==========================================
   
   $slectdraw = "SELECT
-                  draw_detail.item_code, 
-                  draw_detail.kilo
+                  draw_rice_detail.item_code, 
+                  draw_rice_detail.kilo
                 FROM
-                  draw_detail
+                  draw_rice_detail
                 WHERE draw_DocNo = '$RefDocNo' " ;
 
       $meQuery = mysqli_query($conn, $slectdraw);
@@ -242,7 +242,7 @@ function SaveRefDocNo($conn, $DATA)
         $kilo       = $Result['kilo'];
 
         // insert draw detail to proces_lg
-        $insertpro = "INSERT INTO process_longan_detail SET Lg_DocNo = '$DocNo' , item_code = '$item_code' , kilo = '$kilo' ";
+        $insertpro = "INSERT INTO process_rice_detail SET RC_DocNo = '$DocNo' , item_code = '$item_code' , kilo = '$kilo' ";
         mysqli_query($conn, $insertpro);
 
         $boolean = true;
@@ -273,7 +273,7 @@ function Cancelbill($conn, $DATA)
   $boolean = false;
   $count = 0;
 
-  $Sql = "UPDATE process_longan SET IsStatus = 9 WHERE process_longan.DocNo = '$DocNo'";
+  $Sql = "UPDATE process_rice SET IsStatus = 9 WHERE process_rice.DocNo = '$DocNo'";
   mysqli_query($conn, $Sql);
 
   ShowSearch($conn, $DATA);
@@ -285,12 +285,12 @@ function Startprocess($conn, $DATA)
   $boolean = false;
   $count = 0;
 
-  $Sql = "UPDATE process_longan SET start_process = NOW() , IsStatus = 1 WHERE process_longan.DocNo = '$DocNo' ";
+  $Sql = "UPDATE process_rice SET start_process = NOW() , IsStatus = 1 WHERE process_rice.DocNo = '$DocNo' ";
   mysqli_query($conn, $Sql);
 
 
   // SELECT DATE 
-  $selectdate = "SELECT start_process FROM process_longan WHERE process_longan.DocNo = '$DocNo' ";
+  $selectdate = "SELECT start_process FROM process_rice WHERE process_rice.DocNo = '$DocNo' ";
   $meQuery = mysqli_query($conn, $selectdate);
   $Result = mysqli_fetch_assoc($meQuery);
   $return['start_process'] = $Result['start_process'];
@@ -320,12 +320,12 @@ function Endprocess($conn, $DATA)
   $boolean = false;
   $count = 0;
 
-  $Sql = "UPDATE process_longan SET end_process = NOW() , IsStatus = 2 WHERE process_longan.DocNo = '$DocNo' ";
+  $Sql = "UPDATE process_rice SET end_process = NOW() , IsStatus = 2 WHERE process_rice.DocNo = '$DocNo' ";
   mysqli_query($conn, $Sql);
 
 
   // SELECT DATE 
-  $selectdate = "SELECT end_process FROM process_longan WHERE process_longan.DocNo = '$DocNo' ";
+  $selectdate = "SELECT end_process FROM process_rice WHERE process_rice.DocNo = '$DocNo' ";
   $meQuery = mysqli_query($conn, $selectdate);
   $Result = mysqli_fetch_assoc($meQuery);
   $return['end_process'] = $Result['end_process'];
@@ -355,7 +355,7 @@ function Successprocess($conn, $DATA)
   $boolean = false;
   $count = 0;
 
-  $Sql = "UPDATE process_longan SET IsStatus = 3 WHERE process_longan.DocNo = '$DocNo' ";
+  $Sql = "UPDATE process_rice SET IsStatus = 3 WHERE process_rice.DocNo = '$DocNo' ";
   mysqli_query($conn, $Sql);
 
   ShowSearch($conn, $DATA);
@@ -379,7 +379,7 @@ function ShowDocNo($conn, $DATA)
                   pl.start_process ,
                   pl.end_process 
                 FROM
-                  process_longan pl
+                process_rice pl
                 INNER JOIN employee emp ON emp.ID = pl.Employee_ID
                 WHERE pl.DocNo = '$DocNo' ";
 
@@ -445,7 +445,7 @@ function Deleteitem($conn, $DATA)
   $DocNo  = $DATA["DocNo"];
   $itemcode  = $DATA["itemcode"];
 
-  $Delete = "DELETE FROM process_longan_detail WHERE item_code = '$itemcode' AND Lg_DocNo = '$DocNo' ";
+  $Delete = "DELETE FROM process_rice_detail WHERE item_code = '$itemcode' AND RC_DocNo = '$DocNo' ";
   mysqli_query($conn, $Delete);
 
   ShowDetail($conn, $DATA);

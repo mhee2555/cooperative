@@ -26,7 +26,7 @@ $Permission = $_SESSION['Permission'];
     <link href="../datepicker/dist/css/datepicker.min.css" rel="stylesheet" type="text/css">
     <script src="../datepicker/dist/js/datepicker.th.js"></script>
     <script src="../datepicker/dist/js/i18n/datepicker.en.js"></script>
-    <title>บันทึกการแปรรูปลำไย</title>
+    <title>บันทึกการแปรรูปข้าว</title>
     <!-- CSS -->
     <link rel="stylesheet" href="assets/css/app.css">
 
@@ -345,7 +345,7 @@ $Permission = $_SESSION['Permission'];
     {
          var form_data = new FormData();
          form_data.append("DATA",data);
-         var URL = '../process/process_lg.php';
+         var URL = '../process/process_rc.php';
          $.ajax
          ({
             url: URL,
@@ -753,7 +753,7 @@ $Permission = $_SESSION['Permission'];
                 <div class="col">
                     <h4>
                         <i class="icon icon-folder5"></i>
-                        บันทึกการแปรรูปลำไย
+                        บันทึกการแปรรูปข้าว
                     </h4>
                 </div>
             </div>
@@ -761,7 +761,7 @@ $Permission = $_SESSION['Permission'];
                 <ul class="nav nav-material nav-material-white responsive-tab" id="v-pills-tab" role="tablist">
                     <li>
                         <a class="nav-link active" id="v-pills-all-tab" data-toggle="pill" href="#v-pills-all" role="tab" 
-                        aria-controls="v-pills-all"><i class="icon icon-home2"></i>การแปรรูปลำไย</a>
+                        aria-controls="v-pills-all"><i class="icon icon-home2"></i>การแปรรูปข้าว</a>
                     </li>
                     <li>
                         <a class="nav-link" id="v-pills-buyers-tab" data-toggle="pill" href="#v-pills-buyers" role="tab"
