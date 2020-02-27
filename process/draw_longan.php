@@ -97,7 +97,7 @@ function ShowItem($conn, $DATA)
           sup.stock_code,
           sup.item_qty,
           sup.item_ccqty,
-          sup.Date_exp as date_exp
+          TIME(sup.Date_exp) as date_exp
           FROM
           stock_unprocess sup
           INNER JOIN item ON item.item_code = sup.item_code 
@@ -119,6 +119,17 @@ function ShowItem($conn, $DATA)
       $boolean = true;
     }
     $return['Row'] = $count;
+
+    $cntUnit = 0;
+    $xSql = "SELECT item_unit.UnitCode,item_unit.UnitName
+      FROM item_unit  ";
+      $xQuery = mysqli_query($conn, $xSql);
+      while ($xResult = mysqli_fetch_assoc($xQuery))
+      {
+        $return['Unit'][$cntUnit]['UnitCode'] = $xResult['UnitCode'];
+        $return['Unit'][$cntUnit]['UnitName'] = $xResult['UnitName'];
+        $cntUnit++;
+      }
 
     if ($boolean)
     {
@@ -147,11 +158,13 @@ function Importdata($conn, $DATA)
   $item_code = $DATA["item_code"];
   $kilo = $DATA["kilo"];
   $stock_code = $DATA["stock_code"];
+  $unit = $DATA["xunit"];
 
   #========================================
   $item_codex  = explode(",", $item_code);
   $kilox       = explode(",", $kilo);
   $stock_codex = explode(",", $stock_code);
+  $unitx      = explode(",", $unit);
   #========================================
 
   foreach ($item_codex as $key => $value)
@@ -163,7 +176,8 @@ function Importdata($conn, $DATA)
         draw_DocNo = '$DocNo',
         item_code = '$value',
         kilo = '$kilox[$key]',
-        stock_code = '$stock_codex[$key]' ";
+        stock_code = '$stock_codex[$key]',
+        UnitCode = '$unitx[$key]' ";
 
     mysqli_query($conn, $insert_chk);
     // checkinsert
@@ -184,7 +198,8 @@ function Importdata($conn, $DATA)
                   SET 
                       draw_DocNo = '$DocNo',
                       item_code = '$value',
-                      kilo = '$kilox[$key]' ";
+                      kilo = '$kilox[$key]',
+                      UnitCode = '$unitx[$key]' ";
 
                   mysqli_query($conn, $insert);
     }
@@ -194,7 +209,8 @@ function Importdata($conn, $DATA)
                  SET 
                       draw_DocNo = '$DocNo',
                       item_code = '$value',
-                      kilo = ( kilo + '$kilox[$key]' )
+                      kilo = ( kilo + '$kilox[$key]' ),
+                      UnitCode = '$unitx[$key]'
                 WHERE
                       draw_DocNo = '$DocNo'
                 AND    item_code = '$value'  ";
@@ -216,7 +232,8 @@ function ShowDetail($conn, $DATA)
               dd.RowID,
               dd.item_code,
               item.item_name,
-              dd.kilo
+              dd.kilo,
+              dd.UnitCode
             FROM
               draw_detail dd
             INNER JOIN item ON item.item_code = dd.item_code
@@ -228,10 +245,22 @@ function ShowDetail($conn, $DATA)
               $return[$count]['item_code']      = $Result['item_code'];
               $return[$count]['item_name']      = $Result['item_name'];
               $return[$count]['kilo']           = $Result['kilo'];
+              $return[$count]['UnitCode']       = $Result['UnitCode'];
               $count ++ ;
               $boolean = true;
             }
             $return['Row'] = $count;
+
+            $cntUnit = 0;
+            $xSql = "SELECT item_unit.UnitCode,item_unit.UnitName
+              FROM item_unit  ";
+              $xQuery = mysqli_query($conn, $xSql);
+              while ($xResult = mysqli_fetch_assoc($xQuery))
+              {
+                $return['Unit'][$cntUnit]['UnitCode'] = $xResult['UnitCode'];
+                $return['Unit'][$cntUnit]['UnitName'] = $xResult['UnitName'];
+                $cntUnit++;
+              }
 
   if ($boolean) 
   {

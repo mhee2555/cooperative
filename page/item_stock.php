@@ -294,6 +294,20 @@ $Permission = $_SESSION['Permission'];
                         $( "#Tabledetail tbody" ).empty();
                               for (var i = 0; i < temp['Row']; i++) 
                               {
+                                var chkunit ="<select  class='form-control'  id='detailUnit_"+i+"' disabled>";
+                                    $.each(temp['Unit'], function(key, val)
+                                    {
+                                        if(temp[i]['UnitCode']==val.UnitCode)
+                                        {
+                                            chkunit += '<option selected value=" '+val.UnitCode+' ">'+val.UnitName+'</option>';
+                                        }
+                                        else
+                                        {
+                                            chkunit += '<option value="' +val.UnitCode+' ">'+val.UnitName+'</option>';
+                                        }
+                                    });
+                                    chkunit += "</select>";
+
                                 var cc = parseFloat(temp[i]['item_ccqty']);
                                 var kilo = parseFloat(temp[i]['kilo']);
                                 if(cc >= kilo)
@@ -310,9 +324,10 @@ $Permission = $_SESSION['Permission'];
                                  StrTR = "<tr>"+
                                                 "<td style='width: 20%;'>"+temp[i]['item_name']+"</td>"+
                                                 "<td style='width: 20%;'>"+datetime+"</td>"+
-                                                "<td style='width: 20%;'>"+temp[i]['item_ccqty']+"</td>"+
-                                                "<td style='width: 20%;'>"+temp[i]['kilo']+"</td>"+
+                                                "<td style='width: 10%;'>"+temp[i]['item_ccqty']+"</td>"+
+                                                "<td style='width: 10%;'>"+temp[i]['kilo']+"</td>"+
                                                 "<td style='width: 20%;'>"+give+"</td>"+
+                                                "<td style='width: 20%;'>"+chkunit+"</td>"+
                                                 "</tr>";
    
                                    $('#Tabledetail tbody').append( StrTR );
@@ -774,6 +789,7 @@ $Permission = $_SESSION['Permission'];
                                             <th>จำนวนคงเหลือ(กก)</th>
                                             <th>จำนวนขอเบิก(กก)</th>
                                             <th>จำนวนที่ให้(กก)</th>
+                                            <th>หน่วยนับ</th>
                                         </tr>
                                         </thead>
                                         <tbody  id="tbody">

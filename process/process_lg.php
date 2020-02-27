@@ -83,7 +83,8 @@ function ShowDetail($conn, $DATA)
   	          pld.RowID,
               pld.item_code,
               item.item_name,
-              pld.kilo
+              pld.kilo,
+              pld.UnitCode
             FROM
               process_longan_detail pld
             INNER JOIN item ON item.item_code = pld.item_code
@@ -95,11 +96,23 @@ function ShowDetail($conn, $DATA)
               $return[$count]['item_code']      = $Result['item_code'];
               $return[$count]['item_name']      = $Result['item_name'];
               $return[$count]['kilo']           = $Result['kilo'];
+              $return[$count]['UnitCode']       = $Result['UnitCode'];
               $count ++ ;
               $boolean = true;
             }
             $return['Row'] = $count;
 
+            $cntUnit = 0;
+            $xSql = "SELECT item_unit.UnitCode,item_unit.UnitName
+              FROM item_unit  ";
+              $xQuery = mysqli_query($conn, $xSql);
+              while ($xResult = mysqli_fetch_assoc($xQuery))
+              {
+                $return['Unit'][$cntUnit]['UnitCode'] = $xResult['UnitCode'];
+                $return['Unit'][$cntUnit]['UnitName'] = $xResult['UnitName'];
+                $cntUnit++;
+              }
+              
   if ($boolean) 
   {
     $return['status'] = "success";
@@ -230,7 +243,8 @@ function SaveRefDocNo($conn, $DATA)
   
   $slectdraw = "SELECT
                   draw_detail.item_code, 
-                  draw_detail.kilo
+                  draw_detail.kilo,
+                  draw_detail.UnitCode
                 FROM
                   draw_detail
                 WHERE draw_DocNo = '$RefDocNo' " ;
@@ -240,9 +254,10 @@ function SaveRefDocNo($conn, $DATA)
       {
         $item_code  = $Result['item_code'];
         $kilo       = $Result['kilo'];
+        $UnitCode   = $Result['UnitCode'];
 
         // insert draw detail to proces_lg
-        $insertpro = "INSERT INTO process_longan_detail SET Lg_DocNo = '$DocNo' , item_code = '$item_code' , kilo = '$kilo' ";
+        $insertpro = "INSERT INTO process_longan_detail SET Lg_DocNo = '$DocNo' , item_code = '$item_code' , kilo = '$kilo' , UnitCode = '$UnitCode'";
         mysqli_query($conn, $insertpro);
 
         $boolean = true;

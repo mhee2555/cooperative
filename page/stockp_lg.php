@@ -220,7 +220,8 @@ $Permission = $_SESSION['Permission'];
         /* declare an checkbox array */
         var iArray = [];
         var kiloArray = [];
-        var item_codeArray = [];        
+        var item_codeArray = []; 
+        var unitArray = [];       
         $(".checkitem:checked").each(function() 
         {
             iArray.push($(this).val());
@@ -230,10 +231,12 @@ $Permission = $_SESSION['Permission'];
         {
             item_codeArray.push( $("#item_code_"+iArray[j]).val() );
             kiloArray.push( $("#Kilo_"+iArray[j]).val() );
+            unitArray.push( $("#iUnit_"+iArray[j]).val() );
         }
         // =======================================================
         var item_code = item_codeArray.join(',') ;
         var kilo = kiloArray.join(',') ;
+        var xunit = unitArray.join(',') ;
         // =======================================================
 
         $( "#TableDetail tbody" ).empty();
@@ -243,6 +246,7 @@ $Permission = $_SESSION['Permission'];
           'item_code'   : item_code,
           'kilo'		: kilo,
           'DocNo'		: DocNo ,
+          'xunit'		: xunit
         };
         $('#Additem').modal('toggle');
         senddata(JSON.stringify(data));
@@ -399,14 +403,28 @@ $Permission = $_SESSION['Permission'];
                         $( "#Tableitem tbody" ).empty();
                               for (var i = 0; i < temp['Row']; i++) 
                               {
+                                var chkunit ="<select  class='form-control'  id='detailUnit_"+i+"' >";
+                                    $.each(temp['Unit'], function(key, val)
+                                    {
+                                        if(temp[i]['UnitCode']==val.UnitCode)
+                                        {
+                                            chkunit += '<option selected value=" '+val.UnitCode+' ">'+val.UnitName+'</option>';
+                                        }
+                                        else
+                                        {
+                                            chkunit += '<option value="' +val.UnitCode+' ">'+val.UnitName+'</option>';
+                                        }
+                                    });
+                                    chkunit += "</select>";
 
                                   var chkinput = "<div class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input checkSingle checkitem'  value='"+i+"'  id= ' item_id_"+i+" ' required><label class='custom-control-label ' for=' item_id_"+i+" ' style='margin-top: 15px;'></label></div> <input type='hidden' id='item_code_"+i+"' value='"+temp[i]['item_code']+"'>";
-                                  var Kilo = "<input type='text' id='Kilo_"+i+"' class='form-control ' autocomplete='off' style='width: 40%;text-align:right'  placeholder='0.00' >  ";
+                                  var Kilo = "<input type='text' id='Kilo_"+i+"' class='form-control ' autocomplete='off' style='text-align:right'  placeholder='0.00' >  ";
 
                                  StrTR = "<tr>"+
                                                 "<td >"+chkinput+"</td>"+
-                                                "<td style=' width: 60%; '>"+temp[i]['item_name']+"</td>"+
-                                                "<td >"+Kilo+"</td>"+
+                                                "<td style=' width: 50%; '>"+temp[i]['item_name']+"</td>"+
+                                                "<td style=' width: 25%; '>"+Kilo+"</td>"+
+                                                "<td style=' width: 25%; '>"+chkunit+"</td>"+
                                                 "</tr>";
    
                                    $('#Tableitem tbody').append( StrTR );
@@ -437,13 +455,28 @@ $Permission = $_SESSION['Permission'];
 
                               for (var i = 0; i < temp['Row']; i++) 
                               {
+                                var chkunit ="<select  class='form-control'  id='detailUnit_"+i+"' disabled style='width: 50%;'>";
+                                    $.each(temp['Unit'], function(key, val)
+                                    {
+                                        if(temp[i]['UnitCode']==val.UnitCode)
+                                        {
+                                            chkunit += '<option selected value=" '+val.UnitCode+' ">'+val.UnitName+'</option>';
+                                        }
+                                        else
+                                        {
+                                            chkunit += '<option value="' +val.UnitCode+' ">'+val.UnitName+'</option>';
+                                        }
+                                    });
+                                    chkunit += "</select>";
+
                                   var chkinput = "<div class='custom-control custom-radio'><input type='radio' class='custom-control-input checkSingle checkdetail' name='detailrow'  value='"+temp[i]['item_code']+"'  id= ' Detail_id_"+i+" ' required><label class='custom-control-label ' for=' Detail_id_"+i+" ' style='margin-top: 15px;'></label></div> ";
-                                  var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' autocomplete='off'  name='KiloArray'  placeholder='0.00' value='"+temp[i]['kilo']+"' style='    width: 20%; text-align: right;' disabled>  ";
+                                  var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' autocomplete='off'  name='KiloArray'  placeholder='0.00' value='"+temp[i]['kilo']+"' style='text-align: right;' disabled>  ";
 
                                    StrTR =   "<tr>"+
-                                                "<td >"+chkinput+"</td>"+
-                                                "<td >"+temp[i]['item_name']+"</td>"+
-                                                "<td >"+Kilo+"</td>"+
+                                                "<td style='width:10%'>"+chkinput+"</td>"+
+                                                "<td style='width:40%'>"+temp[i]['item_name']+"</td>"+
+                                                "<td style='width:10%'>"+Kilo+"</td>"+
+                                                "<td style='width:20%'>"+chkunit+"</td>"+
                                                 "</tr>";
    
                                    $('#TableDetail tbody').append( StrTR );
@@ -506,8 +539,7 @@ $Permission = $_SESSION['Permission'];
                         $("#RefDocNo").attr('disabled' , true );
                         $("#DocNo").attr('disabled' , true );
                         // 
-                   
-
+                
                         if(temp[0]['IsStatus'] == 9)
                         {
                             // disabled

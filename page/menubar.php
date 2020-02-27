@@ -52,7 +52,7 @@
                     </li>
                     <li><a href="buy_rice.php"><i class="icon icon-folder5"></i>บันทึกการซื้อข้าว</a>
                     </li>
-                    <li><a href="draw.php" ><i class="icon icon-folder5"></i>บันทึกการขอเบิกลำไย</a>
+                    <li><a href="draw_longan.php" ><i class="icon icon-folder5"></i>บันทึกการขอเบิกลำไย</a>
                     </li>
                     <li><a href="draw_rice.php" ><i class="icon icon-folder5"></i>บันทึกการขอเบิกข้าว</a>
                     </li>

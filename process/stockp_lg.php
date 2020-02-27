@@ -121,7 +121,8 @@ function ShowDetail($conn, $DATA)
   	          sld.RowID,
               sld.item_code,
               item.item_name,
-              sld.kilo
+              sld.kilo,
+              sld.UnitCode
             FROM
             stockp_longan_detail sld
             INNER JOIN item ON item.item_code = sld.item_code
@@ -133,10 +134,23 @@ function ShowDetail($conn, $DATA)
               $return[$count]['item_code']      = $Result['item_code'];
               $return[$count]['item_name']      = $Result['item_name'];
               $return[$count]['kilo']           = $Result['kilo'];
+              $return[$count]['UnitCode']           = $Result['UnitCode'];
               $count ++ ;
               $boolean = true;
             }
             $return['Row'] = $count;
+
+            
+          $cntUnit = 0;
+          $xSql = "SELECT item_unit.UnitCode,item_unit.UnitName
+            FROM item_unit  ";
+            $xQuery = mysqli_query($conn, $xSql);
+            while ($xResult = mysqli_fetch_assoc($xQuery))
+            {
+              $return['Unit'][$cntUnit]['UnitCode'] = $xResult['UnitCode'];
+              $return['Unit'][$cntUnit]['UnitName'] = $xResult['UnitName'];
+              $cntUnit++;
+            }
 
   if ($boolean) 
   {
@@ -275,6 +289,16 @@ function ShowItem($conn, $DATA)
     }
     $return['Row'] = $count;
 
+    $cntUnit = 0;
+    $xSql = "SELECT item_unit.UnitCode,item_unit.UnitName
+      FROM item_unit  ";
+      $xQuery = mysqli_query($conn, $xSql);
+      while ($xResult = mysqli_fetch_assoc($xQuery))
+      {
+        $return['Unit'][$cntUnit]['UnitCode'] = $xResult['UnitCode'];
+        $return['Unit'][$cntUnit]['UnitName'] = $xResult['UnitName'];
+        $cntUnit++;
+      }
 
     if ($boolean)
     {
@@ -331,10 +355,12 @@ function Importdata($conn, $DATA)
   $DocNo = $DATA["DocNo"];
   $item_code = $DATA["item_code"];
   $kilo = $DATA["kilo"];
+  $unit = $DATA["xunit"];
 
   #========================================
   $item_codex  = explode(",", $item_code);
   $kilox       = explode(",", $kilo);
+  $unitx      = explode(",", $unit);
   #========================================
 
   foreach ($item_codex as $key => $value)
@@ -357,7 +383,8 @@ function Importdata($conn, $DATA)
                   SET 
                       stockp_DocNo = '$DocNo',
                       item_code = '$value',
-                      kilo = '$kilox[$key]' ";
+                      kilo = '$kilox[$key]',
+                      UnitCode = '$unitx[$key]'  ";
 
                   mysqli_query($conn, $insert);
     }
@@ -367,7 +394,8 @@ function Importdata($conn, $DATA)
                  SET 
                       stockp_DocNo = '$DocNo',
                       item_code = '$value',
-                      kilo = ( kilo + '$kilox[$key]' )
+                      kilo = ( kilo + '$kilox[$key]' ),
+                      UnitCode = '$unitx[$key]' 
                 WHERE
                        stockp_DocNo = '$DocNo'
                 AND    item_code = '$value'  ";

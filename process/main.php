@@ -8,6 +8,7 @@ function showchartbuy($conn, $DATA)
 {
   $boolean = false;
   $count = 0;
+  $datepicker  = $DATA["datepicker"]==''?date('Y-m-d'):$DATA["datepicker"];
 
   $Selectchart = "SELECT
                     SUM(kilo) AS kilo,
@@ -20,7 +21,7 @@ function showchartbuy($conn, $DATA)
                   WHERE
                     item.item_code = bld.item_code 
                     AND bl.DocNo = bld.Buy_DocNo 
-                    AND bl.DocDate = '2020-02-18' 
+                    AND bl.DocDate = '$datepicker' 
                   GROUP BY
                     bld.item_code ";
   $meQuery = mysqli_query($conn, $Selectchart);

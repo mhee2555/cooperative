@@ -144,7 +144,8 @@ $Permission = $_SESSION['Permission'];
         var kiloArray = [];
         var stock_codeArray = [];
         var item_codeArray = [];
-        
+        var unitArray = [];
+
         $(".checkitem:checked").each(function() 
         {
             iArray.push($(this).val());
@@ -155,11 +156,13 @@ $Permission = $_SESSION['Permission'];
             item_codeArray.push( $("#item_code_"+iArray[j]).val() );
             kiloArray.push( $("#draw_"+iArray[j]).val() );
             stock_codeArray.push( $("#stock_code_"+iArray[j]).val() );
+            unitArray.push( $("#iUnit_"+iArray[j]).val() );
         }
         // =======================================================
         var item_code = item_codeArray.join(',') ;
         var kilo = kiloArray.join(',') ;
         var stock_code = stock_codeArray.join(',') ;
+        var xunit = unitArray.join(',') ;
         // =======================================================
 
         $( "#TableDetail tbody" ).empty();
@@ -170,7 +173,8 @@ $Permission = $_SESSION['Permission'];
           'item_code'   : item_code,
           'kilo'		: kilo,
           'DocNo'		: DocNo,
-          'stock_code'  : stock_code
+          'stock_code'  : stock_code,
+          'xunit'		: xunit
         };
         $('#Additem').modal('toggle');
         senddata(JSON.stringify(data));
@@ -375,8 +379,24 @@ $Permission = $_SESSION['Permission'];
                         $( "#Tableitem tbody" ).empty();
                               for (var i = 0; i < temp['Row']; i++) 
                               {
+                                var chkunit ="<select  class='form-control' style='width: 100px;'  id='iUnit_"+i+"'>";
+                                    $.each(temp['Unit'], function(key, val)
+                                    {
+                                        if(temp[i]['UnitCode']==val.UnitCode)
+                                        {
+                                            chkunit += '<option  selected value=" '+val.UnitCode+' ">'+val.UnitName+'</option>';
+                                        }
+                                        else
+                                        {
+                                            chkunit += '<option value="' +val.UnitCode+' ">'+val.UnitName+'</option>';
+                                        }
+                                    });
+                                    chkunit += "</select>";
+
+
+
                                   var chkinput = "<div class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input checkSingle checkitem'  value='"+i+"'  id= ' item_id_"+i+" ' required><label class='custom-control-label ' for=' item_id_"+i+" ' style='margin-top: 15px;'></label></div> <input type='hidden' id='item_code_"+i+"' value='"+temp[i]['item_code']+"'><input type='hidden' id='stock_code_"+i+"' value='"+temp[i]['stock_code']+"'>";
-                                  var draw = "<input type='text' id='draw_"+i+"' class='form-control ' autocomplete='off' style='text-align:right'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['item_ccqty']+"\" , \""+i+"\" ) '>  ";
+                                  var draw = "<input type='text' id='draw_"+i+"' class='form-control ' autocomplete='off' style='text-align:right;width: 100px;'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['item_ccqty']+"\" , \""+i+"\" ) '>  ";
                                   var qty_total = "<input type='text' id='qty_total_"+i+"' class='form-control ' autocomplete='off' style='text-align:right'   placeholder='0.00' value='"+temp[i]['item_qty']+"'  disabled>  ";
                                   var qty_cc = "<input type='text' id='ccqty_total_"+i+"' class='form-control ' autocomplete='off' style='text-align:right'  placeholder='0.00' value='"+temp[i]['item_ccqty']+"'  disabled>  ";
                                   
@@ -385,11 +405,12 @@ $Permission = $_SESSION['Permission'];
 
                                  StrTR = "<tr>"+
                                                 "<td >"+chkinput+"</td>"+
-                                                "<td style='width: 20%;'>"+temp[i]['item_name']+"</td>"+
+                                                "<td style='width: 15%;'>"+temp[i]['item_name']+"</td>"+
                                                 "<td >"+qty_total+"</td>"+
                                                 "<td >"+qty_cc+"</td>"+
-                                                "<td style='width: 22%;'>"+temp[i]['date_exp']+"</td>"+
+                                                "<td >"+temp[i]['date_exp']+"</td>"+
                                                 "<td >"+draw+"</td>"+
+                                                "<td >"+chkunit+"</td>"+
                                                 "<td hidden>"+fix+"</td>"+
                                                 "</tr>";
    
@@ -404,13 +425,28 @@ $Permission = $_SESSION['Permission'];
                         // 
                               for (var i = 0; i < temp['Row']; i++) 
                               {
+                                var chkunit ="<select  class='form-control'  id='detailUnit_"+i+"' disabled style='width: 50%;'>";
+                                    $.each(temp['Unit'], function(key, val)
+                                    {
+                                        if(temp[i]['UnitCode']==val.UnitCode)
+                                        {
+                                            chkunit += '<option selected value=" '+val.UnitCode+' ">'+val.UnitName+'</option>';
+                                        }
+                                        else
+                                        {
+                                            chkunit += '<option value="' +val.UnitCode+' ">'+val.UnitName+'</option>';
+                                        }
+                                    });
+                                    chkunit += "</select>";
+
                                   var chkinput = "<div class='custom-control custom-radio'><input type='radio' class='custom-control-input checkSingle checkdetail' name='detailrow'  value='"+temp[i]['item_code']+"'  id= ' Detail_id_"+i+" ' required><label class='custom-control-label ' for=' Detail_id_"+i+" ' style='margin-top: 15px;'></label></div> ";
-                                  var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' autocomplete='off'  name='KiloArray'  placeholder='0.00' value='"+temp[i]['kilo']+"' style='width: 40%;text-align: right;'>  ";
+                                  var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' autocomplete='off'  name='KiloArray'  placeholder='0.00' value='"+temp[i]['kilo']+"' style='text-align: right;'>  ";
 
                                    StrTR =   "<tr>"+
-                                                "<td >"+chkinput+"</td>"+
-                                                "<td style=' width: 20%; '>"+temp[i]['item_name']+"</td>"+
-                                                "<td >"+Kilo+"</td>"+
+                                                "<td style='width:10%'>"+chkinput+"</td>"+
+                                                "<td style='width:40%'>"+temp[i]['item_name']+"</td>"+
+                                                "<td style='width:10%'>"+Kilo+"</td>"+
+                                                "<td style='width:20%'>"+chkunit+"</td>"+
                                                 "</tr>";
    
                                    $('#TableDetail tbody').append( StrTR );
@@ -787,9 +823,10 @@ $Permission = $_SESSION['Permission'];
                                     <table class="table table-striped table-hover r-0" id="TableDetail">
                                         <thead id="theadsum" >
                                         <tr class="no-b">
-                                            <th style="width: 10%;">NO.</th>
-                                            <th style="width: 70%;">ชื่อรายการ</th>
+                                            <th >NO.</th>
+                                            <th >ชื่อรายการ</th>
                                             <th>ขอเบิก</th>
+                                            <th >หน่วยนับ</th>
                                         </tr>
                                         </thead>
 
@@ -889,6 +926,7 @@ $Permission = $_SESSION['Permission'];
                                             <th>คงเหลือ(กก)</th>
                                             <th>หมดอายุ</th>
                                             <th>ขอเบิก(กก)</th>
+                                            <th>หน่วยนับ</th>
                                         </tr>
                                         </thead>
                                         <tbody  id="tbody">

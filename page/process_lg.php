@@ -422,13 +422,28 @@ $Permission = $_SESSION['Permission'];
 
                               for (var i = 0; i < temp['Row']; i++) 
                               {
-                                  var chkinput = "<div class='custom-control custom-radio'><input type='radio' class='custom-control-input checkSingle checkdetail' name='detailrow'  value='"+temp[i]['item_code']+"'  id= ' Detail_id_"+i+" ' required><label class='custom-control-label ' for=' Detail_id_"+i+" ' style='margin-top: 15px;'></label></div> ";
-                                  var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' autocomplete='off'  name='KiloArray'  placeholder='0.00' value='"+temp[i]['kilo']+"' style='    width: 20%; text-align: right;' disabled>  ";
+                                var chkunit ="<select  class='form-control'  id='detailUnit_"+i+"' disabled style='width: 50%;'>";
+                                    $.each(temp['Unit'], function(key, val)
+                                    {
+                                        if(temp[i]['UnitCode']==val.UnitCode)
+                                        {
+                                            chkunit += '<option selected value=" '+val.UnitCode+' ">'+val.UnitName+'</option>';
+                                        }
+                                        else
+                                        {
+                                            chkunit += '<option value="' +val.UnitCode+' ">'+val.UnitName+'</option>';
+                                        }
+                                    });
+                                    chkunit += "</select>";
 
-                                   StrTR =   "<tr>"+
-                                                "<td >"+chkinput+"</td>"+
-                                                "<td >"+temp[i]['item_name']+"</td>"+
-                                                "<td >"+Kilo+"</td>"+
+                                  var chkinput = "<div class='custom-control custom-radio'><input type='radio' class='custom-control-input checkSingle checkdetail' name='detailrow'  value='"+temp[i]['item_code']+"'  id= ' Detail_id_"+i+" ' required><label class='custom-control-label ' for=' Detail_id_"+i+" ' style='margin-top: 15px;'></label></div> ";
+                                  var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' autocomplete='off'  name='KiloArray'  placeholder='0.00' value='"+temp[i]['kilo']+"' style='  text-align: right;' disabled>  ";
+
+                                  StrTR =   "<tr>"+
+                                                "<td style='width:10%'>"+chkinput+"</td>"+
+                                                "<td style='width:40%'>"+temp[i]['item_name']+"</td>"+
+                                                "<td style='width:10%'>"+Kilo+"</td>"+
+                                                "<td style='width:20%'>"+chkunit+"</td>"+
                                                 "</tr>";
    
                                    $('#TableDetail tbody').append( StrTR );
@@ -897,6 +912,7 @@ $Permission = $_SESSION['Permission'];
                                             <th>NO.</th>
                                             <th style="width : 50%;">ชื่อรายการ</th>
                                             <th>ปริมาณ(กก)</th>
+                                            <th>หน่วยนับ</th>
                                         </tr>
                                         </thead>
 

@@ -415,7 +415,7 @@ $Permission = $_SESSION['Permission'];
                         $( "#TableDetail tbody" ).empty();
                               for (var i = 0; i < temp['Row']; i++) 
                               {
-                                var chkunit ="<select  class='form-control'  id='detailUnit_"+i+"' disabled>";
+                                var chkunit ="<select  class='form-control'  id='detailUnit_"+i+"' disabled style='width: 50%;'>";
                                     $.each(temp['Unit'], function(key, val)
                                     {
                                         if(temp[i]['UnitCode']==val.UnitCode)
@@ -433,16 +433,16 @@ $Permission = $_SESSION['Permission'];
                                   var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' style='text-align:right' autocomplete='off'  name='KiloArray'  placeholder='0.00' value='"+temp[i]['kilo']+"' disabled>  ";
 
                                    StrTR =   "<tr>"+
-                                                "<td >"+chkinput+"</td>"+
-                                                "<td >"+temp[i]['item_name']+"</td>"+
-                                                "<td >"+Kilo+"</td>"+
-                                                "<td >"+chkunit+"</td>"+
+                                                "<td style='width:10%'>"+chkinput+"</td>"+
+                                                "<td style='width:40%'>"+temp[i]['item_name']+"</td>"+
+                                                "<td style='width:10%'>"+Kilo+"</td>"+
+                                                "<td style='width:20%'>"+chkunit+"</td>"+
                                                 "</tr>";
    
                                    $('#TableDetail tbody').append( StrTR );
                               }
                     }
-                      else if(temp["form"]=='ShowSearch')
+                    else if(temp["form"]=='ShowSearch')
                     {
                     
                         $( "#TableSearch tbody" ).empty();
