@@ -1,7 +1,7 @@
 <?php
 session_start();
 require('tcpdf/tcpdf.php');
-require('../../connect.php');
+require('../connect/connect.php');
 require('Class.php');
 header('Content-Type: text/html; charset=utf-8');
 date_default_timezone_set("Asia/Bangkok");
@@ -47,7 +47,7 @@ class MYPDF extends TCPDF
       $this->SetFont('thsarabun', 'b', 18);
       $this->Cell(0, 10,"ที่ตั้ง เลขที่ 238 ม.10 ต.ยุหว่า อ.สันป่าตอง จ.เชียงใหม่ 50120 โทร.053-106088", 0, 1, 'C');
       $this->SetFont('thsarabun', 'b', 22);
-      $this->Cell(0, 10,"ใบสำคัญซื้อสินค้า", 0, 1, 'C');
+      $this->Cell(0, 10,"ใบสำคัญซื้อสินค้าข้าว", 0, 1, 'C');
       $this->Ln(100);
 
     }
@@ -63,6 +63,7 @@ class MYPDF extends TCPDF
     $this->Cell(180, 12,  "", 0, 0, 'L');
     $this->Cell(120, 12,  "ผู้รับสินค้า ", 0, 1, 'L');
     $this->Cell(200, 12,  "", 0, 0, 'L');
+    $this->SetFont('thsarabun', '', 16);
     $this->Cell(120, 12,  "(. . . . . . . . . . . . . . . . . . . . . . . . . . )", 0, 1, 'L');
     
   }
@@ -105,31 +106,82 @@ $eDate = $eDate[2].'-'.$eDate[1].'-'.$eDate[0];
 // add a page
 $pdf->AddPage('L', 'A4');
 
+  $query = "SELECT
+              buy_rice.DocNo,
+              buy_rice_detail.kilo,
+              buy_rice_detail.moisture,
+              users.ID,
+              users.FName,
+              item.item_name,
+              buy_rice.DocDate,
+              employee.FName,
+              buy_rice.Total,
+              grade_price_rice.Grade
+              FROM
+              buy_rice
+              INNER JOIN buy_rice_detail ON buy_rice.DocNo = buy_rice_detail.Buy_DocNo
+              INNER JOIN users ON buy_rice.Customer_ID = users.ID
+              INNER JOIN item ON buy_rice_detail.item_code = item.item_code
+              INNER JOIN employee ON buy_rice.Employee_ID = employee.ID
+              INNER JOIN grade_price_rice ON buy_rice_detail.item_code = grade_price_rice.item_code
+              WHERE buy_rice.DocNo='RC2002-00002'
+              ";
 
+    $meQuery = mysqli_query($conn,$query);
+    $Result = mysqli_fetch_assoc($meQuery);
 
-
+    $datetime = new DatetimeTH();
+    $Date = $Result['DocDate'];
+    $Date = explode("-",$Date);
+    $Date = $Date[2]." ".$datetime->getTHmonthFromnum($Date[1])." พ.ศ. ".$datetime->getTHyear($Date[0]);
 
 $pdf->Ln(35);
-$pdf->SetFont('thsarabun', 'b', 16);
-$pdf->Cell(200, 12,  "วันที่ : . . . . . . . . . . . . . . . . . . . .", 0, 1, 'R');
-$pdf->Cell(130, 12,  "ผู้ขาย : ", 0, 0, 'L');
-$pdf->Cell(120, 12,  "เลขทะเบียนสมาชิก : ", 0, 1, 'L');
-$pdf->Cell(130, 12,  "ชนิดสินค้า : ", 0, 0, 'L');
-$pdf->Cell(120, 12,  "ทะเบียนรถ : ", 0, 1, 'L');
-$pdf->Cell(130, 12,  "น้ำหนักบรรทุก : ", 0, 1, 'L');
-$pdf->Cell(130, 12,  "น้ำหนักรถ : ", 0, 1, 'L');
-$pdf->Cell(130, 12,  "น้ำหนักคงเหลือ : ", 0, 0, 'L');
-$pdf->Cell(50, 12,  "ราคาต่อหน่วย : ", 0, 0, 'L');
+$pdf->SetFont('thsarabun', '', 16);
+$pdf->Cell(25, 12,  "เลขที่เอกสาร : ", 0, 0, 'L');
+$pdf->Cell(120, 12,$Result['DocNo'], 0, 0, 'L');
+
+$pdf->Cell(15, 12,  "วันที่ : ", 0, 0, 'L');
+$pdf->Cell(120, 12,$Date, 0, 1, 'L');
+
+$pdf->Cell(25, 12,  "ผู้ขาย : ", 0, 0, 'L');
+$pdf->Cell(120, 12,  $Result['FName'], 0, 0, 'L');
+
+$pdf->Cell(35, 12,  "เลขทะเบียนสมาชิก : ", 0, 0, 'L');
+$pdf->Cell(120, 12,  $Result['ID'], 0, 1, 'L');
+
+$pdf->Cell(25, 12,  "ชนิดสินค้า : ", 0, 0, 'L');
+$pdf->Cell(120, 12,  $Result['item_name'], 0, 0, 'L');
+
+$pdf->Cell(25, 12,  "ทะเบียนรถ : ", 0, 0, 'L');
+$pdf->Cell(120, 12,  "", 0, 1, 'L');
+
+$pdf->Cell(25, 12,  "น้ำหนักบรรทุก : ", 0, 0, 'L');
+$pdf->Cell(120, 12,  "", 0, 1, 'L');
+
+$pdf->Cell(25, 12,  "น้ำหนักรถ : ", 0, 0, 'L');
+$pdf->Cell(120, 12,  "", 0, 1, 'L');
+
+$pdf->Cell(25, 12,  "น้ำหนักคงเหลือ : ", 0, 0, 'L');
+$pdf->Cell(120, 12,  " ", 0, 0, 'L');
+
+$pdf->Cell(25, 12,  "ราคาต่อหน่วย : ", 0, 0, 'L');
+$pdf->Cell(25, 12,  $Result['Grade'], 0, 0, 'L');
 $pdf->Cell(10, 12,  "บาท", 0, 0, 'L');
-$pdf->Cell(50, 12,  "ราคารวม", 0, 0, 'L');
+
+$pdf->Cell(25, 12,  "ราคารวม", 0, 0, 'L');
+$pdf->Cell(25, 12,  "", 0, 0, 'L');
 $pdf->Cell(10, 12,  "บาท", 0, 1, 'L');
-$pdf->Cell(35, 12,  "หักความชื่น : ", 0, 0, 'L');
+
+$pdf->Cell(25, 12,  "หักความชื่น : ", 0, 0, 'L');
+$pdf->Cell(25, 12,  $Result['moisture'], 0, 0, 'L');
 $pdf->Cell(10, 12,  "%", 0, 0, 'L');
+
 $pdf->Cell(50, 12,  "จำนวน : ", 0, 0, 'L');
-$pdf->Cell(35, 12,  "บาท", 0, 0, 'L');
-$pdf->Cell(50, 12,  "คิดเป็นเงิน : ", 0, 0, 'L');
+$pdf->Cell(50, 12,  "จำนวน : ", 0, 0, 'L');
+$pdf->Cell(50, 12,  "บาท", 0, 0, 'L');
+$pdf->Cell(50, 12,  "คิดเป็นเงิน : ".$Result['Total'], 0, 0, 'L');
 $pdf->Cell(10, 12,  "บาท", 0, 1, 'L');
-$pdf->Cell(130, 12,  "", 0, 0, 'L');
+$pdf->Cell(145, 12,  "", 0, 0, 'L');
 $pdf->Cell(120, 12,  "(. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .)", 0, 1, 'L');
 // ---------------------------------------------------------
 
