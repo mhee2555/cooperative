@@ -169,6 +169,52 @@ $Permission = $_SESSION['Permission'];
     }
     function Successprocess()
     {
+
+        // =======================================================
+        var ItemCodeArray = [];
+        var KiloArray = [];
+        var UnitArray = [];
+        var stock_codeArray = [];
+        
+        $('input[name="detailrow"]').each(function() 
+        {
+          if($(this).val()!="")
+          {
+              ItemCodeArray.push($(this).val());
+          }
+        });
+        var ItemCode = ItemCodeArray.join(',') ;
+        // ========================================================
+        $('input[name="KiloArray"]').each(function() 
+        {
+          if($(this).val()!="")
+          {
+            KiloArray.push($(this).val());
+          }
+        });
+        var Kilo = KiloArray.join(',') ;
+        // ========================================================
+        $('select[name="UnitArray"]').each(function() 
+        {
+          if($(this).val()!="")
+          {
+            UnitArray.push($(this).val());
+          }
+        });
+        var Unit = UnitArray.join(',') ;
+
+        // ========================================================
+        $('input[name="stock_code"]').each(function() 
+        {
+          if($(this).val()!="")
+          {
+            stock_codeArray.push($(this).val());
+          }
+        });
+        var stock_code = stock_codeArray.join(',') ;
+
+        // ========================================================
+
         var DocNo = $("#DocNo").val();
         swal({
           title: "",
@@ -187,8 +233,12 @@ $Permission = $_SESSION['Permission'];
             {
                 var data =
                 {
-                    'STATUS'    : 'Successprocess',
-                    'DocNo'     : DocNo
+                    'STATUS'   : 'Successprocess',
+                    'DocNo' : DocNo,
+                    'ItemCode' : ItemCode,
+                    'Kilo'     : Kilo,
+                    'Unit'     : Unit,
+                    'stock_code' : stock_code
                 };
                 senddata(JSON.stringify(data));
                 $('#v-pills-buyers-tab').tab('show');
@@ -223,19 +273,32 @@ $Permission = $_SESSION['Permission'];
     function ShowRefDocNo()
     {
         var dateRefDocNo = $("#dateRefDocNo").val();
+        var chk_ref_status = $("#chk_ref_status").val();
 
-      var data = 
+        $('#ShowRefDocNo').modal('show');
+
+      setTimeout(() =>
+      {
+          
+        var data = 
                 {
-                    'STATUS'      : 'ShowRefDocNo' ,
-                    'dateRefDocNo':  dateRefDocNo
+                    'STATUS'        : 'ShowRefDocNo' ,
+                    'dateRefDocNo'  :  dateRefDocNo,
+                    'chk_ref_status':  chk_ref_status
                 };
                 senddata(JSON.stringify(data));
+
+
+      }, 500);
+
         
     }
     function SaveRefDocNo()
     {
       var RefDocNo = "";
       var DocNo = $("#DocNo").val();
+      var chk_ref_status = $("#chk_ref_status").val();
+
         $('input[name="refrow"]:checked').each(function() 
         {
           RefDocNo = $(this).val();
@@ -244,7 +307,8 @@ $Permission = $_SESSION['Permission'];
                 {
                     'STATUS'      : 'SaveRefDocNo' ,
                     'RefDocNo'    : RefDocNo ,
-                    'DocNo'       : DocNo
+                    'DocNo'       : DocNo ,
+                    'chk_ref_status' : chk_ref_status
 
                 };
                 senddata(JSON.stringify(data));
@@ -413,8 +477,7 @@ $Permission = $_SESSION['Permission'];
    
                                    $('#TableRefDocNo tbody').append( StrTR );
                               }
-                            //   show
-                              $('#ShowRefDocNo').modal('show');
+       
                     }
                     else if(temp["form"]=='ShowDetail')
                     {
@@ -422,7 +485,7 @@ $Permission = $_SESSION['Permission'];
 
                               for (var i = 0; i < temp['Row']; i++) 
                               {
-                                var chkunit ="<select  class='form-control'  id='detailUnit_"+i+"' disabled style='width: 50%;'>";
+                                var chkunit ="<select  class='form-control'  id='detailUnit_"+i+"' disabled style='width: 50%;' name='UnitArray'>";
                                     $.each(temp['Unit'], function(key, val)
                                     {
                                         if(temp[i]['UnitCode']==val.UnitCode)
@@ -438,12 +501,14 @@ $Permission = $_SESSION['Permission'];
 
                                   var chkinput = "<div class='custom-control custom-radio'><input type='radio' class='custom-control-input checkSingle checkdetail' name='detailrow'  value='"+temp[i]['item_code']+"'  id= ' Detail_id_"+i+" ' required><label class='custom-control-label ' for=' Detail_id_"+i+" ' style='margin-top: 15px;'></label></div> ";
                                   var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' autocomplete='off'  name='KiloArray'  placeholder='0.00' value='"+temp[i]['kilo']+"' style='  text-align: right;' disabled>  ";
+                                  var stock_code = "<input type='text'  name='stock_code'   value='"+temp[i]['stock_code']+"'  hidden>  ";
 
                                   StrTR =   "<tr>"+
                                                 "<td style='width:10%'>"+chkinput+"</td>"+
                                                 "<td style='width:40%'>"+temp[i]['item_name']+"</td>"+
                                                 "<td style='width:10%'>"+Kilo+"</td>"+
                                                 "<td style='width:20%'>"+chkunit+"</td>"+
+                                                "<td style='width:20%'>"+stock_code+"</td>"+
                                                 "</tr>";
    
                                    $('#TableDetail tbody').append( StrTR );
@@ -519,6 +584,21 @@ $Permission = $_SESSION['Permission'];
                         $("#DocNo").attr('disabled' , true );
                         // 
                    
+                        if(temp[0]['IsRef_Status'] == 1)
+                        {
+                            $("#RefDocNo_text").val("เอกสารสั่งแปรรูป");
+                            $("#RefDocNo_text").attr('disabled' , true );
+                        }
+                        else if(temp[0]['IsRef_Status'] == 2)
+                        {
+                            $("#RefDocNo_text").val("เอกสารสั่งบรรจุภัณฑ์");
+                            $("#RefDocNo_text").attr('disabled' , true );
+                        }
+                        else
+                        {
+                            $("#RefDocNo_text").val("");
+                            $("#RefDocNo_text").attr('disabled' , false );
+                        }
 
                         if(temp[0]['IsStatus'] == 9)
                         {
@@ -600,6 +680,16 @@ $Permission = $_SESSION['Permission'];
                         $("#RefDocNo").val(temp['RefDocNo']);
                         $("#RefDocNo").attr('disabled' , true );
                         ShowDetail();
+
+                        if(temp['chk_ref_status'] == 1)
+                        {
+                            $("#RefDocNo_text").val("เอกสารสั่งแปรรูป");
+                        }
+                        else
+                        {
+                            $("#RefDocNo_text").val("เอกสารสั่งบรรจุภัณฑ์");
+                        }
+                        $("#RefDocNo_text").attr('disabled' , true );
                     }
                     else if(temp["form"]=='Endprocess')
                     {
@@ -627,7 +717,7 @@ $Permission = $_SESSION['Permission'];
                                 temp['msg'] = "เอกสาร "+temp['DocNo']+" ไม่มีรายละเอียด ";
                         break;
                     case "Reffail":
-                                temp['msg'] = "ไม่พบเอกสารอ้างอิง";
+                                temp['msg'] = "ไม่พบ "+temp['chk_ref_str']+" ของวันที่ "+temp['dateRefDocNo']+"  ";
                         break;
                     case "notfound":
                                 temp['msg'] = "<?php echo $array['notfoundmsg'][$language]; ?>";
@@ -820,8 +910,14 @@ $Permission = $_SESSION['Permission'];
             <div class="row">
                 <div class="col-md-6">
                     <div class='form-group row  text-black'>
-                        <label class=" col-sm-4 form-label  h4" >เอกสารขอเบิก</label>
-                        <input type="text" autocomplete="off"   class=" col-sm-7 form-control " id="RefDocNo"   placeholder="เอกสารขอเบิก" onclick="ShowRefDocNo();">
+                        <label class=" col-sm-4 form-label  h4" >เอกสารอ้างอิง</label>
+                        <input type="text" autocomplete="off"   class=" col-sm-7 form-control " id="RefDocNo"   placeholder="เอกสารอ้างอิง" onclick="ShowRefDocNo();">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class='form-group row  text-black'>
+                        <label class=" col-sm-4 form-label  h4" >สถานะ</label>
+                        <input type="text" autocomplete="off"   class=" col-sm-7 form-control " id="RefDocNo_text"   placeholder="สถานะ" >
                     </div>
                 </div>
             </div>
@@ -997,6 +1093,12 @@ $Permission = $_SESSION['Permission'];
       </div>
       <div class="modal-body">
         <div class="row ">
+        <div class="col-md-4 mt-2 ">
+                <select  autocomplete="off" class ="form-control "  id="chk_ref_status">
+                    <option value="1">เอกสารสั่งแปรรูป</option> 
+                    <option value="2">เอกสารสั่งบรรจุภัณฑ์</option> 
+                </select>
+            </div>
             <div class="col-md-4 mt-2 ">
                 <input type="text" autocomplete="off" class ="form-control datepicker-here" id="dateRefDocNo" data-language='en' data-date-format='yyyy-mm-dd' placeholder="ค้นหาจากวันที่">
             </div>

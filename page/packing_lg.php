@@ -117,6 +117,7 @@ $Permission = $_SESSION['Permission'];
         var kiloArray = [];
         var item_codeArray = [];
         var unitArray = [];
+        var stock_codeArray = [];
         
         $(".checkitem:checked").each(function() 
         {
@@ -128,11 +129,13 @@ $Permission = $_SESSION['Permission'];
             item_codeArray.push( $("#item_code_"+iArray[j]).val() );
             kiloArray.push( $("#Kilo_"+iArray[j]).val() );
             unitArray.push( $("#iUnit_"+iArray[j]).val() );
+            stock_codeArray.push( $("#stock_code_"+iArray[j]).val() );
         }
         // =======================================================
         var item_code = item_codeArray.join(',') ;
         var kilo = kiloArray.join(',') ;
         var xunit = unitArray.join(',') ;
+        var stock_code = stock_codeArray.join(',') ;
         // =======================================================
         $( "#TableDetail tbody" ).empty();
 
@@ -145,7 +148,8 @@ $Permission = $_SESSION['Permission'];
           'item_code'   : item_code,
           'kilo'		: kilo,
           'DocNo'		: DocNo ,
-          'xunit'		: xunit
+          'xunit'		: xunit,
+          'stock_code'		: stock_code
         };
         $('#Additem').modal('toggle');
         senddata(JSON.stringify(data));
@@ -397,7 +401,7 @@ $Permission = $_SESSION['Permission'];
                                     });
                                     chkunit += "</select>";
 
-                                  var chkinput = "<div class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input checkSingle checkitem'  value='"+i+"'  id= ' item_id_"+i+" ' required><label class='custom-control-label ' for=' item_id_"+i+" ' style='margin-top: 15px;'></label></div> <input type='hidden' id='item_code_"+i+"' value='"+temp[i]['item_code']+"'>";
+                                  var chkinput = "<div class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input checkSingle checkitem'  value='"+i+"'  id= 'item_id_"+i+"' required><label class='custom-control-label ' for='item_id_"+i+"' style='margin-top: 15px;'></label></div> <input type='hidden' id='item_code_"+i+"' value='"+temp[i]['item_code']+"'> <input type='hidden' id='stock_code_"+i+"' value='"+temp[i]['stock_code']+"'>";
                                   var Kilo = "<input type='text' id='Kilo_"+i+"' class='form-control ' autocomplete='off' style='text-align:right'  placeholder='0.00' >  ";
                                  StrTR = "<tr>"+
                                                 "<td style=' width: 5%; '>"+chkinput+"</td>"+

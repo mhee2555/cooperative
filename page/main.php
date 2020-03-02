@@ -77,7 +77,7 @@ $Permission = $_SESSION['Permission'];
                         if(temp["form"]=='showchartbuy')
                         {
 
-                            var showdatebuy = "ยอดซื้อประจำวัน ( "+temp[0]['DocDate']+" ) "
+                            var showdatebuy = "ยอดซื้อลำไยประจำวัน ( "+temp[0]['DocDate']+" ) "
                             $("#datebuy").text(showdatebuy);
 
 
@@ -93,7 +93,7 @@ $Permission = $_SESSION['Permission'];
                                             labels: name,
                                             datasets: [
                                                 {
-                                                    label: 'ยอดซื้อเข้า (กก)',
+                                                    label: 'ยอดซื้อลำไยเข้า (กก)',
                                                     backgroundColor: '#49e2ff',
                                                     borderColor: '#46d5f1',
                                                     hoverBackgroundColor: '#CCCCCC',
@@ -122,8 +122,8 @@ $Permission = $_SESSION['Permission'];
                                     $( "#TableDetail tbody" ).empty();
                                     temp['msg'] = "เอกสาร "+temp['DocNo']+" ไม่มีรายละเอียด ";
                             break;
-                        case "noinput":
-                                    temp['msg'] = "<?php echo $array['noinputmsg'][$language]; ?>";
+                        case "showcharterror":
+                                    temp['msg'] = "ไม่มีการซื้อของวันที่ "+temp['date']+" ";
                             break;
                         case "notfound":
                                     temp['msg'] = "<?php echo $array['notfoundmsg'][$language]; ?>";
@@ -281,27 +281,6 @@ $Permission = $_SESSION['Permission'];
                     </div>
                 </div>
             </div>
-            <!-- /bar charts -->
-
-            <!-- bar charts group -->
-            <!-- <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="card ">
-                    <div class="card-header white">
-                            <strong>ยอดขายประจำวัน <small>( 2020-02-16 )</small> </strong>
-                    </div>
-                    <div class="card-body p-0">
-                        <div style="height: 450px">
-                            <canvas
-                                data-chart="bar"
-                                data-dataset="[[0,10,20,30,40]]"
-                                data-labels="['ลำไย A','ลำไย B','ลำไย C','ลำไย D','ข้าวเปลือก']"
-                                data-dataset-options="[{ label:'ขาย', borderColor:  'rgba(255,99,132,1)', backgroundColor: 'red'}]">
-                            </canvas>
-                        </div>                    
-                    </div>
-                </div>
-            </div> -->
-        </div>
 
 
 

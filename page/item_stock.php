@@ -29,14 +29,37 @@ $Permission = $_SESSION['Permission'];
     <link rel="stylesheet" href="assets/css/app.css">
 
     <script type="text/javascript">
+        // ---------------------------------------------------
+        (function ($) {
+            $(document).ready(function () {
+                $("#Search_date").datepicker({
+                    onSelect: function (date, el) {
+                        Showitem();
+                    }
+                });
+            });
+        })(jQuery);
+        // ---------------------------------------------------
     $(document).ready(function(e)
     {
+       // ===========DATE ITEM =======
+      var d = new Date();
+      var month = d.getMonth()+1;
+      var day = d.getDate();
+      var output = d.getFullYear() + '-' +
+          ((''+month).length<2 ? '0' : '') + month + '-' +
+          ((''+day).length<2 ? '0' : '') + day;
+      $("#Search_date").val(output);
+      $("#datepicker").val(output);
+      $("#datepicker2").val(output);
+        // ========
+
         Showtype();
         setTimeout(() => {
             Showitem();
         }, 200);
         // ค้นหา
-        $("#Search").on("keyup", function() 
+        $("#Search_name").on("keyup", function() 
         {
             var value = $(this).val().toLowerCase();
             $("#Tableitem tbody tr").filter(function() 
@@ -49,11 +72,23 @@ $Permission = $_SESSION['Permission'];
 
     function Showitem()
     {
-        var type = $('#type').val();
+        var Search_type = $('#Search_type').val();
+        var Search_date = $('#Search_date').val();
+        var Search_unit = $('#Search_unit').val();
+        if(Search_type == 'packing')
+        {
+            $('#Search_unit_row').attr('hidden' , false);
+        }
+        else
+        {
+            $('#Search_unit_row').attr('hidden' , true);
+        }
         var data = 
         {
             'STATUS': 'Showitem',
-            'type':type
+            'Search_type':Search_type,
+            'Search_date':Search_date,
+            'Search_unit':Search_unit
         };
         senddata(JSON.stringify(data));
     }
@@ -209,8 +244,12 @@ $Permission = $_SESSION['Permission'];
                               {
                                  StrTR = "<tr ondblclick='showmodal("+temp[i]['item_code']+","+'1'+");'>"+
                                                 "<td >"+(i+1)+"</td>"+
-                                                "<td >"+temp[i]['item_name']+"</td>"+
+                                                "<td >"+temp[i]['item_name']+ ' ' +temp[i]['UnitName'] +"</td>"+
                                                 "<td >"+temp[i]['item_qty']+"</td>"+
+                                                "<td >"+temp[i]['item_ccqty']+"</td>"+
+                                                "<td >"+temp[i]['Date_start']+"</td>"+
+                                                "<td >"+temp[i]['Date_exp']+"</td>"+
+
                                                 "</tr>";
                                    $('#Tableitem tbody').append( StrTR );
                               }
@@ -223,6 +262,13 @@ $Permission = $_SESSION['Permission'];
                         {
                             var StrTr = "<option value = '"+temp[i]['id']+"'> " + temp[i]['type_name'] + " </option>"
                             $("#type").append(StrTr);
+                        }
+
+                        $("#Search_unit").empty();
+                        for (var i = 0; i < temp['count_unit']; i++) 
+                        {
+                            var StrTr = "<option value = '"+temp[i]['UnitCode']+"'> " + temp[i]['UnitName'] + " </option>"
+                            $("#Search_unit").append(StrTr);
                         }
                     }
                     else if(temp["form"]=='ShowSearch')
@@ -529,6 +575,7 @@ $Permission = $_SESSION['Permission'];
                         <a class="nav-link" id="v-pills-buyers-tab2" data-toggle="pill" href="#v-pills-buyers2" role="tab"
                            aria-controls="v-pills-buyers"><i class="icon icon-face"></i>การขอเบิกข้าว</a>
                     </li>
+                    
                 </ul>
             </div>
         </div>
@@ -538,15 +585,24 @@ $Permission = $_SESSION['Permission'];
             <div class="tab-pane animated fadeInUpShort show active" id="v-pills-all" role="tabpanel" aria-labelledby="v-pills-all-tab">
             <div class="row">
                 <div class="col-md-3 mt-2 ">
-                    <select class ="custom-select" id="type" onchange="Showitem()">
+                    <select class ="custom-select" id="Search_type"  onchange="Showitem()">
+                            <option value="unprocess">สินค้ายังไม่ได้แปรรูป</option>
+                            <option value="process">สินค้าแปรรูป</option>
+                            <option value="packing">สินค้าบรรจุภัณฑ์</option>
                     </select>
                 </div>
                 <div class="col-md-3 mt-2 " >
-                    <input type="text" class =  "form-control " placeholder="ค้นหาจากชื่อรายการ" id="Search">
+                    <input type="text" class =  "form-control " placeholder="ค้นหาจากชื่อรายการ" id="Search_name">
                 </div>
-                <div class=" mt-2 " >
+                <div class="col-md-3 mt-2 " >
+                    <input type="text" class =  "form-control  datepicker-here " placeholder="ค้นหาจากวันที่" id="Search_date" data-language='en' data-date-format='yyyy-mm-dd'>
+                </div>
+                <div class="col-md-3 mt-2 " id= 'Search_unit_row' hidden>
+                    <select  type="text" class =  "form-control " placeholder="หน่วยนับ" id="Search_unit" onchange="Showitem()"> </select>
+                </div>
+                <!-- <div class=" mt-2 ml-3" >
                 <button type="button" class="btn btn-primary btn-lg" onclick="Showitem()"><i class="icon-search3"></i>ค้นหา</button>
-                </div>
+                </div> -->
             </div>
                 <div class="row my-3">
                     <div class="col-md-12">
@@ -558,9 +614,11 @@ $Permission = $_SESSION['Permission'];
                                         <thead id="theadsum" >
                                         <tr class="no-b">
                                             <th>NO.</th>
-                                            <th>NAME</th>
-                                            <th>QTY</th>
-                                            <th hidden>ROLE</th>
+                                            <th>ชื่อรายการ</th>
+                                            <th>จำนวนทั้งหมด</th>
+                                            <th>จำนวนที่เหลือ</th>
+                                            <th>เวลารับเข้า</th>
+                                            <th>เวลาหมดอายุ</th>
                                         </tr>
                                         </thead>
 

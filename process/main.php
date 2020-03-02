@@ -47,7 +47,8 @@ function showchartbuy($conn, $DATA)
   else
   {
     $return['status'] = "failed";
-    $return['form'] = "showchart";
+    $return['msg'] = "showcharterror";
+    $return['date'] = $datepicker;
     echo json_encode($return);
     mysqli_close($conn);
     die;
