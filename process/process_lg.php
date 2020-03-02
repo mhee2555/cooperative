@@ -84,7 +84,8 @@ function ShowDetail($conn, $DATA)
               pld.item_code,
               item.item_name,
               pld.kilo,
-              pld.UnitCode
+              pld.UnitCode,
+              pld.stock_code
             FROM
               process_longan_detail pld
             INNER JOIN item ON item.item_code = pld.item_code
@@ -97,6 +98,7 @@ function ShowDetail($conn, $DATA)
               $return[$count]['item_name']      = $Result['item_name'];
               $return[$count]['kilo']           = $Result['kilo'];
               $return[$count]['UnitCode']       = $Result['UnitCode'];
+              $return[$count]['stock_code']     = $Result['stock_code'];
               $count ++ ;
               $boolean = true;
             }
@@ -190,14 +192,38 @@ function ShowRefDocNo($conn, $DATA)
   $count = 0;
   $boolean = false;
   $dateRefDocNo  = $DATA["dateRefDocNo"]==''?date('Y-m-d'):$DATA["dateRefDocNo"];
+  $chk_ref_status  = $DATA["chk_ref_status"];
+
+  if($chk_ref_status ==1)
+  {
+    $chk_ref_str = 'เอกสารสั่งแปรรูป' ;
+  }
+  else if ($chk_ref_status == 2)
+  {
+    $chk_ref_str = 'เอกสารสั่งบรรจุภัณฑ์' ;
+  }
   // ===========================================
-  $SelectDraw = "SELECT
-                  DocNo,
-                  DocDate 
-                FROM
-                  draw 
-                WHERE
-                  IsStatus = 2 AND IsRef = 0 AND DocDate = '$dateRefDocNo' ";
+
+  if($chk_ref_status == 1 )
+  {
+    $SelectDraw = "SELECT
+                    DocNo,
+                    DocDate 
+                  FROM
+                    draw 
+                  WHERE
+                    IsStatus = 2 AND IsRef = 0 AND DocDate = '$dateRefDocNo' ";
+  }
+  else if($chk_ref_status == 2)
+  {
+    $SelectDraw = "SELECT
+                    DocNo,
+                    DocDate 
+                  FROM
+                    packing_longan 
+                  WHERE
+                    IsStatus = 1 AND IsRef = 0 AND DocDate = '$dateRefDocNo' ";
+  }
       $meQuery = mysqli_query($conn, $SelectDraw);
       while ($Result = mysqli_fetch_assoc($meQuery)) 
       {
@@ -221,7 +247,9 @@ function ShowRefDocNo($conn, $DATA)
     else
     {
       $return['sql'] = $SelectDraw;
-      $return['status'] = "success";
+      $return['chk_ref_str'] = $chk_ref_str;
+      $return['dateRefDocNo'] = $dateRefDocNo;
+      $return['status'] = "failed";
       $return['form'] = "ShowRefDocNo";
       $return['msg'] = "Reffail";
       echo json_encode($return);
@@ -235,29 +263,49 @@ function SaveRefDocNo($conn, $DATA)
   $boolean = false;
   $RefDocNo  = $DATA["RefDocNo"];
   $DocNo  = $DATA["DocNo"];
+  $chk_ref_status  = $DATA["chk_ref_status"];
   // ===========================================
-  $updateRef = "UPDATE process_longan , Draw SET RefDocNo = '$RefDocNo' , IsRef = 1 WHERE process_longan.DocNo = '$DocNo' AND draw.DocNo = '$RefDocNo' "; 
+  if($chk_ref_status ==1)
+  {
+    $updateRef = "UPDATE process_longan , Draw SET process_longan.RefDocNo = '$RefDocNo' , Draw.IsRef = 1 , process_longan.IsRef_Status = $chk_ref_status WHERE process_longan.DocNo = '$DocNo' AND draw.DocNo = '$RefDocNo' "; 
+  }
+  else
+  {
+    $updateRef = "UPDATE process_longan , packing_longan SET process_longan.RefDocNo = '$RefDocNo' , packing_longan.IsRef = 1 , process_longan.IsRef_Status = $chk_ref_status WHERE process_longan.DocNo = '$DocNo' AND packing_longan.DocNo = '$RefDocNo' "; 
+  }
   mysqli_query($conn, $updateRef);
-
   // ==========================================
-  
-  $slectdraw = "SELECT
-                  draw_detail.item_code, 
-                  draw_detail.kilo,
-                  draw_detail.UnitCode
-                FROM
-                  draw_detail
-                WHERE draw_DocNo = '$RefDocNo' " ;
-
+  if($chk_ref_status ==1)
+  {
+    $slectdraw = "SELECT
+                    draw_detail.item_code, 
+                    draw_detail.kilo,
+                    draw_detail.UnitCode
+                  FROM
+                    draw_detail
+                  WHERE draw_DocNo = '$RefDocNo' " ;
+  }
+  else
+  {
+    $slectdraw = "SELECT
+                    packing_longan_detail.item_code, 
+                    packing_longan_detail.kilo,
+                    packing_longan_detail.UnitCode,
+                    packing_longan_detail.stock_code
+                  FROM
+                    packing_longan_detail
+                  WHERE Pk_DocNo = '$RefDocNo' " ;
+  }
       $meQuery = mysqli_query($conn, $slectdraw);
       while ($Result = mysqli_fetch_assoc($meQuery)) 
       {
         $item_code  = $Result['item_code'];
         $kilo       = $Result['kilo'];
         $UnitCode   = $Result['UnitCode'];
+        $stock_code   = $Result['stock_code']==null?0:$Result['stock_code'];
 
         // insert draw detail to proces_lg
-        $insertpro = "INSERT INTO process_longan_detail SET Lg_DocNo = '$DocNo' , item_code = '$item_code' , kilo = '$kilo' , UnitCode = '$UnitCode'";
+        $insertpro = "INSERT INTO process_longan_detail SET Lg_DocNo = '$DocNo' , item_code = '$item_code' , kilo = '$kilo' , UnitCode = '$UnitCode' , stock_code = '$stock_code'";
         mysqli_query($conn, $insertpro);
 
         $boolean = true;
@@ -265,6 +313,7 @@ function SaveRefDocNo($conn, $DATA)
 
       if ($boolean) 
       {
+        $return['chk_ref_status'] = $chk_ref_status;
         $return['RefDocNo'] = $RefDocNo;
         $return['status'] = "success";
         $return['form'] = "SaveRefDocNo";
@@ -366,12 +415,96 @@ function Endprocess($conn, $DATA)
 }
 function Successprocess($conn, $DATA)
 {
+  $KiloArray  = $DATA["Kilo"];
+  $ItemCodeArray  = $DATA["ItemCode"];
+  $UnitArray  = $DATA["Unit"];
   $DocNo  = $DATA["DocNo"];
+  $stock_code  = $DATA["stock_code"];
   $boolean = false;
   $count = 0;
 
-  $Sql = "UPDATE process_longan SET IsStatus = 3 WHERE process_longan.DocNo = '$DocNo' ";
-  mysqli_query($conn, $Sql);
+  // ========================================
+  $ItemCode = explode(",", $ItemCodeArray);
+  $Kilo = explode(",", $KiloArray);
+  $Unit = explode(",", $UnitArray);
+  $stock_codex = explode(",", $stock_code);
+  // ========================================
+
+
+  //==========================================================================================================
+  $Sql_status = "SELECT IsRef_Status FROM process_longan WHERE DocNo = '$DocNo' ";
+  $meQuery = mysqli_query($conn, $Sql_status);
+  $Result = mysqli_fetch_assoc($meQuery); 
+  $Status_ref = $Result['IsRef_Status'];
+
+  // 2 = สั่งบรรจุภัณฑ์
+  if($Status_ref == 2)
+  {
+    // INSERT STOCK
+    foreach ($ItemCode as $key => $value)
+    {
+      $SELECT_COUNT = "SELECT COUNT(*) AS cnt FROM stock_package WHERE item_code = '$value' AND UnitCode = '$Unit[$key]' ";
+      $meQuery = mysqli_query($conn, $SELECT_COUNT);
+      $Result = mysqli_fetch_assoc($meQuery); 
+      $cnt = $Result['cnt'];
+
+      if($cnt >= 1)
+      {
+        $UPDATE_STOCK = "UPDATE 
+                            stock_package
+                        SET  
+                            item_code = '$value',
+                            item_qty = ( item_qty + '$Kilo[$key]' ),
+                            item_ccqty = ( item_ccqty + '$Kilo[$key]' ),
+                            UnitCode = '$Unit[$key]',
+                            Date_start = NOW(),
+                            Date_exp = NOW() + INTERVAL 1 DAY 
+                        WHERE item_code = '$value' ";  
+                    mysqli_query($conn, $UPDATE_STOCK);
+
+                    $UPDATE_STOCKx = "UPDATE 
+                                        stock_process
+                                    SET  
+                                        item_ccqty = ( item_ccqty - '$Kilo[$key]' )
+                                    WHERE stock_code = '$stock_codex[$key]' ";  
+                                mysqli_query($conn, $UPDATE_STOCKx);
+                    
+      }
+      else
+      {
+        $INSERT_STOCK = "INSERT INTO 
+                          stock_package
+                         SET  
+                          item_code = '$value',
+                          item_qty = '$Kilo[$key]',
+                          item_ccqty = '$Kilo[$key]',
+                          UnitCode = '$Unit[$key]',
+                          Date_start = NOW(),
+                          Date_exp = NOW() + INTERVAL 1 DAY ";  
+                  mysqli_query($conn, $INSERT_STOCK);
+
+        $UPDATE_STOCKx = "UPDATE 
+                  stock_process
+              SET  
+                  item_ccqty = ( item_ccqty - '$Kilo[$key]' )
+              WHERE stock_code = '$stock_codex[$key]' ";  
+          mysqli_query($conn, $UPDATE_STOCKx);
+
+      }
+    }
+  }
+  else
+  {
+    // สั่งแปรรูป นำstatus ไปอ้่างอิงต่อ 
+    $Sql = "UPDATE process_longan SET IsStatus = 3 WHERE process_longan.DocNo = '$DocNo' ";
+    mysqli_query($conn, $Sql);
+  }
+
+
+
+  //==========================================================================================================
+
+
 
   ShowSearch($conn, $DATA);
 
@@ -392,7 +525,8 @@ function ShowDocNo($conn, $DATA)
                   pl.IsStatus ,
                   pl.RefDocNo ,
                   pl.start_process ,
-                  pl.end_process 
+                  pl.end_process ,
+                  pl.IsRef_Status
                 FROM
                   process_longan pl
                 INNER JOIN employee emp ON emp.ID = pl.Employee_ID
@@ -407,6 +541,7 @@ function ShowDocNo($conn, $DATA)
       $return[$count]['Modify_Date']   = $Result['Modify_Date'];
       $return[$count]['employee']      = $Result['employee'];
       $return[$count]['IsStatus']      = $Result['IsStatus'];
+      $return[$count]['IsRef_Status']      = $Result['IsRef_Status'];
       $return[$count]['start_process']      = $Result['start_process']==null?"":$Result['start_process'];
       $return[$count]['end_process']      = $Result['end_process']==null?"":$Result['end_process'];
 

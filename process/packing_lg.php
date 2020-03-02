@@ -93,7 +93,8 @@ function ShowItem($conn, $DATA)
   $Sql = "SELECT
             item.item_code,
             item.item_name,
-            item_qty
+            item_qty,
+            stock_process.stock_code
           FROM
             item
           INNER JOIN stock_process ON stock_process.item_code = item.item_code
@@ -104,6 +105,7 @@ function ShowItem($conn, $DATA)
       $return[$count]['item_code'] = $Result['item_code'];
       $return[$count]['item_name'] = $Result['item_name'];
       $return[$count]['Grade'] = $Result['item_qty'];
+      $return[$count]['stock_code'] = $Result['stock_code'];
       $count++;
       $boolean = true;
     }
@@ -148,11 +150,13 @@ function Importdata($conn, $DATA)
   $item_code = $DATA["item_code"];
   $kilo = $DATA["kilo"];
   $unit = $DATA["xunit"];
+  $stock_code = $DATA["stock_code"];
 
   #========================================
   $item_codex  = explode(",", $item_code);
   $kilox       = explode(",", $kilo);
   $unitx      = explode(",", $unit);
+  $stock_codex  = explode(",", $stock_code);
   #========================================
 
   foreach ($item_codex as $key => $value)
@@ -164,7 +168,8 @@ function Importdata($conn, $DATA)
                packing_longan_detail
                WHERE
                Pk_DocNo = '$DocNo'
-               AND item_code = '$value' ";
+               AND item_code = '$value' 
+               AND stock_code = '$stock_codex[$key]' ";
               $meQuery = mysqli_query($conn, $count);
               $Result = mysqli_fetch_assoc($meQuery);
               $chkUpdate = $Result['Cnt'];
@@ -176,7 +181,8 @@ function Importdata($conn, $DATA)
                       Pk_DocNo = '$DocNo',
                       item_code = '$value',
                       kilo = '$kilox[$key]',
-                      UnitCode = '$unitx[$key]' ";
+                      UnitCode = '$unitx[$key]',
+                      stock_code = '$stock_codex[$key]' ";
 
                   mysqli_query($conn, $insert);
     }
@@ -187,10 +193,11 @@ function Importdata($conn, $DATA)
                       Pk_DocNo = '$DocNo',
                       item_code = '$value',
                       kilo = ( kilo + '$kilox[$key]' ),
-                      UnitCode = '$unitx[$key]'
+                      UnitCode = '$unitx[$key]',
+                      stock_code = '$stock_codex[$key]'
                 WHERE
                        Pk_DocNo = '$DocNo'
-                AND    item_code = '$value'  ";
+                AND    item_code = '$value' AND stock_code = '$stock_codex[$key]' ";
 
                   mysqli_query($conn, $update);
     }

@@ -4,42 +4,71 @@ require '../connect/connect.php';
 
   function Showitem($conn, $DATA)
   {
-    $type = $DATA["type"];
+    $Search_type = $DATA["Search_type"];
+    $Search_date = $DATA["Search_date"];
+    $Search_unit = $DATA["Search_unit"];
     $count = 0;
     $table ='';
 
-    if($type ==1 || $type ==2) 
+    if($Search_type == 'unprocess')
     {
-      $table = 'stock_unprocess';
-    }
-    else if($type ==3 || $type ==4) 
-    {
-      $table = 'stock_process';
-    }
-    
-    
         $Showitem = "SELECT
-                                  item.item_name,
-                                  $table.item_code,
-                                  $table.item_qty
-                                FROM
-                                  $table
-                                INNER JOIN item ON $table.item_code = item.item_code
-                                WHERE item.item_type = $type
-        ";
+                      item.item_name, 
+                      stock_unprocess.item_qty, 
+                      stock_unprocess.item_ccqty, 
+                      TIME(stock_unprocess.Date_start) AS Date_start, 
+                      TIME(stock_unprocess.Date_exp) AS Date_exp
+                    FROM
+                      stock_unprocess
+                    INNER JOIN item ON stock_unprocess.item_code = item.item_code
+                    WHERE DATE(stock_unprocess.Date_start) = '$Search_date'
+                    ORDER BY item.item_code DESC ";
+    }
+    else if($Search_type == 'process')
+    {
+      $Showitem = "SELECT
+                    item.item_name, 
+                    stock_process.item_qty, 
+                    stock_process.item_ccqty, 
+                    TIME(stock_process.Date_start) AS Date_start, 
+                    TIME(stock_process.Date_exp) AS Date_exp
+                  FROM
+                  stock_process
+                  INNER JOIN item ON stock_process.item_code = item.item_code
+                  WHERE DATE(stock_process.Date_start) = '$Search_date'
+                  ORDER BY item.item_code DESC ";
+    }
+    else if($Search_type == 'packing')
+    {
+      $Showitem = "SELECT
+                    item.item_name, 
+                    stock_package.item_qty, 
+                    stock_package.item_ccqty, 
+                    TIME(stock_package.Date_start) AS Date_start, 
+                    TIME(stock_package.Date_exp) AS Date_exp,
+                    item_unit.UnitName
+                  FROM
+                  stock_package
+                  INNER JOIN item ON stock_package.item_code = item.item_code
+                  INNER JOIN item_unit ON item_unit.UnitCode = stock_package.UnitCode
+                  WHERE stock_package.UnitCode = '$Search_unit' 
+                  AND DATE(stock_package.Date_start) = '$Search_date'
+                  ORDER BY item.item_code DESC ";
+    }
+    
+    
 
-        // ค้นหาจาก item_type
-        // if($item_type > 0) {$Showitem .=" WHERE item.item_type = $item_type";}
-        // 
 
-      $Showitem.=" ORDER BY item.item_code DESC";
 
       $return['SQL'] = $Showitem;  
       $meQuery = mysqli_query($conn, $Showitem);
       while ($Result = mysqli_fetch_assoc($meQuery)) {
-        $return[$count]['item_code']          = $Result['item_code'];
         $return[$count]['item_name']          = $Result['item_name'];
         $return[$count]['item_qty']          = $Result['item_qty'];
+        $return[$count]['item_ccqty']          = $Result['item_ccqty'];
+        $return[$count]['Date_start']          = $Result['Date_start'];
+        $return[$count]['Date_exp']          = $Result['Date_exp'];
+        $return[$count]['UnitName']          = $Result['UnitName']==null?'':$Result['UnitName'];
         $count++;
       }
       $return['count']  = $count;
@@ -75,6 +104,21 @@ require '../connect/connect.php';
         $count++;
       }
       $return['count']  = $count;
+
+      $count_unit=0;
+      $Showtype = "SELECT 
+                    item_unit.UnitCode,
+                    item_unit.UnitName 
+                   FROM 
+                   item_unit ";
+        $meQuery = mysqli_query($conn, $Showtype);
+        while ($Result = mysqli_fetch_assoc($meQuery)) 
+        {
+          $return[$count_unit]['UnitCode']   = $Result['UnitCode'];
+          $return[$count_unit]['UnitName']   = $Result['UnitName'];
+          $count_unit++;
+        }
+        $return['count_unit']  = $count_unit;
       if($count>0)
       {
         $return['status'] = "success";
