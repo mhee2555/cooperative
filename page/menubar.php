@@ -109,7 +109,8 @@
                     </li>
                     <li><a href="grade_price_RC.php"><i class="icon icon-mode_edit">เกณฑ์ราคาข้าว</i></a>
                     </li>
-
+                    <li><a href="item_unit.php"><i class="icon icon-mode_edit">หน่วยนับ</i></a>
+                    </li>
                 </ul>
             </li>
             <!-- ================================== -->
