@@ -47,7 +47,6 @@ $Permission = $_SESSION['Permission'];
         };
         senddata(JSON.stringify(data));
     }
-
     function showmodal(ID)
     {
         var data = 
@@ -57,7 +56,6 @@ $Permission = $_SESSION['Permission'];
         };
         senddata(JSON.stringify(data));
     } 
-    
     function edit_item()
     {
         var ID = $('#ID_edit').val();
@@ -143,6 +141,19 @@ $Permission = $_SESSION['Permission'];
                 }, 1000);
             }
     }
+    function line_notify()
+    {
+        $.ajax({
+            url: "../process/Line-notify.php",
+            dataType: 'text',
+            cache: false,
+            data: {
+
+            },
+            type: 'post',
+          });
+    }
+
 //-----------------------------------------------------------------------------------------
     function senddata(data)
     {
@@ -418,8 +429,7 @@ $Permission = $_SESSION['Permission'];
             <div class="row">
 
                 <div class="col-md-10">
-                    <spen style=" font-size:20px;margin-left:4%;">เกณฑ์ราคาลำใย</spen> 
-                    <!-- <button type="button" style=" float: right;"  data-toggle="modal" data-target="#add_item_rice"  class="btn btn-success btn-lg ml-3"  onclick="Get_item_rice();"><i class="icon-add"></i>&nbsp;เพิ่ม เกณฑ์ราคาลำใย&nbsp;</button> -->
+                    <button type="button" style=" float: right;"  data-toggle="modal" class="btn btn-success btn-lg ml-3" onclick="line_notify()"><i class="icon-comment"></i>&nbsp;ส่งข้อมูลเข้า Line@&nbsp;</button>
                 </div>
             </div>
                 <div class="row my-3">
