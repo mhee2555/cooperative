@@ -78,25 +78,18 @@ function show_detail_item($conn, $DATA)
   {
     $ID = $DATA["ID"];
     $item_price_edit = $DATA["item_price_edit"];
-
-
-
     $editcustomer = " UPDATE grade_price SET grade_price.Grade ='$item_price_edit'
                       WHERE grade_price.ID_Grade='$ID' ";
     mysqli_query($conn, $editcustomer);
-
-
     $return['status'] = "success";
     $return['form'] = "edit_item";
     echo json_encode($return);
     mysqli_close($conn);
     die;
-
   }
   function delete_item($conn, $DATA)
   {
     $ID = $DATA["ID"];
-
     $delete_customer = "DELETE FROM grade_price WHERE ID_Grade = $ID  ";
     mysqli_query($conn, $delete_customer);
 

@@ -282,8 +282,30 @@ $Permission = $_SESSION['Permission'];
                 </div>
             </div>
 
-
-
+ <!-- bar chart -->
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="card " id="chartbuy">
+                    <div class='card-header white'> 
+                        <select class="form-control "></select>
+                        <strong id="datebuy">( 2020-03-04 )</strong>
+                    </div>
+                    <div class="card-body p-0">
+                        <div style="height: 450px">
+                        <table class="table table-striped table-hover r-0" id="Tableprocess">
+                                        <thead id="theadsum" >
+                                        <tr class="no-b">
+                                            <th>NO.</th>
+                                            <th>เลขที่เอกสาร</th>
+                                            <th>สถานะ</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody  id="tbody"  >                                    
+                                    </table>
+                        </div>                    
+                    </div>
+                </div>
+            </div>
 
 
             <!-- /line graph -->
