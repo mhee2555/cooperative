@@ -48,19 +48,19 @@ $Permission = $_SESSION['Permission'];
         senddata(JSON.stringify(data));
     }
 
-    function showmodal(UnitCode)
+    function showmodal(PackgeCode)
     {
         var data = 
         {
             'STATUS': 'show_detail_item',
-            'UnitCode':UnitCode
+            'PackgeCode':PackgeCode
         };
         senddata(JSON.stringify(data));
     } 
     
     function edit_item()
     {
-        var UnitCode = $('#UnitCode_edit').val();
+        var PackgeCode = $('#PackgeCode_edit').val();
         var Qtyperunit = $('#Qtyperunit_edit').val();
         
         if(Qtyperunit=='' ){
@@ -77,7 +77,7 @@ $Permission = $_SESSION['Permission'];
                 var data = 
                     {
                     'STATUS': 'edit_item',
-                    'UnitCode':UnitCode,
+                    'PackgeCode':PackgeCode,
                     'Qtyperunit':Qtyperunit
                     };
                 senddata(JSON.stringify(data));
@@ -85,7 +85,7 @@ $Permission = $_SESSION['Permission'];
         }
        
     }
-    function delete_item(UnitCode)
+    function delete_item(PackgeCode)
     {
         swal({
           title: "",
@@ -103,7 +103,7 @@ $Permission = $_SESSION['Permission'];
             var data = 
                     {
                     'STATUS': 'delete_item',
-                    'UnitCode':UnitCode
+                    'PackgeCode':PackgeCode
                     };
                 senddata(JSON.stringify(data));
           } else if (result.dismiss === 'cancel') {
@@ -114,10 +114,10 @@ $Permission = $_SESSION['Permission'];
     }
     function show_add_modal()
     {            
-            var UnitName_add                = $('#UnitName_add').val();
+            var PackgeName_add                = $('#PackgeName_add').val();
             var Qtyperunit_add              = $('#Qtyperunit_add').val();
 
-            if(UnitName_add=='' || Qtyperunit_add=='' ){
+            if(PackgeName_add=='' || Qtyperunit_add=='' ){
                 swal({
                           title: '',
                           text: 'กรุณากรอกข้อมูลให้ครบ',
@@ -132,7 +132,7 @@ $Permission = $_SESSION['Permission'];
                 var data = 
                     {
                     'STATUS': 'add_item',
-                    'UnitName_add':UnitName_add,
+                    'PackgeName_add':PackgeName_add,
                     'Qtyperunit_add':Qtyperunit_add
                     };
 
@@ -183,11 +183,11 @@ $Permission = $_SESSION['Permission'];
                               $( "#Tableitem tbody" ).empty();
                               for (var i = 0; i < temp['count']; i++) 
                               {
-                                  var ShowEdit = "<a href='javascript:void(0)'  onclick='showmodal("+temp[i]['UnitCode']+");'><i class='icon-pencil'></i></a> <a href='javascript:void(0)' onclick='delete_item("+temp[i]['UnitCode']+");' style='margin-left:5%;'><i class='icon-delete_forever'></i></a>";
+                                  var ShowEdit = "<a href='javascript:void(0)'  onclick='showmodal("+temp[i]['PackgeCode']+");'><i class='icon-pencil'></i></a> <a href='javascript:void(0)' onclick='delete_item("+temp[i]['PackgeCode']+");' style='margin-left:5%;'><i class='icon-delete_forever'></i></a>";
 
                                  StrTR = "<tr>"+
                                                 "<td >"+(i+1)+"</td>"+
-                                                "<td >"+temp[i]['UnitName']+"</td>"+
+                                                "<td >"+temp[i]['PackgeName']+"</td>"+
                                                 "<td >"+temp[i]['Qtyperunit']+"</td>"+
                                                 "<td ></td>"+
                                                 "<td ></td>"+
@@ -202,8 +202,8 @@ $Permission = $_SESSION['Permission'];
                     else if( (temp["form"]=='show_detail_item') )
                     {
                             $('#show_item_edit').modal('toggle');
-                            $('#UnitCode_edit').val(temp['UnitCode']);
-                            $('#UnitName_edit').val(temp['UnitName']);
+                            $('#PackgeCode_edit').val(temp['PackgeCode']);
+                            $('#PackgeName_edit').val(temp['PackgeName']);
                             $('#Qtyperunit_edit').val(temp['Qtyperunit']);                    
                     }
                     else if( (temp["form"]=='edit_item') )
@@ -629,11 +629,11 @@ $Permission = $_SESSION['Permission'];
       <div class="modal-body">
             <div class="margin_input"hidden>
             <label class="form-label mr-1" style="color:#000000;">ID Code</label>
-            <input type="text" id="UnitCode_edit" class="form-control " placeholder="ID" disabled>
+            <input type="text" id="PackgeCode_edit" class="form-control " placeholder="ID" disabled>
             </div>
             <div class="margin_input">
             <label class="form-label mr-1" style="color:#000000;">ชื่อรายการ *</label>
-            <input type="text" id="UnitName_edit" class="form-control " placeholder="ชื่อรายการ" disabled>
+            <input type="text" id="PackgeName_edit" class="form-control " placeholder="ชื่อรายการ" disabled>
             </div>
             <div class="margin_input">
             <label class="form-label mr-1" style="color:#000000;">ปริมาณต่อยูนิต</label>
@@ -662,7 +662,7 @@ $Permission = $_SESSION['Permission'];
       <div class="modal-body">
             <div class="margin_input">
             <label class="form-label mr-1" style="color:#000000;">หน่วยนับ</label>
-              <input type="text" id="UnitName_add" class="form-control " placeholder="หน่วยนับ">
+              <input type="text" id="PackgeName_add" class="form-control " placeholder="หน่วยนับ">
             </div>
             <div class="margin_input">
             <label class="form-label mr-1" style="color:#000000;">ปริมาณต่อยูนิต</label>

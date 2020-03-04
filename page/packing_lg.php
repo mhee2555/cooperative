@@ -331,6 +331,54 @@ $Permission = $_SESSION['Permission'];
           })
         
     }
+    function check_unit(i)
+    {
+        var unit = $("#iUnit_"+i).val();
+
+        var data = {
+            'STATUS'  : 'check_unit',
+                'i'	: i,
+                'unit'	: unit
+        };
+        senddata(JSON.stringify(data));
+        
+
+    }
+    function Sumitem(i)
+    {
+        var qtyperunit = parseFloat($("#qtyperunit_"+i).val());
+        var qty = parseFloat($("#Kilo_"+i).val());
+        var total_stock_nan = parseFloat($("#total_stock_nan_"+i).val());
+
+        // ทุกครั้งที่พิมให้ reset
+        parseFloat($("#total_stock_"+i).val(total_stock_nan));
+        parseFloat($("#gram_"+i).val('0.00'));
+
+        var total_stock = parseFloat($("#total_stock_"+i).val());
+        var sumqty = parseFloat((qty * qtyperunit));
+        var sumqty_garm = parseFloat((sumqty / 1000));
+
+  
+        if(isNaN(sumqty_garm) )
+        {
+            sumqty_garm = '0.00';
+        }
+
+
+        var sumqty_total =  total_stock - sumqty_garm  ;
+
+
+        if(isNaN(sumqty_total) )
+        {
+            sumqty_total = total_stock_nan;
+        }
+        // จำนวนก่อน ลบ
+        parseFloat($("#gram_"+i).val(sumqty_garm));
+        
+        // จำนวนทั้งหมด ลบ กรัม
+        parseFloat($("#total_stock_"+i).val(sumqty_total));
+
+    }
 //-----------------------------------------------------------------------------------------
     function senddata(data)
     {
@@ -387,32 +435,46 @@ $Permission = $_SESSION['Permission'];
                         $( "#Tableitem tbody" ).empty();
                               for (var i = 0; i < temp['Row']; i++) 
                               {
-                                var chkunit ="<select  class='form-control'  id='iUnit_"+i+"'>";
+                                var chkunit ="<select  class='form-control'  id='iUnit_"+i+"' onchange='check_unit("+i+")'>";
                                     $.each(temp['Unit'], function(key, val)
                                     {
-                                        if(temp[i]['UnitCode']==val.UnitCode)
+                                        if(temp[i]['PackgeCode']==val.PackgeCode)
                                         {
-                                            chkunit += '<option selected value=" '+val.UnitCode+' ">'+val.UnitName+'</option>';
+                                            chkunit += '<option selected value=" '+val.PackgeCode+' " >'+val.PackgeName+'</option>';
                                         }
                                         else
                                         {
-                                            chkunit += '<option value="' +val.UnitCode+' ">'+val.UnitName+'</option>';
+                                            chkunit += '<option value="' +val.PackgeCode+' ">'+val.PackgeName+'</option>';
                                         }
                                     });
                                     chkunit += "</select>";
 
                                   var chkinput = "<div class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input checkSingle checkitem'  value='"+i+"'  id= 'item_id_"+i+"' required><label class='custom-control-label ' for='item_id_"+i+"' style='margin-top: 15px;'></label></div> <input type='hidden' id='item_code_"+i+"' value='"+temp[i]['item_code']+"'> <input type='hidden' id='stock_code_"+i+"' value='"+temp[i]['stock_code']+"'>";
-                                  var Kilo = "<input type='text' id='Kilo_"+i+"' class='form-control ' autocomplete='off' style='text-align:right'  placeholder='0.00' >  ";
+                                  var Kilo = "<input type='text' id='Kilo_"+i+"' class='form-control ' autocomplete='off' style='text-align:right'  placeholder='0.00'  onkeyup='Sumitem(\""+i+"\" ) ' >  ";
+                                  var qtyperunit = "<input disabled type='text' id='qtyperunit_"+i+"' class='form-control '  value='"+temp[0]['Qtyperunit']+"'   autocomplete='off' style='text-align:right'  placeholder='0.00' >  ";
+                                  var total_stock = "<input disabled type='text' id='total_stock_"+i+"' class='form-control '  value='"+temp[i]['Grade']+"'   autocomplete='off' style='text-align:right'  placeholder='0.00' >  ";
+                                  var total_stock_nan = "<input hidden type='text' id='total_stock_nan_"+i+"' class='form-control '  value='"+temp[i]['Grade']+"'   autocomplete='off' style='text-align:right'  placeholder='0.00' >  ";
+                                  var gram = "<input disabled type='text' id='gram_"+i+"' class='form-control '     autocomplete='off' style='text-align:right'  placeholder='0.00' >  ";
+
                                  StrTR = "<tr>"+
                                                 "<td style=' width: 5%; '>"+chkinput+"</td>"+
                                                 "<td style=' width: 20%; '>"+temp[i]['item_name']+"</td>"+
-                                                "<td style=' width: 25%; ' >"+temp[i]['Grade']+"</td>"+
-                                                "<td style=' width: 120px; '>"+Kilo+"</td>"+
+                                                "<td  >"+total_stock+"</td>"+
+                                                "<td  >"+gram+"</td>"+
+                                                "<td style=' width: 25%; ' hidden>"+total_stock_nan+"</td>"+
+                                                "<td >"+Kilo+"</td>"+
+                                                "<td >"+qtyperunit+"</td>"+
                                                 "<td style=' width: 130px; '>"+chkunit+"</td>"+
                                                 "</tr>";
    
                                    $('#Tableitem tbody').append( StrTR );
                               }
+                    }
+                    else if(temp["form"]=='check_unit')
+                    {
+                        $("#qtyperunit_"+temp['i']).val(temp['Qtyperunit']);
+
+                        Sumitem(temp['i']);
                     }
                     else if(temp["form"]=='ShowDetail')
                     {
@@ -422,13 +484,13 @@ $Permission = $_SESSION['Permission'];
                                 var chkunit ="<select  class='form-control'  id='detailUnit_"+i+"' disabled style='width: 50%;'>";
                                     $.each(temp['Unit'], function(key, val)
                                     {
-                                        if(temp[i]['UnitCode']==val.UnitCode)
+                                        if(temp[i]['UnitCode']==val.PackgeCode)
                                         {
-                                            chkunit += '<option selected value=" '+val.UnitCode+' ">'+val.UnitName+'</option>';
+                                            chkunit += '<option selected value=" '+val.PackgeCode+' " >'+val.PackgeName+'</option>';
                                         }
                                         else
                                         {
-                                            chkunit += '<option value="' +val.UnitCode+' ">'+val.UnitName+'</option>';
+                                            chkunit += '<option value="' +val.PackgeCode+' ">'+val.PackgeName+'</option>';
                                         }
                                     });
                                     chkunit += "</select>";
@@ -896,8 +958,10 @@ $Permission = $_SESSION['Permission'];
                                             <th></th>
                                             <th>ชื่อรายการ</th>
                                             <th>จำนวนทั้งหมด</th>
-                                            <th>ขอเบิก</th>
-                                            <th>หน่วยนับ</th>
+                                            <th>กิโลกรัม</th>
+                                            <th>ปริมาณ</th>
+                                            <th>กรัม</th>
+                                            <th>หน่วยบรรจุภัณฑ์</th>
                                         </tr>
                                         </thead>
 

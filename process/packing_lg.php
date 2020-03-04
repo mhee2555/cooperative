@@ -115,13 +115,14 @@ function ShowItem($conn, $DATA)
 
 
     $cntUnit = 0;
-    $xSql = "SELECT item_unit.UnitCode,item_unit.UnitName
-      FROM item_unit  ";
+    $xSql = "SELECT packge_unit.PackgeCode,packge_unit.PackgeName , packge_unit.Qtyperunit
+      FROM packge_unit  ";
       $xQuery = mysqli_query($conn, $xSql);
       while ($xResult = mysqli_fetch_assoc($xQuery))
       {
-        $return['Unit'][$cntUnit]['UnitCode'] = $xResult['UnitCode'];
-        $return['Unit'][$cntUnit]['UnitName'] = $xResult['UnitName'];
+        $return['Unit'][$cntUnit]['PackgeCode'] = $xResult['PackgeCode'];
+        $return['Unit'][$cntUnit]['PackgeName'] = $xResult['PackgeName'];
+        $return[$cntUnit]['Qtyperunit'] = $xResult['Qtyperunit'];
         $cntUnit++;
       }
 
@@ -235,16 +236,17 @@ function ShowDetail($conn, $DATA)
             $return['Row'] = $count;
 
                     
-          $cntUnit = 0;
-          $xSql = "SELECT item_unit.UnitCode,item_unit.UnitName
-            FROM item_unit  ";
-            $xQuery = mysqli_query($conn, $xSql);
-            while ($xResult = mysqli_fetch_assoc($xQuery))
-            {
-              $return['Unit'][$cntUnit]['UnitCode'] = $xResult['UnitCode'];
-              $return['Unit'][$cntUnit]['UnitName'] = $xResult['UnitName'];
-              $cntUnit++;
-            }
+            $cntUnit = 0;
+            $xSql = "SELECT packge_unit.PackgeCode,packge_unit.PackgeName , packge_unit.Qtyperunit
+              FROM packge_unit  ";
+              $xQuery = mysqli_query($conn, $xSql);
+              while ($xResult = mysqli_fetch_assoc($xQuery))
+              {
+                $return['Unit'][$cntUnit]['PackgeCode'] = $xResult['PackgeCode'];
+                $return['Unit'][$cntUnit]['PackgeName'] = $xResult['PackgeName'];
+                $return[$cntUnit]['Qtyperunit'] = $xResult['Qtyperunit'];
+                $cntUnit++;
+              }
 
 
 
@@ -425,6 +427,40 @@ function Deleteitem($conn, $DATA)
   ShowDetail($conn, $DATA);
 }
 
+function check_unit($conn, $DATA)
+{
+  $i  = $DATA["i"];
+  $Packge_unit  = $DATA["unit"];
+
+  $cntUnit = 0;
+  $xSql = "SELECT packge_unit.Qtyperunit
+    FROM packge_unit  WHERE PackgeCode = '$Packge_unit' ";
+    $xQuery = mysqli_query($conn, $xSql);
+    while ($xResult = mysqli_fetch_assoc($xQuery))
+    {
+      $return['Qtyperunit'] = $xResult['Qtyperunit'];
+      $cntUnit++;
+    }
+
+    if ($cntUnit >=1) 
+    {
+      $return['i'] = $i;
+      $return['status'] = "success";
+      $return['form'] = "check_unit";
+      echo json_encode($return);
+      mysqli_close($conn);
+      die;
+    }
+    else
+    {
+      $return['status'] = "failed";
+      $return['form'] = "check_unit";
+      echo json_encode($return);
+      mysqli_close($conn);
+      die;
+    }
+}
+
     $data = $_POST['DATA'];
     $DATA = json_decode(str_replace ('\"','"', $data), true);
 
@@ -468,6 +504,11 @@ function Deleteitem($conn, $DATA)
       {
         Deleteitem($conn, $DATA);
       }
+      else if ($DATA['STATUS'] == 'check_unit') 
+      {
+        check_unit($conn, $DATA);
+      }
+      
       else
       {
           $return['status'] = "error";

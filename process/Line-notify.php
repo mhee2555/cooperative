@@ -33,7 +33,7 @@ require '../connect/connect.php';
 
     function sendlinemesg() {
         define('LINE_API',"https://notify-api.line.me/api/notify");
-        define('LINE_TOKEN',"shBzmQL42LpWkQETcvL8cj0Amm43VGLpdIJ74YIkEFW");
+        define('LINE_TOKEN',"EkjSyS4jHyn97YQcjLoC17ggHRgkkqdPK35ZXx0rd0Z");
 
         function notify_message($message) {
             $queryData = array('message' => $message);
