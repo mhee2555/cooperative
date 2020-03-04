@@ -141,6 +141,7 @@ $Permission = $_SESSION['Permission'];
         var kiloArray = [];
         var moistureArray = [];
         var totalArray = [];
+        var totalSumArray = [];
         var item_codeArray = [];
         
         $(".checkitem:checked").each(function() 
@@ -154,12 +155,14 @@ $Permission = $_SESSION['Permission'];
             kiloArray.push( $("#Kilo_"+iArray[j]).val() );
             moistureArray.push( $("#moisture_"+iArray[j]).val() );
             totalArray.push( $("#Total_"+iArray[j]).val() );
+            totalSumArray.push( $("#Total_p_"+iArray[j]).val() );
         }
         // =======================================================
         var item_code = item_codeArray.join(',') ;
         var kilo = kiloArray.join(',') ;
         var moisture = moistureArray.join(',') ;
         var total = totalArray.join(',') ;
+        var totalSum = totalSumArray.join(',') ;
         // =======================================================
         $( "#TableDetail tbody" ).empty();
         var data = 
@@ -169,6 +172,7 @@ $Permission = $_SESSION['Permission'];
           'kilo'		: kilo,
           'moisture'    :moisture,
           'total'	  	: total,
+          'totalSum'	  	: totalSum,
           'DocNo'		: DocNo
         };
         $('#Additem').modal('toggle');
@@ -351,6 +355,64 @@ $Permission = $_SESSION['Permission'];
           })
         
     }
+    function Import_weight()
+    { 
+        swal({
+          title: "",
+          text: "ยืนยันการเพิ่มข้อมูลน้ำหนัก",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonClass: "btn-danger",
+          confirmButtonText: "ใช่",
+          cancelButtonText: "ไม่ใช่",
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          closeOnConfirm: false,
+          closeOnCancel: false,
+          showCancelButton: true}).then(result => 
+          {
+              if (result.value) 
+              {
+                var weight_mall = $("#weight_mall").val();
+                var weight_mcar = $("#weight_mcar").val();
+                var DocNo_mcar = $("#DocNo_mcar").val();
+                var DocNo = $("#DocNo").val();
+
+                $("#weight_all").val(weight_mall);
+                $("#weight_car").val(weight_mcar);
+                $("#DocNo_car").val(DocNo_mcar);
+
+                var data = 
+                {
+                'STATUS'    : 'Import_weight',
+                'DocNo'	: DocNo,
+                'DocNo_mcar'	: DocNo_mcar,
+                'weight_mcar'	: weight_mcar,
+                'weight_mall'	: weight_mall
+                };
+                senddata(JSON.stringify(data));
+
+                $('#Addweight_car').modal('toggle');
+              }
+              else if (result.dismiss === 'cancel') 
+              {
+                swal.close();
+              }
+          })
+       
+    }
+    
+    function report_rice()
+    {
+ 
+        var DocNo = $("#DocNo").val();
+        var Employee = $("#Employee").val();
+        var docdate = $("#docdate").val();
+        var Customer = $("#Customer").val();
+        
+        url = "../tcreport/Report_Cost_Department.php?eDate=" + docdate +"&DocNo=" + DocNo+"&Employee=" + Employee+"&Customer=" + Customer;
+        window.open(url);
+    }
 //-----------------------------------------------------------------------------------------
     function senddata(data)
     {
@@ -400,7 +462,14 @@ $Permission = $_SESSION['Permission'];
                         $("#Employee").attr('disabled' , true );
                         $("#DocNo").attr('disabled' , true );
 
+                        setTimeout(function() {
+                            $('#Addweight_car').modal('show');
+                            $("#weight_mall").val("");
+                            $("#weight_mall").val("");
+                            $("#DocNo_mcar").val("");
 
+                        }, 1000);
+                       
                     }
                     else if(temp["form"]=='ShowItem')
                     {
@@ -412,15 +481,15 @@ $Permission = $_SESSION['Permission'];
                                   var Kilo = "<input type='text' id='Kilo_"+i+"' class='form-control ' autocomplete='off'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['Grade']+"\" , \""+i+"\" ) '>  ";
                                   var Total = "<input type='text' id='Total_"+i+"' class='form-control ' autocomplete='off'  value='0.00' disabled>  ";
                                   var moisture = "<input type='text' id='moisture_"+i+"' class='form-control ' autocomplete='off'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['Grade']+"\" , \""+i+"\" ) '>  ";
-                                  
+                                  var Total_p = "<input type='text' id='Total_p_"+i+"' class='form-control ' autocomplete='off'  value='0.00' disabled>  ";
                                  StrTR = "<tr>"+
                                                 "<td >"+chkinput+"</td>"+
-                                                "<td style=' width: 20%; '>"+temp[i]['item_name']+"</td>"+
-                                                "<td style=' width: 25%; ' >"+temp[i]['Grade']+"</td>"+
+                                                "<td style=' width: 16%; '>"+temp[i]['item_name']+"</td>"+
+                                                "<td style=' width: 16%; ' >"+temp[i]['Grade']+"</td>"+
                                                 "<td >"+Kilo+"</td>"+
                                                 "<td >"+moisture+"</td>"+
+                                                "<td >"+Total_p+"</td>"+
                                                 "<td >"+Total+"</td>"+
-
                                                 "</tr>";
    
                                    $('#Tableitem tbody').append( StrTR );
@@ -429,8 +498,11 @@ $Permission = $_SESSION['Permission'];
                     else if(temp["form"]=='Sumitem')
                     {
                         var SUM_total = temp["SUM_total"];
+                        var total_p = temp["total_p"];
                         var rowid = temp["rowid"];
                          $("#Total_"+rowid).val(SUM_total);
+                         $("#Total_p_"+rowid).val(total_p);
+                         
                     }
                     else if(temp["form"]=='ShowDetail')
                     {
@@ -441,16 +513,17 @@ $Permission = $_SESSION['Permission'];
                               for (var i = 0; i < temp['Row']; i++) 
                               {
                                   var chkinput = "<div class='custom-control custom-radio'><input type='radio' class='custom-control-input checkSingle checkdetail' name='detailrow'  value='"+temp[i]['item_code']+"'  id= ' Detail_id_"+i+" ' required><label class='custom-control-label ' for=' Detail_id_"+i+" ' style='margin-top: 15px;'></label></div> ";
-                                  var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' autocomplete='off' name='KiloArray' placeholder='0.00' value='"+temp[i]['kilo']+"' style='width: 40%;'>  ";
-                                  var moisture = "<input type='text' id='Detail_moisture_"+i+"' class='form-control ' autocomplete='off'  placeholder='0.00' value='"+temp[i]['moisture']+"' style='width: 40%;'>  ";
-                                  var Total = "<input type='text' id='Detail_Total_"+i+"' class='form-control ' autocomplete='off'  value='"+temp[i]['total']+"' disabled style='width: 40%;'>  ";
-
+                                  var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' autocomplete='off' name='KiloArray' placeholder='0.00' value='"+temp[i]['kilo']+"' style='width: 75%;'>  ";
+                                  var moisture = "<input type='text' id='Detail_moisture_"+i+"' class='form-control ' autocomplete='off'  placeholder='0.00' value='"+temp[i]['moisture']+"' style='width: 75%;'>  ";
+                                  var Total = "<input type='text' id='Detail_Total_"+i+"' class='form-control ' autocomplete='off'  value='"+temp[i]['total']+"' disabled style='width: 75%;'>  ";
+                                  var STotal = "<input type='text' id='Detail_STotal_"+i+"' class='form-control ' autocomplete='off'  value='"+temp[i]['Sumtotal']+"' disabled style='width: 75%;'>  ";
                                    StrTR =   "<tr>"+
                                                 "<td >"+chkinput+"</td>"+
                                                 "<td style=' width: 20%; '>"+temp[i]['item_name']+"</td>"+
-                                                "<td style=' width: 25%; ' >"+temp[i]['Grade']+"</td>"+
+                                                "<td style=' width: 22%; ' >"+temp[i]['Grade']+"</td>"+
                                                 "<td >"+Kilo+"</td>"+
                                                 "<td >"+moisture+"</td>"+
+                                                "<td >"+STotal+"</td>"+
                                                 "<td >"+Total+"</td>"+
                                                 "</tr>";
    
@@ -525,6 +598,9 @@ $Permission = $_SESSION['Permission'];
                         $("#ModifyDate").val(temp[0]['Modify_Date']);
                         $("#Customer").val(temp[0]['customer']);
                         $("#Employee").val(temp[0]['employee']);
+                        $("#weight_all").val(temp[0]['weight_all']);
+                        $("#weight_car").val(temp[0]['weight_car']);
+                        $("#DocNo_car").val(temp[0]['DocNo_car']);
 
                         // DISABLED INPUT
                         $("#ModifyDate").attr('disabled' , true );
@@ -792,7 +868,34 @@ $Permission = $_SESSION['Permission'];
                     </div>
                 </div>
             </div>
-
+            <div class="row">
+                <div class="col-md-6">
+                    <div class='form-group row  text-black'>
+                        <label class=" col-sm-4 form-label  h4" >น้ำหนักบรรทุก</label>
+                        <input type="text" autocomplete="off"   class=" col-sm-7 form-control " id="weight_all"  placeholder="น้ำหนักบรรทุก" disabled="true">
+                    </div>
+                </div>
+              
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class='form-group row  text-black'>
+                        <label class=" col-sm-4 form-label h4" >น้ำหนักรถ</label>
+                        <input type="text" autocomplete="off"   class=" col-sm-7 form-control " id="weight_car"  placeholder="น้ำหนักรถ" disabled="true">
+                    </div>
+                </div>
+               
+              
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class='form-group row  text-black'>
+                        <label class=" col-sm-4 form-label  h4" >ทะเบียนรถ</label>
+                        <input type="text" autocomplete="off"   class=" col-sm-7 form-control " id="DocNo_car"  placeholder="ทะเบียนรถ" disabled="true">
+                    </div>
+                </div>
+              
+            </div>
             <div class="row box  col-md-12 my-3 d-flex justify-content-end">
 
                             <div class=" ml-5 boxshadowx " id="HC">
@@ -831,7 +934,7 @@ $Permission = $_SESSION['Permission'];
                             </div>
 
                             <div class=" ml-5 boxshadowx" id="HP">
-                            <button type="button" class="btn "  id="P">
+                            <button type="button" class="btn "  id="report_rice" onclick="report_rice()">
                                     <i class="icon-print orange lighten-2 avatar-md circle avatar-letter"></i>
                                     <div class="pt-1">พิมพ์รายงาน</div>
                             </button>
@@ -854,6 +957,7 @@ $Permission = $_SESSION['Permission'];
                                             <th>กิโล</th>
                                             <th>ความชื้น</th>
                                             <th>ราคารวม</th>
+                                            <th>ราคาหลังหักความชื้น</th>
                                         </tr>
                                         </thead>
 
@@ -945,6 +1049,7 @@ $Permission = $_SESSION['Permission'];
                                             <th>กิโล</th>
                                             <th>ความชื้น</th>
                                             <th>ราคารวม</th>
+                                            <th>ราคาหักความชื้น</th>
                                         </tr>
                                         </thead>
 
@@ -961,6 +1066,46 @@ $Permission = $_SESSION['Permission'];
   </div>
 </div>
 <!-------------------------- end add_customer Modal ----------------------------------------------->
+<!--------------------------------------- Modal Addweight_car  ------------------------------------------>
+<div class="modal fade" id="Addweight_car" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">เพิ่มข้อมูลน้ำหนัก</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class='form-group row  text-black'>
+                        <label class=" col-sm-5 form-label h5" >น้ำหนักบรรทุก</label>
+                        <input type="text" autocomplete="off"   class=" col-sm-4 form-control "  id="weight_mall"   placeholder="น้ำหนักบรรทุก" ><label class=" col-sm-3 form-label h4" >กก.</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class='form-group row  text-black'>
+                        <label class=" col-sm-5 form-label  h5" >น้ำหนักรถ</label>
+                        <input type="text" autocomplete="off"   class=" col-sm-4 form-control " id="weight_mcar"   placeholder="น้ำหนักรถ" ><label class=" col-sm-3 form-label h4" >กก.</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class='form-group row  text-black'>
+                        <label class=" col-sm-6 form-label  h5" >ทะเบียนรถ</label>
+                        <input type="text" autocomplete="off"   class=" col-sm-3 form-control " id="DocNo_mcar"   placeholder="ทะเบียนรถ" >
+                    </div>
+                </div>
+            </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">ยกเลิก</button>
+        <button type="button"  class="btn btn-success" onclick="Import_weight()">ยืนยัน</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-------------------------- end Addweight_car Modal ----------------------------------------------->
 <!--/#app -->
 <script src="assets/js/app.js"></script>
 

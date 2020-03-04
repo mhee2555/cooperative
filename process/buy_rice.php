@@ -98,7 +98,7 @@ function ShowItem($conn, $DATA)
             FROM
               item
             INNER JOIN grade_price_rice ON grade_price_rice.item_code = item.item_code
-            WHERE item.item_code='RI-UN-001'  ";
+            WHERE item.item_code='6'  ";
     $meQuery = mysqli_query($conn, $Sql);
     while ($Result = mysqli_fetch_assoc($meQuery)) 
     {
@@ -136,12 +136,13 @@ function Importdata($conn, $DATA)
   $kilo = $DATA["kilo"];
   $moisture = $DATA["moisture"];
   $total = $DATA["total"];
-
+  $totalSum = $DATA["totalSum"];
   #========================================
   $item_codex  = explode(",", $item_code);
   $kilox       = explode(",", $kilo);
   $moisture    = explode(",", $moisture);
   $totalx      = explode(",", $total);
+  $totalSumx      = explode(",", $totalSum);
   #========================================
 
   foreach ($item_codex as $key => $value)
@@ -166,6 +167,7 @@ function Importdata($conn, $DATA)
                       item_code = '$value',
                       kilo = '$kilox[$key]',
                       moisture = '$moisture[$key]',
+                      Sumtotal = '$totalSumx[$key]',
                       total = '$totalx[$key]' ";
                   mysqli_query($conn, $insert);
     }
@@ -177,6 +179,7 @@ function Importdata($conn, $DATA)
                       item_code = '$value',
                       kilo = ( kilo + '$kilox[$key]' ),
                       moisture = ( moisture + '$moisture[$key]' ),
+                      Sumtotal = ( Sumtotal + '$totalSumx[$key]' ),
                       total = (total + '$totalx[$key]' ) 
                 WHERE
                       Buy_DocNo = '$DocNo'
@@ -202,6 +205,7 @@ function ShowDetail($conn, $DATA)
                     item.item_name,
                     bpd.kilo,
                     bpd.total,
+                    bpd.Sumtotal,
                     bpd.moisture,
                     grade_price_rice.Grade
                   FROM
@@ -218,6 +222,7 @@ function ShowDetail($conn, $DATA)
               $return[$count]['kilo']           = $Result['kilo'];
               $return[$count]['moisture']           = $Result['moisture'];
               $return[$count]['total']          = $Result['total'];
+              $return[$count]['Sumtotal']          = $Result['Sumtotal'];
               $return[$count]['Grade']          = $Result['Grade'];
               $Total += $Result['total'];
               $count ++ ;
@@ -403,7 +408,20 @@ function Cancelbill($conn, $DATA)
   ShowSearch($conn, $DATA);
 
 }
+function Import_weight($conn, $DATA)
+{
+  $DocNo  = $DATA["DocNo"];
+  $DocNo_mcar  = $DATA["DocNo_mcar"];
+  $weight_mcar  = $DATA["weight_mcar"];
+  $weight_mall  = $DATA["weight_mall"];
 
+
+  $Sql = "UPDATE buy_rice SET DocNo_car = '$DocNo_mcar',weight_car = '$weight_mcar',weight_all = '$weight_mall' WHERE buy_rice.DocNo = '$DocNo'";
+  mysqli_query($conn, $Sql);
+
+
+
+}
 function ShowDocNo($conn, $DATA)
 {
   $DocNo  = $DATA["DocNochk"];
@@ -415,6 +433,9 @@ function ShowDocNo($conn, $DATA)
   $ShowDocNo = "SELECT
                   bp.DocNo,
                   bp.DocDate,
+                  bp.weight_all,
+                  bp.weight_car,
+                  bp.DocNo_car,
                   TIME(bp.Modify_Date) AS  Modify_Date, 
                   users.ID AS customer,
                   emp.FName AS employee ,
@@ -434,6 +455,9 @@ function ShowDocNo($conn, $DATA)
       $return[$count]['customer']      = $Result['customer'];
       $return[$count]['employee']      = $Result['employee'];
       $return[$count]['IsStatus']      = $Result['IsStatus'];
+      $return[$count]['weight_all']      = $Result['weight_all'];
+      $return[$count]['weight_car']      = $Result['weight_car'];
+      $return[$count]['DocNo_car']      = $Result['DocNo_car'];
 
       $count ++ ;
       $boolean = true;
@@ -544,6 +568,7 @@ function Sumitem($conn, $DATA)
     $return['id_moisture']  = $id_moisture;
     $return['rowid']  = $DATA["rowid"];
     $return['SUM_total'] = $SUM_total;
+    $return['total_p'] = $SUM;
     $return['status'] = "success";
     $return['form'] = "Sumitem";
     echo json_encode($return);
@@ -606,6 +631,10 @@ function Sumitem($conn, $DATA)
       else if ($DATA['STATUS'] == 'Deleteitem') 
       {
         Deleteitem($conn, $DATA);
+      }
+      else if ($DATA['STATUS'] == 'Import_weight') 
+      {
+        Import_weight($conn, $DATA);
       }
       else
       {

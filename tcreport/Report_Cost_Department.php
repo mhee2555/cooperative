@@ -101,6 +101,8 @@ $count = 1;
 $eDate = $_GET['eDate'];
 $eDate = explode("/",$eDate);
 $eDate = $eDate[2].'-'.$eDate[1].'-'.$eDate[0];
+
+$DocNo = $_GET['DocNo'];
 // --------------------------------------------------------
 // set font
 // add a page
@@ -124,7 +126,7 @@ $pdf->AddPage('L', 'A4');
               INNER JOIN item ON buy_rice_detail.item_code = item.item_code
               INNER JOIN employee ON buy_rice.Employee_ID = employee.ID
               INNER JOIN grade_price_rice ON buy_rice_detail.item_code = grade_price_rice.item_code
-              WHERE buy_rice.DocNo='RC2002-00002'
+              WHERE buy_rice.DocNo='$DocNo'
               ";
 
     $meQuery = mysqli_query($conn,$query);
