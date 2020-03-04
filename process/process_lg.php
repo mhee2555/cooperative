@@ -85,11 +85,14 @@ function ShowDetail($conn, $DATA)
               item.item_name,
               pld.kilo,
               pld.UnitCode,
-              pld.stock_code
+              pld.stock_code,
+              process_longan.IsRef_Status
             FROM
-              process_longan_detail pld
+              process_longan_detail pld 
             INNER JOIN item ON item.item_code = pld.item_code
+            INNER JOIN process_longan ON process_longan.DocNo = pld.Lg_DocNo
             WHERE Lg_DocNo = '$DocNo' ";
+            
             $meQuery = mysqli_query($conn, $Detail);
             while ($Result = mysqli_fetch_assoc($meQuery)) 
             {
@@ -99,13 +102,18 @@ function ShowDetail($conn, $DATA)
               $return[$count]['kilo']           = $Result['kilo'];
               $return[$count]['UnitCode']       = $Result['UnitCode'];
               $return[$count]['stock_code']     = $Result['stock_code'];
+              $IsRef_Status                     = $Result['IsRef_Status'];
               $count ++ ;
               $boolean = true;
             }
             $return['Row'] = $count;
 
+
+
             $cntUnit = 0;
-            $xSql = "SELECT item_unit.UnitCode,item_unit.UnitName
+            if($IsRef_Status == 1 )
+            {
+              $xSql = "SELECT item_unit.UnitCode,item_unit.UnitName
               FROM item_unit  ";
               $xQuery = mysqli_query($conn, $xSql);
               while ($xResult = mysqli_fetch_assoc($xQuery))
@@ -114,6 +122,21 @@ function ShowDetail($conn, $DATA)
                 $return['Unit'][$cntUnit]['UnitName'] = $xResult['UnitName'];
                 $cntUnit++;
               }
+            }
+            else
+            {
+              $xSql = "SELECT packge_unit.PackgeCode,packge_unit.PackgeName , packge_unit.Qtyperunit
+              FROM packge_unit  ";
+              $xQuery = mysqli_query($conn, $xSql);
+              while ($xResult = mysqli_fetch_assoc($xQuery))
+              {
+                $return['Unit'][$cntUnit]['UnitCode'] = $xResult['PackgeCode'];
+                $return['Unit'][$cntUnit]['UnitName'] = $xResult['PackgeName'];
+                $return[$cntUnit]['Qtyperunit'] = $xResult['Qtyperunit'];
+                $cntUnit++;
+              }
+            }
+
               
   if ($boolean) 
   {
@@ -443,7 +466,7 @@ function Successprocess($conn, $DATA)
     // INSERT STOCK
     foreach ($ItemCode as $key => $value)
     {
-      $SELECT_COUNT = "SELECT COUNT(*) AS cnt FROM stock_package WHERE item_code = '$value' AND UnitCode = '$Unit[$key]' ";
+      $SELECT_COUNT = "SELECT COUNT(*) AS cnt FROM stock_package WHERE item_code = '$value' AND PackgeCode = '$Unit[$key]' ";
       $meQuery = mysqli_query($conn, $SELECT_COUNT);
       $Result = mysqli_fetch_assoc($meQuery); 
       $cnt = $Result['cnt'];
@@ -456,19 +479,33 @@ function Successprocess($conn, $DATA)
                             item_code = '$value',
                             item_qty = ( item_qty + '$Kilo[$key]' ),
                             item_ccqty = ( item_ccqty + '$Kilo[$key]' ),
-                            UnitCode = '$Unit[$key]',
+                            PackgeCode = '$Unit[$key]',
                             Date_start = NOW(),
                             Date_exp = NOW() + INTERVAL 1 DAY 
                         WHERE item_code = '$value' ";  
                     mysqli_query($conn, $UPDATE_STOCK);
-
+                    
+          // ========================================================================================
+                    $selectunit = "SELECT
+                                      packge_unit.Qtyperunit 
+                                    FROM
+                                      packge_unit 
+                                    WHERE
+                                      PackgeCode = '$Unit[$key]' ";
+                    $meQuery = mysqli_query($conn, $selectunit);
+                    $Result = mysqli_fetch_assoc($meQuery);
+                    $Qtyperunit = $Result['Qtyperunit'];
+                    $total_gram = ($Kilo[$key] * $Qtyperunit) / 1000 ;
+      
                     $UPDATE_STOCKx = "UPDATE 
                                         stock_process
                                     SET  
-                                        item_ccqty = ( item_ccqty - '$Kilo[$key]' )
+                                        item_ccqty = ( item_ccqty - '$total_gram' )
                                     WHERE stock_code = '$stock_codex[$key]' ";  
                                 mysqli_query($conn, $UPDATE_STOCKx);
-                    
+
+           // ========================================================================================
+                   
       }
       else
       {
@@ -478,17 +515,31 @@ function Successprocess($conn, $DATA)
                           item_code = '$value',
                           item_qty = '$Kilo[$key]',
                           item_ccqty = '$Kilo[$key]',
-                          UnitCode = '$Unit[$key]',
+                          PackgeCode = '$Unit[$key]',
                           Date_start = NOW(),
                           Date_exp = NOW() + INTERVAL 1 DAY ";  
                   mysqli_query($conn, $INSERT_STOCK);
 
-        $UPDATE_STOCKx = "UPDATE 
-                  stock_process
-              SET  
-                  item_ccqty = ( item_ccqty - '$Kilo[$key]' )
-              WHERE stock_code = '$stock_codex[$key]' ";  
-          mysqli_query($conn, $UPDATE_STOCKx);
+          // ========================================================================================
+          $selectunit = "SELECT
+                          packge_unit.Qtyperunit 
+                        FROM
+                          packge_unit 
+                        WHERE
+                          PackgeCode = '$Unit[$key]' ";
+                $meQuery = mysqli_query($conn, $selectunit);
+                $Result = mysqli_fetch_assoc($meQuery);
+                $Qtyperunit = $Result['Qtyperunit'];
+                $total_gram = ($Kilo[$key] * $Qtyperunit) / 1000 ;
+
+                $UPDATE_STOCKx = "UPDATE 
+                            stock_process
+                        SET  
+                            item_ccqty = ( item_ccqty - '$total_gram' )
+                        WHERE stock_code = '$stock_codex[$key]' ";  
+                    mysqli_query($conn, $UPDATE_STOCKx);
+
+// ========================================================================================
 
       }
     }

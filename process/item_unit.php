@@ -7,17 +7,17 @@ function Showitem($conn, $DATA)
     $count = 0;
 
         $Showitem = "SELECT
-                      UnitCode,
-                      UnitName,	
+                      PackgeCode,
+                      PackgeName,	
                       Qtyperunit
                     FROM
-                      item_unit ";
+                      packge_unit ";
 
  
       $meQuery = mysqli_query($conn, $Showitem);
       while ($Result = mysqli_fetch_assoc($meQuery)) {
-        $return[$count]['UnitCode']          = $Result['UnitCode'];
-        $return[$count]['UnitName']          = $Result['UnitName'];
+        $return[$count]['PackgeCode']          = $Result['PackgeCode'];
+        $return[$count]['PackgeName']          = $Result['PackgeName'];
         $return[$count]['Qtyperunit']        = $Result['Qtyperunit'];
         $count++;
       }
@@ -39,18 +39,18 @@ function Showitem($conn, $DATA)
   }
 function show_detail_item($conn, $DATA)
   {
-    $UnitCode = $DATA["UnitCode"];
+    $PackgeCode = $DATA["PackgeCode"];
     $Showunit = " SELECT
-                        item_unit.UnitCode,
-                        item_unit.UnitName,	
-                        item_unit.Qtyperunit 
+                        packge_unit.PackgeCode,
+                        packge_unit.PackgeName,	
+                        packge_unit.Qtyperunit 
                       FROM
-                       item_unit
-                      WHERE item_unit.UnitCode =  $UnitCode ";
+                       packge_unit
+                      WHERE packge_unit.PackgeCode =  $PackgeCode ";
     $meQuery = mysqli_query($conn, $Showunit);
     $Result = mysqli_fetch_assoc($meQuery); 
-      $return['UnitCode']    = $Result['UnitCode'];
-      $return['UnitName'] = $Result['UnitName'];
+      $return['PackgeCode']    = $Result['PackgeCode'];
+      $return['PackgeName'] = $Result['PackgeName'];
       $return['Qtyperunit'] = $Result['Qtyperunit'];
       $count=1;
       
@@ -71,13 +71,13 @@ function show_detail_item($conn, $DATA)
   }
 function edit_item($conn, $DATA)
   {
-    $UnitCode = $DATA["UnitCode"];
+    $PackgeCode = $DATA["PackgeCode"];
     $Qtyperunit = $DATA["Qtyperunit"];
 
 
 
-    $editunit = " UPDATE item_unit SET item_unit.Qtyperunit ='$Qtyperunit'
-                      WHERE item_unit.UnitCode='$UnitCode' ";
+    $editunit = " UPDATE packge_unit SET packge_unit.Qtyperunit ='$Qtyperunit'
+                      WHERE packge_unit.PackgeCode='$PackgeCode' ";
     mysqli_query($conn, $editunit);
 
 
@@ -90,9 +90,9 @@ function edit_item($conn, $DATA)
   }
 function delete_item($conn, $DATA)
   {
-    $UnitCode = $DATA["UnitCode"];
+    $PackgeCode = $DATA["PackgeCode"];
 
-    $delete_unit = "DELETE FROM item_unit WHERE UnitCode = $UnitCode  ";
+    $delete_unit = "DELETE FROM packge_unit WHERE PackgeCode = $PackgeCode  ";
     mysqli_query($conn, $delete_unit);
 
     $return['status'] = "success";
@@ -103,16 +103,16 @@ function delete_item($conn, $DATA)
   }
 function add_item($conn, $DATA)
   {
-    $UnitName_add         = $DATA["UnitName_add"];
+    $PackgeName_add         = $DATA["PackgeName_add"];
     $Qtyperunit_add           = $DATA["Qtyperunit_add"];
 
     // ===================
     $Sql_ID = "SELECT
-                          (UnitCode) + 1 AS ID
+                          (PackgeCode) + 1 AS ID
                         FROM
-                          item_unit
+                          packge_unit
                         ORDER BY
-                          UnitCode DESC
+                          PackgeCode DESC
                         LIMIT 1";
     $meQuery = mysqli_query($conn, $Sql_ID);
     $Result = mysqli_fetch_assoc($meQuery); 
@@ -125,15 +125,15 @@ function add_item($conn, $DATA)
       $ID =  $Result['ID']; 
     }
     
-    $addunit = "INSERT INTO item_unit (
-                                    UnitCode,
-                                    UnitName,
+    $addunit = "INSERT INTO packge_unit (
+                                    PackgeCode,
+                                    PackgeName,
                                     Qtyperunit
                                   )
                                   VALUES
                                     (
                                       $ID,
-                                      '$UnitName_add',
+                                      '$PackgeName_add',
                                       $Qtyperunit_add
                                     ) ";
 
