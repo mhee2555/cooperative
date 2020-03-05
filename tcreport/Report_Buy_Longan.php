@@ -188,8 +188,12 @@ $pdf->Cell(120, 12, "ลำใย", 0, 1, 'L');
 $pdf->SetFont('thsarabun', 'b', 16);
 $pdf->Cell(25, 12,  "เกรด : ", 0, 0, 'L');
 $pdf->SetFont('thsarabun', '', 16);
-$pdf->Cell(120, 12,  $grade, 0, 0, 'L');
+$pdf->Cell(20, 12,  $grade, 0, 0, 'L');
 
+$pdf->SetFont('thsarabun', 'b', 16);
+$pdf->Cell(25, 12,  "จำนวน : ", 0, 0, 'L');
+$pdf->SetFont('thsarabun', '', 16);
+$pdf->Cell(75, 12,  number_format($Result2['kilo'],2) . " กก.", 0, 0, 'L');
 
 $pdf->SetFont('thsarabun', 'b', 16);
 $pdf->Cell(25, 12,  "ราคาต่อหน่วย : ", 0, 0, 'L');
@@ -220,8 +224,8 @@ $pdf->Cell(10, 12,  "บาท", 0, 1, 'L');
 
 
 $textTotal =baht_text( $Result['Total'] );
-$pdf->Cell(210, 12,  "", 0, 0, 'L');
-$pdf->Cell(120, 12,  "(".$textTotal.")", 0, 1, 'L');
+$pdf->Cell(145, 12,  "", 0, 0, 'L');
+$pdf->Cell(120, 12,  "(".$textTotal.")", 0, 1, 'R');
 // ---------------------------------------------------------
 
 
