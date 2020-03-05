@@ -343,6 +343,17 @@ $Permission = $_SESSION['Permission'];
           })
         
     }
+    function report_Lg()
+    {
+        var DocNo = $("#DocNo").val();
+        var Employee = $("#Employee").val();
+        var docdate = $("#docdate").val();
+        var Customer = $("#Customer").val();
+        
+        url = "../tcreport/Report_Buy_Longan.php?eDate=" + docdate +"&DocNo=" + DocNo+"&Employee=" + Employee+"&Customer=" + Customer;
+        window.open(url);
+    }
+    
 //-----------------------------------------------------------------------------------------
     function senddata(data)
     {
@@ -843,7 +854,7 @@ $Permission = $_SESSION['Permission'];
                             </div>
 
                             <div class=" ml-5 boxshadowx" id="HP">
-                            <button type="button" class="btn "  id="P">
+                            <button type="button" class="btn "  id="P" onclick="report_Lg()">
                                     <i class="icon-print orange lighten-2 avatar-md circle avatar-letter"></i>
                                     <div class="pt-1">พิมพ์รายงาน</div>
                             </button>
