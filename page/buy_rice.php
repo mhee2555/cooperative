@@ -478,10 +478,10 @@ $Permission = $_SESSION['Permission'];
                               for (var i = 0; i < temp['Row']; i++) 
                               {
                                   var chkinput = "<div class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input checkSingle checkitem'  value='"+i+"'  id= ' item_id_"+i+" ' required><label class='custom-control-label ' for=' item_id_"+i+" ' style='margin-top: 15px;'></label></div> <input type='hidden' id='item_code_"+i+"' value='"+temp[i]['item_code']+"'>";
-                                  var Kilo = "<input type='text' id='Kilo_"+i+"' class='form-control ' autocomplete='off'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['Grade']+"\" , \""+i+"\" ) '>  ";
-                                  var Total = "<input type='text' id='Total_"+i+"' class='form-control ' autocomplete='off'  value='0.00' disabled>  ";
-                                  var moisture = "<input type='text' id='moisture_"+i+"' class='form-control ' autocomplete='off'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['Grade']+"\" , \""+i+"\" ) '>  ";
-                                  var Total_p = "<input type='text' id='Total_p_"+i+"' class='form-control ' autocomplete='off'  value='0.00' disabled>  ";
+                                  var Kilo = "<input type='text' id='Kilo_"+i+"' class='form-control  text-right' autocomplete='off'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['Grade']+"\" , \""+i+"\" ) '>  ";
+                                  var Total = "<input type='text' id='Total_"+i+"' class='form-control  text-right' autocomplete='off'  value='0.00' disabled>  ";
+                                  var moisture = "<input type='text' id='moisture_"+i+"' class='form-control text-right' autocomplete='off'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['Grade']+"\" , \""+i+"\" ) '>  ";
+                                  var Total_p = "<input type='text' id='Total_p_"+i+"' class='form-control  text-right' autocomplete='off'  value='0.00' disabled>  ";
                                  StrTR = "<tr>"+
                                                 "<td >"+chkinput+"</td>"+
                                                 "<td style=' width: 16%; '>"+temp[i]['item_name']+"</td>"+
@@ -875,17 +875,12 @@ $Permission = $_SESSION['Permission'];
                         <input type="text" autocomplete="off"   class=" col-sm-7 form-control " id="weight_all"  placeholder="น้ำหนักบรรทุก" disabled="true">
                     </div>
                 </div>
-              
-            </div>
-            <div class="row">
                 <div class="col-md-6">
                     <div class='form-group row  text-black'>
                         <label class=" col-sm-4 form-label h4" >น้ำหนักรถ</label>
                         <input type="text" autocomplete="off"   class=" col-sm-7 form-control " id="weight_car"  placeholder="น้ำหนักรถ" disabled="true">
                     </div>
                 </div>
-               
-              
             </div>
             <div class="row">
                 <div class="col-md-6">
@@ -893,9 +888,9 @@ $Permission = $_SESSION['Permission'];
                         <label class=" col-sm-4 form-label  h4" >ทะเบียนรถ</label>
                         <input type="text" autocomplete="off"   class=" col-sm-7 form-control " id="DocNo_car"  placeholder="ทะเบียนรถ" disabled="true">
                     </div>
-                </div>
-              
+                </div> 
             </div>
+
             <div class="row box  col-md-12 my-3 d-flex justify-content-end">
 
                             <div class=" ml-5 boxshadowx " id="HC">
@@ -1068,7 +1063,7 @@ $Permission = $_SESSION['Permission'];
 <!-------------------------- end add_customer Modal ----------------------------------------------->
 <!--------------------------------------- Modal Addweight_car  ------------------------------------------>
 <div class="modal fade" id="Addweight_car" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
+  <div class="modal-dialog modal-md" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">เพิ่มข้อมูลน้ำหนัก</h5>
@@ -1078,23 +1073,21 @@ $Permission = $_SESSION['Permission'];
       </div>
       <div class="modal-body">
             <div class="row">
-                <div class="col-md-6">
-                    <div class='form-group row  text-black'>
-                        <label class=" col-sm-5 form-label h5" >น้ำหนักบรรทุก</label>
-                        <input type="text" autocomplete="off"   class=" col-sm-4 form-control "  id="weight_mall"   placeholder="น้ำหนักบรรทุก" ><label class=" col-sm-3 form-label h4" >กก.</label>
-                    </div>
+                <label class=" col-sm-3 form-label mt-3 ml-2" >น้ำหนักบรรทุก</label>
+                <div class="col-md-10 ml-2 ">
+                        <input type="text" autocomplete="off"   class=" form-control text-right"  id="weight_mall"   placeholder="0.00" >
                 </div>
-                <div class="col-md-6">
-                    <div class='form-group row  text-black'>
-                        <label class=" col-sm-5 form-label  h5" >น้ำหนักรถ</label>
-                        <input type="text" autocomplete="off"   class=" col-sm-4 form-control " id="weight_mcar"   placeholder="น้ำหนักรถ" ><label class=" col-sm-3 form-label h4" >กก.</label>
-                    </div>
+            </div>
+            <div class="row">
+                <label class=" col-sm-3 form-label mt-3 ml-2" >น้ำหนักรถ</label>
+                <div class="col-md-10 ml-2 ">
+                        <input type="text" autocomplete="off"   class=" form-control text-right"  id="weight_mcar"   placeholder="0.00" >
                 </div>
-                <div class="col-md-6">
-                    <div class='form-group row  text-black'>
-                        <label class=" col-sm-6 form-label  h5" >ทะเบียนรถ</label>
-                        <input type="text" autocomplete="off"   class=" col-sm-3 form-control " id="DocNo_mcar"   placeholder="ทะเบียนรถ" >
-                    </div>
+            </div>
+            <div class="row">
+                <label class=" col-sm-3 form-label mt-3 ml-2" >ทะเบียนรถ</label>
+                <div class="col-md-10 ml-2 ">
+                        <input type="text" autocomplete="off"   class=" form-control "  id="DocNo_mcar"   placeholder="ทะเบียนรถ" >
                 </div>
             </div>
       </div>
