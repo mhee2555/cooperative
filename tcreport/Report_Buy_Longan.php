@@ -3,6 +3,7 @@ session_start();
 require('tcpdf/tcpdf.php');
 require('../connect/connect.php');
 require('Class.php');
+require('baht_text.php');
 header('Content-Type: text/html; charset=utf-8');
 date_default_timezone_set("Asia/Bangkok");
 //--------------------------------------------------------------------------
@@ -47,7 +48,7 @@ class MYPDF extends TCPDF
       $this->SetFont('thsarabun', 'b', 18);
       $this->Cell(0, 10,"ที่ตั้ง เลขที่ 238 ม.10 ต.ยุหว่า อ.สันป่าตอง จ.เชียงใหม่ 50120 โทร.053-106088", 0, 1, 'C');
       $this->SetFont('thsarabun', 'b', 22);
-      $this->Cell(0, 10,"ใบสำคัญซื้อสินค้าข้าว", 0, 1, 'C');
+      $this->Cell(0, 10,"ใบสำคัญซื้อสินค้าลำใย", 0, 1, 'C');
       $this->Ln(100);
 
     }
@@ -55,13 +56,14 @@ class MYPDF extends TCPDF
   // Page footer
   public function Footer()
   {
-
+    $Employee = $_GET['Employee'];
     $this->SetY(-28);
     // Arial italic 8
     $this->SetFont('thsarabun', 'b', 16);
     // Page number
     $this->Cell(180, 12,  "", 0, 0, 'L');
-    $this->Cell(120, 12,  "ผู้รับสินค้า ", 0, 1, 'L');
+    $this->Cell(35, 12,  "ผู้รับสินค้า ", 0, 0, 'L');
+    $this->Cell(60, 12, $Employee, 0, 1, 'L');
     $this->Cell(200, 12,  "", 0, 0, 'L');
     $this->SetFont('thsarabun', '', 16);
     $this->Cell(120, 12,  "(. . . . . . . . . . . . . . . . . . . . . . . . . . )", 0, 1, 'L');
@@ -74,7 +76,7 @@ $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8',
 // set document information
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor('Nicola Asuni');
-$pdf->SetTitle('Report Cost Department');
+$pdf->SetTitle('Report Buy Longan');
 $pdf->SetSubject('TCPDF Tutorial');
 $pdf->SetKeywords('TCPDF, PDF, example, test, guide');
 // set default header data
@@ -109,24 +111,15 @@ $DocNo = $_GET['DocNo'];
 $pdf->AddPage('L', 'A4');
 
   $query = "SELECT
-              buy_rice.DocNo,
-              buy_rice_detail.kilo,
-              buy_rice_detail.moisture,
-              users.ID,
-              users.FName,
-              item.item_name,
-              buy_rice.DocDate,
-              employee.FName,
-              buy_rice.Total,
-              grade_price_rice.Grade
-              FROM
-              buy_rice
-              INNER JOIN buy_rice_detail ON buy_rice.DocNo = buy_rice_detail.Buy_DocNo
-              INNER JOIN users ON buy_rice.Customer_ID = users.ID
-              INNER JOIN item ON buy_rice_detail.item_code = item.item_code
-              INNER JOIN employee ON buy_rice.Employee_ID = employee.ID
-              INNER JOIN grade_price_rice ON buy_rice_detail.item_code = grade_price_rice.item_code
-              WHERE buy_rice.DocNo='$DocNo'
+            buy_longan.DocNo,
+            buy_longan.DocDate,
+            buy_longan.Total,
+            users.FName,
+            users.ID
+            FROM
+            buy_longan
+            INNER JOIN users ON buy_longan.Customer_ID = users.ID
+            WHERE buy_longan.DocNo='$DocNo'
               ";
 
     $meQuery = mysqli_query($conn,$query);
@@ -137,54 +130,98 @@ $pdf->AddPage('L', 'A4');
     $Date = explode("-",$Date);
     $Date = $Date[2]." ".$datetime->getTHmonthFromnum($Date[1])." พ.ศ. ".$datetime->getTHyear($Date[0]);
 
+
+
 $pdf->Ln(35);
-$pdf->SetFont('thsarabun', '', 16);
+$pdf->SetFont('thsarabun', 'b', 16);
 $pdf->Cell(25, 12,  "เลขที่เอกสาร : ", 0, 0, 'L');
+$pdf->SetFont('thsarabun', '', 16);
 $pdf->Cell(120, 12,$Result['DocNo'], 0, 0, 'L');
 
+$pdf->SetFont('thsarabun', 'b', 16);
 $pdf->Cell(15, 12,  "วันที่ : ", 0, 0, 'L');
+$pdf->SetFont('thsarabun', '', 16);
 $pdf->Cell(120, 12,$Date, 0, 1, 'L');
 
+$pdf->SetFont('thsarabun', 'b', 16);
 $pdf->Cell(25, 12,  "ผู้ขาย : ", 0, 0, 'L');
+$pdf->SetFont('thsarabun', '', 16);
 $pdf->Cell(120, 12,  $Result['FName'], 0, 0, 'L');
 
+$pdf->SetFont('thsarabun', 'b', 16);
 $pdf->Cell(35, 12,  "เลขทะเบียนสมาชิก : ", 0, 0, 'L');
+$pdf->SetFont('thsarabun', '', 16);
 $pdf->Cell(120, 12,  $Result['ID'], 0, 1, 'L');
 
+$pdf->SetFont('thsarabun', 'b', 16);
 $pdf->Cell(25, 12,  "ชนิดสินค้า : ", 0, 0, 'L');
-$pdf->Cell(120, 12,  $Result['item_name'], 0, 0, 'L');
+$pdf->SetFont('thsarabun', '', 16);
+$pdf->Cell(120, 12, "ลำใย", 0, 1, 'L');
 
-$pdf->Cell(25, 12,  "ทะเบียนรถ : ", 0, 0, 'L');
-$pdf->Cell(120, 12,  "", 0, 1, 'L');
 
-$pdf->Cell(25, 12,  "น้ำหนักบรรทุก : ", 0, 0, 'L');
-$pdf->Cell(120, 12,  "", 0, 1, 'L');
+        $query_detail = "SELECT
+                        item.item_name,
+                        buy_longan_detail.kilo,
+                        buy_longan_detail.total,
+                        item.item_code,
+                        grade_price.Grade
+                        FROM
+                        buy_longan_detail
+                        INNER JOIN item ON buy_longan_detail.item_code = item.item_code
+                        INNER JOIN grade_price ON item.item_code = grade_price.item_code
+                        WHERE
+                        buy_longan_detail.Buy_DocNo = '$DocNo'
+                    ";
 
-$pdf->Cell(25, 12,  "น้ำหนักรถ : ", 0, 0, 'L');
-$pdf->Cell(120, 12,  "", 0, 1, 'L');
+        $meQuery = mysqli_query($conn,$query_detail);
+        while ($Result2 = mysqli_fetch_assoc($meQuery)) 
+        {
+            if($Result2['item_code']==2){
+                $grade="A";
+            }else if($Result2['item_code']==3){
+                $grade="AA";
+            }else if($Result2['item_code']==4){
+                $grade="B";
+            }else if($Result2['item_code']==5){
+                $grade="C";
+            }
+$pdf->SetFont('thsarabun', 'b', 16);
+$pdf->Cell(25, 12,  "เกรด : ", 0, 0, 'L');
+$pdf->SetFont('thsarabun', '', 16);
+$pdf->Cell(120, 12,  $grade, 0, 0, 'L');
 
-$pdf->Cell(25, 12,  "น้ำหนักคงเหลือ : ", 0, 0, 'L');
-$pdf->Cell(120, 12,  " ", 0, 0, 'L');
 
+$pdf->SetFont('thsarabun', 'b', 16);
 $pdf->Cell(25, 12,  "ราคาต่อหน่วย : ", 0, 0, 'L');
-$pdf->Cell(25, 12,  $Result['Grade'], 0, 0, 'L');
+$pdf->SetFont('thsarabun', '', 16);
+$pdf->Cell(25, 12,  number_format($Result2['Grade'],2), 0, 0, 'R');
 $pdf->Cell(10, 12,  "บาท", 0, 0, 'L');
 
-$pdf->Cell(25, 12,  "ราคารวม", 0, 0, 'L');
+$pdf->SetFont('thsarabun', 'b', 16);
+$pdf->Cell(25, 12,  "ราคารวม :", 0, 0, 'L');
+$pdf->SetFont('thsarabun', '', 16);
+$pdf->Cell(25, 12,  number_format($Result2['total'],2), 0, 0, 'R');
+$pdf->Cell(10, 12,  "บาท", 0, 1, 'L');
+
+        }
+
+
 $pdf->Cell(25, 12,  "", 0, 0, 'L');
+$pdf->Cell(25, 12,  "", 0, 0, 'L');
+$pdf->Cell(10, 12,  "", 0, 0, 'L');
+$pdf->Cell(50, 12,  "", 0, 0, 'L');
+$pdf->Cell(95, 12,  "", 0, 0, 'L');
+
+$pdf->SetFont('thsarabun', 'b', 16);
+$pdf->Cell(25, 12,  "คิดเป็นเงิน : ", 0, 0, 'L');
+$pdf->SetFont('thsarabun', '', 16);
+$pdf->Cell(25, 12, number_format($Result['Total'],2), 0, 0, 'R');
 $pdf->Cell(10, 12,  "บาท", 0, 1, 'L');
 
-$pdf->Cell(25, 12,  "หักความชื่น : ", 0, 0, 'L');
-$pdf->Cell(25, 12,  $Result['moisture'], 0, 0, 'L');
-$pdf->Cell(10, 12,  "%", 0, 0, 'L');
 
-$pdf->Cell(50, 12,  "จำนวน : ", 0, 0, 'L');
-$pdf->Cell(50, 12,  "จำนวน : ", 0, 0, 'L');
-$pdf->Cell(50, 12,  "บาท", 0, 0, 'L');
-$pdf->Cell(50, 12,  "คิดเป็นเงิน : ".$Result['Total'], 0, 0, 'L');
-$pdf->Cell(10, 12,  "บาท", 0, 1, 'L');
-$pdf->Cell(145, 12,  "", 0, 0, 'L');
-$pdf->Cell(120, 12,  "(. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .)", 0, 1, 'L');
+$textTotal =baht_text( $Result['Total'] );
+$pdf->Cell(210, 12,  "", 0, 0, 'L');
+$pdf->Cell(120, 12,  "(".$textTotal.")", 0, 1, 'L');
 // ---------------------------------------------------------
 
 
@@ -192,7 +229,7 @@ $pdf->Cell(120, 12,  "(. . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 $eDate = $_GET['eDate'];
 $eDate=str_replace("/","_",$eDate);
 $ddate = date('d_m_Y');
-$pdf->Output('Report_Cost_Department_' . $eDate . '.pdf', 'I');
+$pdf->Output('Report_Buy_Longan_' . $eDate . '.pdf', 'I');
 
 //============================================================+
 // END OF FILE

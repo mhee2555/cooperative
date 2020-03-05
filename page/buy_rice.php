@@ -410,7 +410,7 @@ $Permission = $_SESSION['Permission'];
         var docdate = $("#docdate").val();
         var Customer = $("#Customer").val();
         
-        url = "../tcreport/Report_Cost_Department.php?eDate=" + docdate +"&DocNo=" + DocNo+"&Employee=" + Employee+"&Customer=" + Customer;
+        url = "../tcreport/Report_Buy_Rice.php?eDate=" + docdate +"&DocNo=" + DocNo+"&Employee=" + Employee+"&Customer=" + Customer;
         window.open(url);
     }
 //-----------------------------------------------------------------------------------------
