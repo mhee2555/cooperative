@@ -110,6 +110,21 @@ function ShowItem($conn, $DATA)
     }
     $return['Row'] = $count;
 
+
+
+    
+    $cntUnit = 0;
+    $xSql = "SELECT item_unit.UnitCode,item_unit.UnitName
+      FROM item_unit  ";
+      $xQuery = mysqli_query($conn, $xSql);
+      while ($xResult = mysqli_fetch_assoc($xQuery))
+      {
+        $return['Unit'][$cntUnit]['UnitCode'] = $xResult['UnitCode'];
+        $return['Unit'][$cntUnit]['UnitName'] = $xResult['UnitName'];
+        $cntUnit++;
+      }
+
+
     if ($boolean)
     {
       $return['status'] = "success";

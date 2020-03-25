@@ -469,7 +469,6 @@ $Permission = $_SESSION['Permission'];
                             $("#DocNo_mcar").val("");
 
                         }, 1000);
-                       
                     }
                     else if(temp["form"]=='ShowItem')
                     {
@@ -477,6 +476,19 @@ $Permission = $_SESSION['Permission'];
                         $( "#Tableitem tbody" ).empty();
                               for (var i = 0; i < temp['Row']; i++) 
                               {
+                                var chkunit ="<select  class='form-control'  id='iUnit_"+i+"'>";
+                                    $.each(temp['Unit'], function(key, val)
+                                    {
+                                        if(temp[i]['UnitCode']==val.UnitCode)
+                                        {
+                                            chkunit += '<option selected value=" '+val.UnitCode+' ">'+val.UnitName+'</option>';
+                                        }
+                                        else
+                                        {
+                                            chkunit += '<option value="' +val.UnitCode+' ">'+val.UnitName+'</option>';
+                                        }
+                                    });
+                                    chkunit += "</select>";
                                   var chkinput = "<div class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input checkSingle checkitem'  value='"+i+"'  id= ' item_id_"+i+" ' required><label class='custom-control-label ' for=' item_id_"+i+" ' style='margin-top: 15px;'></label></div> <input type='hidden' id='item_code_"+i+"' value='"+temp[i]['item_code']+"'>";
                                   var Kilo = "<input type='text' id='Kilo_"+i+"' class='form-control  text-right' autocomplete='off'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['Grade']+"\" , \""+i+"\" ) '>  ";
                                   var Total = "<input type='text' id='Total_"+i+"' class='form-control  text-right' autocomplete='off'  value='0.00' disabled>  ";
@@ -487,6 +499,7 @@ $Permission = $_SESSION['Permission'];
                                                 "<td style=' width: 16%; '>"+temp[i]['item_name']+"</td>"+
                                                 "<td style=' width: 16%; ' >"+temp[i]['Grade']+"</td>"+
                                                 "<td >"+Kilo+"</td>"+
+                                                "<td style='width: 13%;'>"+chkunit+"</td>"+
                                                 "<td >"+moisture+"</td>"+
                                                 "<td >"+Total_p+"</td>"+
                                                 "<td >"+Total+"</td>"+
@@ -1027,7 +1040,7 @@ $Permission = $_SESSION['Permission'];
 <!--------------------------------------- Modal add_customer  ------------------------------------------>
 <div class="modal fade" id="Additem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
+    <div class="modal-content" style='width : 140%;'>
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">เพิ่ม รายการ</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -1041,7 +1054,8 @@ $Permission = $_SESSION['Permission'];
                                             <th></th>
                                             <th>ชื่อรายการ</th>
                                             <th>ราคาต่อหน่วย</th>
-                                            <th>กิโล</th>
+                                            <th>ปริมาณ</th>
+                                            <th>หน่วยนับ</th>
                                             <th>ความชื้น</th>
                                             <th>ราคารวม</th>
                                             <th>ราคาหักความชื้น</th>
