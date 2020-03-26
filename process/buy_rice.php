@@ -152,12 +152,14 @@ function Importdata($conn, $DATA)
   $moisture = $DATA["moisture"];
   $total = $DATA["total"];
   $totalSum = $DATA["totalSum"];
+  $unit = $DATA["xunit"];
   #========================================
   $item_codex  = explode(",", $item_code);
   $kilox       = explode(",", $kilo);
   $moisture    = explode(",", $moisture);
   $totalx      = explode(",", $total);
   $totalSumx      = explode(",", $totalSum);
+  $unitx      = explode(",", $unit);
   #========================================
 
   foreach ($item_codex as $key => $value)
@@ -183,7 +185,8 @@ function Importdata($conn, $DATA)
                       kilo = '$kilox[$key]',
                       moisture = '$moisture[$key]',
                       Sumtotal = '$totalSumx[$key]',
-                      total = '$totalx[$key]' ";
+                      total = '$totalx[$key]',
+                      UnitCode = '$unitx[$key]'  ";
                   mysqli_query($conn, $insert);
     }
     else
@@ -195,7 +198,8 @@ function Importdata($conn, $DATA)
                       kilo = ( kilo + '$kilox[$key]' ),
                       moisture = ( moisture + '$moisture[$key]' ),
                       Sumtotal = ( Sumtotal + '$totalSumx[$key]' ),
-                      total = (total + '$totalx[$key]' ) 
+                      total = (total + '$totalx[$key]' ) ,
+                      UnitCode = '$unitx[$key]'
                 WHERE
                       Buy_DocNo = '$DocNo'
                 AND    item_code = '$value'  ";
@@ -222,6 +226,7 @@ function ShowDetail($conn, $DATA)
                     bpd.total,
                     bpd.Sumtotal,
                     bpd.moisture,
+                    bpd.UnitCode,
                     grade_price_rice.Grade
                   FROM
                     buy_rice_detail bpd
@@ -235,6 +240,7 @@ function ShowDetail($conn, $DATA)
               $return[$count]['item_code']      = $Result['item_code'];
               $return[$count]['item_name']      = $Result['item_name'];
               $return[$count]['kilo']           = $Result['kilo'];
+              $return[$count]['UnitCode']      = $Result['UnitCode'];
               $return[$count]['moisture']           = $Result['moisture'];
               $return[$count]['total']          = $Result['total'];
               $return[$count]['Sumtotal']          = $Result['Sumtotal'];
@@ -254,7 +260,16 @@ function ShowDetail($conn, $DATA)
             WHERE DocNo ='$DocNo' ";
           mysqli_query($conn, $updatetotal);
           // 
-
+          $cntUnit = 0;
+          $xSql = "SELECT item_unit.UnitCode,item_unit.UnitName
+            FROM item_unit  ";
+            $xQuery = mysqli_query($conn, $xSql);
+            while ($xResult = mysqli_fetch_assoc($xQuery))
+            {
+              $return['Unit'][$cntUnit]['UnitCode'] = $xResult['UnitCode'];
+              $return['Unit'][$cntUnit]['UnitName'] = $xResult['UnitName'];
+              $cntUnit++;
+            }
   if ($boolean) 
   {
     $return['status'] = "success";

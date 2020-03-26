@@ -403,7 +403,7 @@ $Permission = $_SESSION['Permission'];
                         $( "#Tableitem tbody" ).empty();
                               for (var i = 0; i < temp['Row']; i++) 
                               {
-                                var chkunit ="<select  class='form-control'  id='detailUnit_"+i+"' >";
+                                var chkunit ="<select  class='form-control'  id='iUnit_"+i+"' >";
                                     $.each(temp['Unit'], function(key, val)
                                     {
                                         if(temp[i]['UnitCode']==val.UnitCode)

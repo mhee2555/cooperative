@@ -62,7 +62,7 @@
                     </li>
                     <li><a href="stockp_lg.php" ><i class="icon icon-folder5"></i>บันทึกการรับเข้าลำไยแปรรูป</a>
                     </li>
-                    <li><a href="panel-page-dashboard2.html" ><i class="icon icon-folder5"></i>บันทึกการรับเข้าข้าวแปรรูป</a>
+                    <li><a href="stockp_rice.php" ><i class="icon icon-folder5"></i>บันทึกการรับเข้าข้าวแปรรูป</a>
                     </li>
                     <li><a href="packing_lg.php" ><i class="icon icon-folder5"></i>สั่งบรรจุภัณฑ์ลำไย</a>
                     </li>

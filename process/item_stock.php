@@ -324,7 +324,8 @@ require '../connect/connect.php';
               DATE(sup.Date_exp) as date,
               TIME(sup.Date_exp) as time,
               dds.stock_code,
-              dds.draw_DocNo
+              dds.draw_DocNo,
+              dds.UnitCode
             FROM draw_rice_detail_sub dds
             INNER JOIN item ON item.item_code = dds.item_code
             INNER JOIN stock_unprocess sup ON sup.stock_code = dds.stock_code 
@@ -340,11 +341,25 @@ require '../connect/connect.php';
         $return[$count]['time'] = $Result['time'];
         $return[$count]['stock_code'] = $Result['stock_code'];
         $return[$count]['draw_DocNo'] = $Result['draw_DocNo'];
+        $return[$count]['UnitCode'] = $Result['UnitCode'];
         
         $count++;
         $boolean = true;
       }
       $return['Row'] = $count;
+
+      $cntUnit = 0;
+      $xSql = "SELECT item_unit.UnitCode,item_unit.UnitName
+        FROM item_unit  ";
+        $xQuery = mysqli_query($conn, $xSql);
+        while ($xResult = mysqli_fetch_assoc($xQuery))
+        {
+          $return['Unit'][$cntUnit]['UnitCode'] = $xResult['UnitCode'];
+          $return['Unit'][$cntUnit]['UnitName'] = $xResult['UnitName'];
+          $cntUnit++;
+        }
+
+
 
       if ($boolean)
       {
