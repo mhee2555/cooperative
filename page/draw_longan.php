@@ -283,6 +283,18 @@ $Permission = $_SESSION['Permission'];
         senddata(JSON.stringify(data));
         
     }
+    function showdetailsub(itemcode)
+    {
+        $('#DetailSub').modal('show');
+        var DocNo = $("#DocNo").val();
+        var data = 
+                {
+                    'STATUS'    : 'ShowdetailSub',
+                    'DocNo'	: DocNo,
+                    'itemcode'	: itemcode
+                };
+                senddata(JSON.stringify(data));
+    }
     function Deleteitem()
     {
         var DocNo = $("#DocNo").val();
@@ -379,7 +391,7 @@ $Permission = $_SESSION['Permission'];
                         $( "#Tableitem tbody" ).empty();
                               for (var i = 0; i < temp['Row']; i++) 
                               {
-                                var chkunit ="<select  class='form-control' style='width: 100px;'  id='iUnit_"+i+"'>";
+                                var chkunit ="<select  class='form-control' style='width: 120px;'  id='iUnit_"+i+"'>";
                                     $.each(temp['Unit'], function(key, val)
                                     {
                                         if(temp[i]['UnitCode']==val.UnitCode)
@@ -399,7 +411,6 @@ $Permission = $_SESSION['Permission'];
                                   var draw = "<input type='text' id='draw_"+i+"' class='form-control ' autocomplete='off' style='text-align:right;width: 100px;'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['item_ccqty']+"\" , \""+i+"\" ) '>  ";
                                   var qty_total = "<input type='text' id='qty_total_"+i+"' class='form-control ' autocomplete='off' style='text-align:right'   placeholder='0.00' value='"+temp[i]['item_qty']+"'  disabled>  ";
                                   var qty_cc = "<input type='text' id='ccqty_total_"+i+"' class='form-control ' autocomplete='off' style='text-align:right'  placeholder='0.00' value='"+temp[i]['item_ccqty']+"'  disabled>  ";
-                                  
                                   // hidden
                                   var fix = "<input type='hidden' id='fix_"+i+"' value='"+temp[i]['item_ccqty']+"'  >  ";
 
@@ -408,6 +419,7 @@ $Permission = $_SESSION['Permission'];
                                                 "<td style='width: 15%;'>"+temp[i]['item_name']+"</td>"+
                                                 "<td >"+qty_total+"</td>"+
                                                 "<td >"+qty_cc+"</td>"+
+                                                "<td style='width: 13%;'>"+temp[i]['DocNo']+"</td>"+
                                                 "<td >"+temp[i]['date_exp']+"</td>"+
                                                 "<td >"+draw+"</td>"+
                                                 "<td >"+chkunit+"</td>"+
@@ -415,6 +427,40 @@ $Permission = $_SESSION['Permission'];
                                                 "</tr>";
    
                                    $('#Tableitem tbody').append( StrTR );
+                              }
+                    }
+                    else if(temp["form"]=='ShowdetailSub')
+                    {
+
+                        $( "#TableDetailSub tbody" ).empty();
+                              for (var i = 0; i < temp['Row']; i++) 
+                              {
+
+                                var chkunit ="<select  class='form-control'  disabled>";
+                                    $.each(temp['Unit'], function(key, val)
+                                    {
+                                        if(temp[i]['UnitCode']==val.UnitCode)
+                                        {
+                                            chkunit += '<option  selected value=" '+val.UnitCode+' ">'+val.UnitName+'</option>';
+                                        }
+                                        else
+                                        {
+                                            chkunit += '<option value="' +val.UnitCode+' ">'+val.UnitName+'</option>';
+                                        }
+                                    });
+                                    chkunit += "</select>";
+
+
+
+
+                                 StrTR = "<tr>"+
+                                                "<td>"+temp[i]['item_name']+"</td>"+
+                                                "<td >"+temp[i]['DocNo']+"</td>"+
+                                                "<td >"+temp[i]['kilo']+"</td>"+
+                                                "<td >"+chkunit+"</td>"+
+                                                "</tr>";
+   
+                                   $('#TableDetailSub tbody').append( StrTR );
                               }
                     }
                     else if(temp["form"]=='ShowDetail')
@@ -441,12 +487,14 @@ $Permission = $_SESSION['Permission'];
 
                                   var chkinput = "<div class='custom-control custom-radio'><input type='radio' class='custom-control-input checkSingle checkdetail' name='detailrow'  value='"+temp[i]['item_code']+"'  id= ' Detail_id_"+i+" ' required><label class='custom-control-label ' for=' Detail_id_"+i+" ' style='margin-top: 15px;'></label></div> ";
                                   var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' autocomplete='off'  name='KiloArray'  placeholder='0.00' value='"+temp[i]['kilo']+"' style='text-align: right;'>  ";
+                                  var ShowEdit = "<a href='javascript:void(0)'  onclick='showdetailsub("+temp[i]['item_code']+");'><i style='font-size : 30px; ' class='icon-search3'></i></a> ";
 
                                    StrTR =   "<tr>"+
                                                 "<td style='width:10%'>"+chkinput+"</td>"+
                                                 "<td style='width:40%'>"+temp[i]['item_name']+"</td>"+
                                                 "<td style='width:10%'>"+Kilo+"</td>"+
                                                 "<td style='width:20%'>"+chkunit+"</td>"+
+                                                "<td >"+ShowEdit+"</td>"+
                                                 "</tr>";
    
                                    $('#TableDetail tbody').append( StrTR );
@@ -900,7 +948,7 @@ $Permission = $_SESSION['Permission'];
 <!--------------------------------------- Modal add_customer  ------------------------------------------>
 <div class="modal fade" id="Additem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content" >
+    <div class="modal-content" style='width : 140%;'>
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">เพิ่ม รายการ</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -924,6 +972,7 @@ $Permission = $_SESSION['Permission'];
                                             <th>ชื่อรายการ</th>
                                             <th>จำนวนทั้งหมด(กก)</th>
                                             <th>คงเหลือ(กก)</th>
+                                            <th>ลอต</th>
                                             <th>หมดอายุ</th>
                                             <th>ขอเบิก(กก)</th>
                                             <th>หน่วยนับ</th>
@@ -936,6 +985,33 @@ $Permission = $_SESSION['Permission'];
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">ยกเลิก</button>
         <button type="button"  class="btn btn-success" onclick="Importdata()">ยืนยัน</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-------------------------- end add_customer Modal ----------------------------------------------->
+<div class="modal fade" id="DetailSub" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content" >
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">รายละเอียด</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <table class="table table-striped table-hover r-0" id="TableDetailSub">
+                                        <thead id="theadsum" >
+                                        <tr class="no-b">
+                                            <th>ชื่อรายการ</th>
+                                            <th>ลอต</th>
+                                            <th>ขอเบิก(กก)</th>
+                                            <th>หน่วยนับ</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody  id="tbodydetail">
+                                        </tbody>
+                                    </table>
       </div>
     </div>
   </div>

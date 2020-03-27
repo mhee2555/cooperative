@@ -84,7 +84,69 @@ function CreateDocument($conn, $DATA)
       die;
     }
 }
+function ShowdetailSub($conn, $DATA)
+{
+  $count = 0;
+  $boolean = false;
+  $DocNo   = $DATA["DocNo"];
+  $itemcode   = $DATA["itemcode"];
 
+  $Sql = "SELECT
+            item.item_name,
+            dds.kilo,
+            dds.UnitCode,
+            stock_unprocess.DocNo
+          FROM
+            draw_detail_sub dds 
+          INNER JOIN stock_unprocess ON stock_unprocess.stock_code = dds.stock_code
+          INNER JOIN item ON item.item_code = dds.item_code
+          WHERE
+            dds.item_code = '$itemcode' 
+            AND dds.draw_DocNo = '$DocNo'";
+
+    $meQuery = mysqli_query($conn, $Sql);
+    while ($Result = mysqli_fetch_assoc($meQuery)) 
+    {
+      $return[$count]['DocNo'] = $Result['DocNo'];
+      $return[$count]['item_name'] = $Result['item_name'];
+      $return[$count]['kilo'] = $Result['kilo'];
+      $return[$count]['UnitCode'] = $Result['UnitCode'];
+      $count++;
+      $boolean = true;
+    }
+    $return['Row'] = $count;
+
+    $cntUnit = 0;
+    $xSql = "SELECT item_unit.UnitCode,item_unit.UnitName
+      FROM item_unit  ";
+      $xQuery = mysqli_query($conn, $xSql);
+      while ($xResult = mysqli_fetch_assoc($xQuery))
+      {
+        $return['Unit'][$cntUnit]['UnitCode'] = $xResult['UnitCode'];
+        $return['Unit'][$cntUnit]['UnitName'] = $xResult['UnitName'];
+        $cntUnit++;
+      }
+
+    if ($boolean)
+    {
+      $return['sql'] = $Sql;
+      $return['status'] = "success";
+      $return['form'] = "ShowdetailSub";
+      echo json_encode($return);
+      mysqli_close($conn);
+      die;
+    } 
+    else 
+    {
+      $return['sql'] = $Sql;
+      $return['status'] = "success";
+      $return['form'] = "ShowdetailSub";
+      echo json_encode($return);
+      mysqli_close($conn);
+      die;
+    }
+
+}
 function ShowItem($conn, $DATA)
 {
   $count = 0;
@@ -97,7 +159,8 @@ function ShowItem($conn, $DATA)
           sup.stock_code,
           sup.item_qty,
           sup.item_ccqty,
-          TIME(sup.Date_exp) as date_exp
+          TIME(sup.Date_exp) as date_exp,
+          sup.DocNo
           FROM
           stock_unprocess sup
           INNER JOIN item ON item.item_code = sup.item_code 
@@ -109,6 +172,7 @@ function ShowItem($conn, $DATA)
     $meQuery = mysqli_query($conn, $Sql);
     while ($Result = mysqli_fetch_assoc($meQuery)) 
     {
+      $return[$count]['DocNo'] = $Result['DocNo'];
       $return[$count]['item_name'] = $Result['item_name'];
       $return[$count]['item_code'] = $Result['item_code'];
       $return[$count]['stock_code'] = $Result['stock_code'];
@@ -470,6 +534,11 @@ function Deleteitem($conn, $DATA)
       {
         Deleteitem($conn, $DATA);
       }
+      else if ($DATA['STATUS'] == 'ShowdetailSub') 
+      {
+        ShowdetailSub($conn, $DATA);
+      }
+      
       else
       {
           $return['status'] = "error";
