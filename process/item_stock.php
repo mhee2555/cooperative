@@ -17,7 +17,9 @@ require '../connect/connect.php';
                       stock_unprocess.item_qty, 
                       stock_unprocess.item_ccqty, 
                       TIME(stock_unprocess.Date_start) AS Date_start, 
-                      TIME(stock_unprocess.Date_exp) AS Date_exp
+                      TIME(stock_unprocess.Date_exp) AS Date_exp ,
+                      DATE(stock_unprocess.Date_exp) AS Date_exp_date ,
+                      stock_unprocess.DocNo
                     FROM
                       stock_unprocess
                     INNER JOIN item ON stock_unprocess.item_code = item.item_code
@@ -67,6 +69,8 @@ require '../connect/connect.php';
         $return[$count]['item_qty']          = $Result['item_qty'];
         $return[$count]['item_ccqty']          = $Result['item_ccqty'];
         $return[$count]['Date_start']          = $Result['Date_start'];
+        $return[$count]['Date_exp_date']          = $Result['Date_exp_date'];
+        $return[$count]['DocNo']          = $Result['DocNo'];
         $return[$count]['Date_exp']          = $Result['Date_exp'];
         $return[$count]['UnitName']          = $Result['UnitName']==null?'':$Result['UnitName'];
         $count++;

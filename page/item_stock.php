@@ -242,6 +242,26 @@ $Permission = $_SESSION['Permission'];
 
                               for (var i = 0; i < temp['count']; i++) 
                               {
+                                var fullDate = new Date()
+                                var day = fullDate.getDate();
+                                var month = fullDate.getMonth()<9?'0'+(fullDate.getMonth()+1):(fullDate.getMonth()+1);
+                                var year = fullDate.getFullYear();
+
+                                var current = year+'-'+month+'-'+day;
+                                
+                                var current = Number(Date.parse(current));
+                                var exp = Number(Date.parse(temp[i]['Date_exp_date']));
+
+                                if(current > exp)
+                                {
+                                    var stutas = 'หมดอายุ';
+                                    Style  = "style='color: #ff0000;'";
+                                }
+                                else
+                                {
+                                    var stutas = 'ยังไม่หมดอายุ';
+                                    Style  = "style='color: #20B80E;'";
+                                }
                                  StrTR = "<tr ondblclick='showmodal("+temp[i]['item_code']+","+'1'+");'>"+
                                                 "<td >"+(i+1)+"</td>"+
                                                 "<td >"+temp[i]['item_name']+ ' ' +temp[i]['UnitName'] +"</td>"+
@@ -249,6 +269,8 @@ $Permission = $_SESSION['Permission'];
                                                 "<td >"+temp[i]['item_ccqty']+"</td>"+
                                                 "<td >"+temp[i]['Date_start']+"</td>"+
                                                 "<td >"+temp[i]['Date_exp']+"</td>"+
+                                                "<td >"+temp[i]['DocNo']+"</td>"+
+                                                "<td  " +Style+ ">"+stutas+"</td>"+
 
                                                 "</tr>";
                                    $('#Tableitem tbody').append( StrTR );
@@ -633,6 +655,8 @@ $Permission = $_SESSION['Permission'];
                                             <th>จำนวนที่เหลือ</th>
                                             <th>เวลารับเข้า</th>
                                             <th>เวลาหมดอายุ</th>
+                                            <th>ลอต</th>
+                                            <th>สถานะ</th>
                                         </tr>
                                         </thead>
 
