@@ -164,6 +164,7 @@ $pdf->Ln(5);
         <tr style="font-size:18px;font-weight: bold;background-color: #a5a5a5;">
         <th  width="20 %" align="center">เกรด</th>
         <th  width="20 %" align="center">จำนวน</th>
+        <th  width="20 %" align="center">หน่วยนับ</th>
         <th  width="20 %" align="center">ราคาต่อหน่วย</th>
         <th  width="20 %" align="center">ราคารวม</th>
         </tr>
@@ -172,6 +173,7 @@ $pdf->Ln(5);
         $query_detail = "SELECT
                         item.item_name,
                         buy_longan_detail.kilo,
+                        item_unit.UnitName,
                         buy_longan_detail.total,
                         item.item_code,
                         grade_price.Grade
@@ -179,6 +181,7 @@ $pdf->Ln(5);
                         buy_longan_detail
                         INNER JOIN item ON buy_longan_detail.item_code = item.item_code
                         INNER JOIN grade_price ON item.item_code = grade_price.item_code
+                        INNER JOIN item_unit ON buy_longan_detail.UnitCode = item_unit.UnitCode
                         WHERE
                         buy_longan_detail.Buy_DocNo = '$DocNo'
                     ";
@@ -198,7 +201,8 @@ $pdf->Ln(5);
   $html .= '
             <tr style="font-size:18px;font-weight:">
             <td  width="20 %" align="center">'.$grade.'</td>
-            <td  width="20 %" align="center">'.number_format($Result2['kilo'],2).' กก.</td>
+            <td  width="20 %" align="center">'.number_format($Result2['kilo'],2).' </td>
+            <td  width="20 %" align="center">'.$Result2['UnitName'].' </td>
             <td  width="20 %" align="center">'.number_format($Result2['Grade'],2).'</td>
             <td  width="20 %" align="center">'.number_format($Result2['total'],2).'</td>
             </tr>
@@ -229,7 +233,7 @@ $pdf->Ln(5);
 
    $html .= '</table>';
 
-$pdf->SetX(40);   
+$pdf->SetX(15);   
 $pdf->writeHTML($html, true, false, false, false, '');
 $pdf->Cell(0,0,'','T');
 $pdf->Ln();  

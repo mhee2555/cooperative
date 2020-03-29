@@ -150,12 +150,14 @@ $DocNo = $_GET['DocNo'];
                         item.item_name,
                         buy_longan_detail.kilo,
                         buy_longan_detail.total,
+                        item_unit.UnitName,
                         item.item_code,
                         grade_price.Grade
                         FROM
                         buy_longan_detail
                         INNER JOIN item ON buy_longan_detail.item_code = item.item_code
                         INNER JOIN grade_price ON item.item_code = grade_price.item_code
+                        INNER JOIN item_unit ON buy_longan_detail.UnitCode = item_unit.UnitCode
                         WHERE
                         buy_longan_detail.Buy_DocNo = '$DocNo'
                     ";
@@ -210,13 +212,15 @@ $DocNo = $_GET['DocNo'];
                     <tr style="font-size:18px;font-weight: bold;background-color: #a5a5a5;">
                     <th  width="20 %" align="center">เกรด</th>
                     <th  width="20 %" align="center">จำนวน</th>
+                    <th  width="20 %" align="center">หน่วยนับ</th>
                     <th  width="60 %" align="center"></th>
                     </tr>
                     ';
             $html .= '
                     <tr style="font-size:18px;font-weight:">
                     <td  width="20 %" align="center">'.$grade.'</td>
-                    <td  width="20 %" align="center">'.number_format($Result2['kilo'],2).' กก.</td>
+                    <td  width="20 %" align="center">'.number_format($Result2['kilo'],2).'</td>
+                    <td  width="20 %" align="center">'.$Result2['UnitName'].' </td>
                     </tr></table>
             ';
     
