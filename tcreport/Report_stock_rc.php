@@ -63,8 +63,7 @@ class MYPDF extends TCPDF
     $this->Cell(35, 12,  "ผู้รับสินค้า ", 0, 0, 'L');
     $this->Cell(60, 12, $Employee, 0, 1, 'L');
     $this->Cell(200, 12,  "", 0, 0, 'L');
-    $this->SetFont('thsarabun', '', 16);
-    $this->Cell(120, 12,  "(. . . . . . . . . . . . . . . . . . . . . . . . . . )", 0, 1, 'L');
+  
     
   }
 }
@@ -112,6 +111,7 @@ $Sum=0;
   $query = "SELECT
               buy_rice.DocNo,
               buy_rice_detail.kilo,
+              item_unit.UnitName,
               buy_rice_detail.Sumtotal,
               buy_rice_detail.moisture,
               TIME(buy_rice.Modify_Date) AS timee,
@@ -132,6 +132,7 @@ $Sum=0;
               INNER JOIN item ON buy_rice_detail.item_code = item.item_code
               INNER JOIN employee ON buy_rice.Employee_ID = employee.ID
               INNER JOIN grade_price_rice ON buy_rice_detail.item_code = grade_price_rice.item_code
+              INNER JOIN item_unit ON buy_rice_detail.UnitCode = item_unit.UnitCode
               WHERE buy_rice.DocNo='$DocNo'
               ";
 
@@ -185,6 +186,7 @@ $html = '<table cellspacing="0" cellpadding="2" border="0" >
         <th  width="20 %" align="center">ลำดับ</th>
         <th  width="20 %" align="center">รายการ</th>
         <th  width="20 %" align="center">จำนวน</th>
+        <th  width="20 %" align="center">หน่วยนับ</th>
         <th  width="40 %" align="center"></th>
         </tr>
         ';
@@ -192,7 +194,8 @@ $html .= '
         <tr style="font-size:18px;font-weight:">
         <td  width="20 %" align="center">1.</td>
         <td  width="20 %" align="center">'.$Result['item_name'].'</td>
-        <td  width="20 %" align="center">'.number_format($Result['kilo'],2).' กก.</td>
+        <td  width="20 %" align="center">'.number_format($Result['kilo'],2).'</td>
+        <td  width="20 %" align="center">'.$Result['UnitName'].' </td>
         </tr></table>
 ';
 
