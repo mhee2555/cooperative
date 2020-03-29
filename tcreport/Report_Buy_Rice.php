@@ -202,9 +202,9 @@ $pdf->Cell(25, 12,  number_format($Result['Sumtotal'],2), 0, 0, 'R');
 $pdf->Cell(10, 12,  "บาท", 0, 1, 'L');
 
 $pdf->SetFont('thsarabun', 'b', 16);
-$pdf->Cell(30, 12,  "น้ำหนักคงเหลือ : ", 0, 0, 'L');
+$pdf->Cell(35, 12,  "น้ำหนักข้าวเปลือก : ", 0, 0, 'L');
 $pdf->SetFont('thsarabun', '', 16);
-$pdf->Cell(115, 12,  number_format($Sum_weight,2) ." กก.", 0, 0, 'L');
+$pdf->Cell(115, 12,  number_format($Result['kilo'],2)." กก.", 0, 0, 'L');
 
 
 $pdf->SetFont('thsarabun', 'b', 16);

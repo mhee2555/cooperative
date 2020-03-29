@@ -47,7 +47,9 @@ $Permission = $_SESSION['Permission'];
             });
         });
         // 
-
+        $("#report_rice").attr('disabled' , true );
+        $("#report_rice2").attr('disabled' , true );
+        
         $("#v-pills-all-tab").click(function(){
             // location.reload();
             $( "#TableDetail tbody" ).empty();
@@ -406,7 +408,7 @@ $Permission = $_SESSION['Permission'];
        
     }
     
-    function report_rice()
+    function report_rice(sel)
     {
  
         var DocNo = $("#DocNo").val();
@@ -414,8 +416,14 @@ $Permission = $_SESSION['Permission'];
         var docdate = $("#docdate").val();
         var Customer = $("#Customer").val();
         
-        url = "../tcreport/Report_Buy_Rice.php?eDate=" + docdate +"&DocNo=" + DocNo+"&Employee=" + Employee+"&Customer=" + Customer;
-        window.open(url);
+        if(sel==1){
+            url = "../tcreport/Report_Buy_Rice.php?eDate=" + docdate +"&DocNo=" + DocNo+"&Employee=" + Employee+"&Customer=" + Customer;
+            window.open(url);
+        }else{
+            url = "../tcreport/Report_stock_rc.php?eDate=" + docdate +"&DocNo=" + DocNo+"&Employee=" + Employee+"&Customer=" + Customer;
+            window.open(url);
+        }
+       
     }
 //-----------------------------------------------------------------------------------------
     function senddata(data)
@@ -647,7 +655,8 @@ $Permission = $_SESSION['Permission'];
                             $("#A").attr('disabled' , true );
                             $("#S").attr('disabled' , true );
                             $("#CB").attr('disabled' , true );
-                            $("#P").attr('disabled' , true );
+                            $("#report_rice").attr('disabled' , true );
+                            $("#report_rice2").attr('disabled' , true );
                             $("#D").attr('disabled' , true );
 
                             // removeclass
@@ -666,7 +675,8 @@ $Permission = $_SESSION['Permission'];
                             $("#A").attr('disabled' , false );
                             $("#S").attr('disabled' , false );
                             $("#CB").attr('disabled' , false );
-                            $("#P").attr('disabled' , false );
+                            $("#report_rice").attr('disabled' , false );
+                            $("#report_rice2").attr('disabled' , false );
                             $("#D").attr('disabled' , false );
 
                             // addclass
@@ -960,9 +970,15 @@ $Permission = $_SESSION['Permission'];
                             </div>
 
                             <div class=" ml-5 boxshadowx" id="HP">
-                            <button type="button" class="btn "  id="report_rice" onclick="report_rice()">
+                            <button type="button" class="btn "  id="report_rice" onclick="report_rice(1)">
                                     <i class="icon-print orange lighten-2 avatar-md circle avatar-letter"></i>
                                     <div class="pt-1">พิมพ์รายงาน</div>
+                            </button>
+                            </div>
+                            <div class=" ml-5 boxshadowx" id="HP">
+                            <button type="button" class="btn "  id="report_rice2" onclick="report_rice(2)">
+                                    <i class="icon-printer orange lighten-2 avatar-md circle avatar-letter"></i>
+                                    <div class="pt-1">พิมพ์ใบสต็อก</div>
                             </button>
                             </div>
 

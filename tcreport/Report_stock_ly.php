@@ -45,12 +45,23 @@ class MYPDF extends TCPDF
 
       $this->SetFont('thsarabun', 'b', 22);
       $this->Cell(0, 10,  "สหกรณ์การเกษรสันป่าตอง จำกัด", 0, 1, 'C');
-      $this->SetFont('thsarabun', 'b', 18);
-      $this->Cell(0, 10,"ที่ตั้ง เลขที่ 238 ม.10 ต.ยุหว่า อ.สันป่าตอง จ.เชียงใหม่ 50120 โทร.053-106088", 0, 1, 'C');
       $this->SetFont('thsarabun', 'b', 22);
-      $this->Cell(0, 10,"ใบสำคัญซื้อสินค้าลำใย", 0, 1, 'C');
+      $this->Cell(0, 10,"ใบ สต๊อกสินค้า", 0, 1, 'C');
       $this->Ln(100);
 
+    }else{
+        $printdate = date('d')." ".$datetime->getTHmonth(date('F'))." พ.ศ. ".$datetime->getTHyear(date('Y'));
+
+      $this->Ln(5);
+      $this->SetFont('thsarabun', '', 12);
+      // Title
+      $this->Cell(0, 10,  "วันที่พิมพ์รายงาน " . $printdate, 0, 1, 'R');
+
+      $this->SetFont('thsarabun', 'b', 22);
+      $this->Cell(0, 10,  "สหกรณ์การเกษรสันป่าตอง จำกัด", 0, 1, 'C');
+      $this->SetFont('thsarabun', 'b', 22);
+      $this->Cell(0, 10,"ใบ สต๊อกสินค้า", 0, 1, 'C');
+      $this->Ln(100);
     }
   }
   // Page footer
@@ -66,7 +77,7 @@ class MYPDF extends TCPDF
     $this->Cell(60, 12, $Employee, 0, 1, 'L');
     $this->Cell(200, 12,  "", 0, 0, 'L');
     $this->SetFont('thsarabun', '', 16);
-    $this->Cell(120, 12,  "(. . . . . . . . . . . . . . . . . . . . . . . . . . )", 0, 1, 'L');
+   
     
   }
 }
@@ -108,11 +119,12 @@ $DocNo = $_GET['DocNo'];
 // --------------------------------------------------------
 // set font
 // add a page
-$pdf->AddPage('L', 'A4');
+
 
   $query = "SELECT
             buy_longan.DocNo,
             buy_longan.DocDate,
+            TIME(buy_longan.Modify_Date) AS timee,
             buy_longan.Total,
             users.FName,
             users.ID
@@ -132,42 +144,7 @@ $pdf->AddPage('L', 'A4');
 
 
 
-$pdf->Ln(35);
-$pdf->SetFont('thsarabun', 'b', 16);
-$pdf->Cell(25, 12,  "เลขที่เอกสาร : ", 0, 0, 'L');
-$pdf->SetFont('thsarabun', '', 16);
-$pdf->Cell(160, 12,$Result['DocNo'], 0, 0, 'L');
 
-$pdf->SetFont('thsarabun', 'b', 16);
-$pdf->Cell(15, 12,  "วันที่ : ", 0, 0, 'L');
-$pdf->SetFont('thsarabun', '', 16);
-$pdf->Cell(120, 12,$Date, 0, 1, 'L');
-
-$pdf->SetFont('thsarabun', 'b', 16);
-$pdf->Cell(25, 12,  "ผู้ขาย : ", 0, 0, 'L');
-$pdf->SetFont('thsarabun', '', 16);
-$pdf->Cell(160, 12,  $Result['FName'], 0, 0, 'L');
-
-$pdf->SetFont('thsarabun', 'b', 16);
-$pdf->Cell(35, 12,  "เลขทะเบียนสมาชิก : ", 0, 0, 'L');
-$pdf->SetFont('thsarabun', '', 16);
-$pdf->Cell(120, 12,  $Result['ID'], 0, 1, 'L');
-
-$pdf->SetFont('thsarabun', 'b', 16);
-$pdf->Cell(25, 12,  "ชนิดสินค้า : ", 0, 0, 'L');
-$pdf->SetFont('thsarabun', '', 16);
-$pdf->Cell(120, 12, "ลำใย", 0, 1, 'L');
-$pdf->Cell(0,0,'','T');  
-$pdf->Ln(5);
-
-        $html = '<table cellspacing="0" cellpadding="2" border="0" >
-        <tr style="font-size:18px;font-weight: bold;background-color: #a5a5a5;">
-        <th  width="20 %" align="center">เกรด</th>
-        <th  width="20 %" align="center">จำนวน</th>
-        <th  width="20 %" align="center">ราคาต่อหน่วย</th>
-        <th  width="20 %" align="center">ราคารวม</th>
-        </tr>
-        ';
 
         $query_detail = "SELECT
                         item.item_name,
@@ -195,60 +172,78 @@ $pdf->Ln(5);
             }else if($Result2['item_code']==5){
                 $grade="C";
             }
-  $html .= '
-            <tr style="font-size:18px;font-weight:">
-            <td  width="20 %" align="center">'.$grade.'</td>
-            <td  width="20 %" align="center">'.number_format($Result2['kilo'],2).' กก.</td>
-            <td  width="20 %" align="center">'.number_format($Result2['Grade'],2).'</td>
-            <td  width="20 %" align="center">'.number_format($Result2['total'],2).'</td>
-            </tr>
+            $pdf->AddPage('L', 'A4');
+            $pdf->Ln(35);
+            $pdf->SetFont('thsarabun', 'b', 16);
+            $pdf->Cell(25, 12,  "เลขที่เอกสาร : ", 0, 0, 'L');
+            $pdf->SetFont('thsarabun', '', 16);
+            $pdf->Cell(120, 12,$Result['DocNo'], 0, 0, 'L');
+            
+            $pdf->SetFont('thsarabun', 'b', 16);
+            $pdf->Cell(25, 12,  "วันที่รับเข้า : ", 0, 0, 'L');
+            $pdf->SetFont('thsarabun', '', 16);
+            $pdf->Cell(40, 12,$Date, 0, 0, 'L');
+            $pdf->SetFont('thsarabun', 'b', 16);
+            $pdf->Cell(15, 12,  "เวลา : ", 0, 0, 'L');
+            $pdf->SetFont('thsarabun', '', 16);
+            $pdf->Cell(40, 12,$Result['timee'], 0, 1, 'L');
+            
+            $pdf->SetFont('thsarabun', 'b', 16);
+            $pdf->Cell(25, 12,  "ผู้ขาย : ", 0, 0, 'L');
+            $pdf->SetFont('thsarabun', '', 16);
+            $pdf->Cell(120, 12,  $Result['FName'], 0, 0, 'L');
+            
+            $pdf->SetFont('thsarabun', 'b', 16);
+            $pdf->Cell(35, 12,  "เลขทะเบียนสมาชิก : ", 0, 0, 'L');
+            $pdf->SetFont('thsarabun', '', 16);
+            $pdf->Cell(120, 12,  $Result['ID'], 0, 1, 'L');
+            
+            $pdf->SetFont('thsarabun', 'b', 16);
+            $pdf->Cell(25, 12,  "ชนิดสินค้า : ", 0, 0, 'L');
+            $pdf->SetFont('thsarabun', '', 16);
+            $pdf->Cell(120, 12, "ลำใย", 0, 1, 'L');
+            $pdf->Ln(5);
+            $pdf->Cell(0,0,'','T');  
+            $pdf->Ln(5);
+
+            $html = '<table cellspacing="0" cellpadding="2" border="0" >
+                    <tr style="font-size:18px;font-weight: bold;background-color: #a5a5a5;">
+                    <th  width="20 %" align="center">เกรด</th>
+                    <th  width="20 %" align="center">จำนวน</th>
+                    <th  width="60 %" align="center"></th>
+                    </tr>
+                    ';
+            $html .= '
+                    <tr style="font-size:18px;font-weight:">
+                    <td  width="20 %" align="center">'.$grade.'</td>
+                    <td  width="20 %" align="center">'.number_format($Result2['kilo'],2).' กก.</td>
+                    </tr></table>
             ';
-// $pdf->SetFont('thsarabun', 'b', 16);
-// $pdf->Cell(25, 12,  "เกรด : ", 0, 0, 'L');
-// $pdf->SetFont('thsarabun', '', 16);
-// $pdf->Cell(20, 12,  $grade, 0, 0, 'L');
+    
+            // $pdf->SetFont('thsarabun', 'b', 16);
+            // $pdf->Cell(25, 12,  "เกรด : ", 0, 1, 'L');
+            // $pdf->SetFont('thsarabun', '', 16);
+            // $pdf->Cell(20, 12,  $grade, 0, 0, 'L');
 
-// $pdf->SetFont('thsarabun', 'b', 16);
-// $pdf->Cell(25, 12,  "จำนวน : ", 0, 0, 'L');
-// $pdf->SetFont('thsarabun', '', 16);
-// $pdf->Cell(75, 12,  number_format($Result2['kilo'],2) . " กก.", 0, 0, 'L');
-
-// $pdf->SetFont('thsarabun', 'b', 16);
-// $pdf->Cell(25, 12,  "ราคาต่อหน่วย : ", 0, 0, 'L');
-// $pdf->SetFont('thsarabun', '', 16);
-// $pdf->Cell(25, 12,  number_format($Result2['Grade'],2), 0, 0, 'R');
-// $pdf->Cell(10, 12,  "บาท", 0, 0, 'L');
-
-// $pdf->SetFont('thsarabun', 'b', 16);
-// $pdf->Cell(25, 12,  "ราคารวม :", 0, 0, 'L');
-// $pdf->SetFont('thsarabun', '', 16);
-// $pdf->Cell(25, 12,  number_format($Result2['total'],2), 0, 0, 'R');
-// $pdf->Cell(10, 12,  "บาท", 0, 1, 'L');
-
+            // $pdf->SetFont('thsarabun', 'b', 16);
+            // $pdf->Cell(25, 12,  "จำนวน : ", 0, 0, 'L');
+            // $pdf->SetFont('thsarabun', '', 16);
+            // $pdf->Cell(75, 12,  number_format($Result2['kilo'],2) . " กก.", 0, 1, 'L');
+            $pdf->writeHTML($html, true, false, false, false, '');
+        $pdf->Cell(0,0,'','T');  
+        $pdf->Ln();
         }
-
-   $html .= '</table>';
-
-$pdf->SetX(40);   
-$pdf->writeHTML($html, true, false, false, false, '');
-$pdf->Cell(0,0,'','T');
-$pdf->Ln();  
+       
+      
 $pdf->Cell(25, 12,  "", 0, 0, 'L');
 $pdf->Cell(25, 12,  "", 0, 0, 'L');
 $pdf->Cell(10, 12,  "", 0, 0, 'L');
 $pdf->Cell(50, 12,  "", 0, 0, 'L');
 $pdf->Cell(95, 12,  "", 0, 0, 'L');
 
-$pdf->SetFont('thsarabun', 'b', 16);
-$pdf->Cell(25, 5,  "คิดเป็นเงิน : ", 0, 0, 'L');
-$pdf->SetFont('thsarabun', '', 16);
-$pdf->Cell(25, 5, number_format($Result['Total'],2), 0, 0, 'R');
-$pdf->Cell(10, 5,  "บาท", 0, 1, 'L');
 
 
-$textTotal =baht_text( $Result['Total'] );
-$pdf->Cell(145, 5,  "", 0, 0, 'L');
-$pdf->Cell(120, 5,  "(".$textTotal.")", 0, 1, 'R');
+
 // ---------------------------------------------------------
 
 
