@@ -187,7 +187,7 @@ $html = '<table cellspacing="0" cellpadding="2" border="0" >
         <th  width="20 %" align="center">รายการ</th>
         <th  width="20 %" align="center">จำนวน</th>
         <th  width="20 %" align="center">หน่วยนับ</th>
-        <th  width="40 %" align="center"></th>
+        <th  width="20 %" align="center"></th>
         </tr>
         ';
 $html .= '

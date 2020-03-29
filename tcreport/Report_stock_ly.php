@@ -213,7 +213,7 @@ $DocNo = $_GET['DocNo'];
                     <th  width="20 %" align="center">เกรด</th>
                     <th  width="20 %" align="center">จำนวน</th>
                     <th  width="20 %" align="center">หน่วยนับ</th>
-                    <th  width="60 %" align="center"></th>
+                    <th  width="40 %" align="center"></th>
                     </tr>
                     ';
             $html .= '
