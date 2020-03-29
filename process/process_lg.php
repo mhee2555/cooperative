@@ -466,49 +466,49 @@ function Successprocess($conn, $DATA)
     // INSERT STOCK
     foreach ($ItemCode as $key => $value)
     {
-      $SELECT_COUNT = "SELECT COUNT(*) AS cnt FROM stock_package WHERE item_code = '$value' AND PackgeCode = '$Unit[$key]' ";
-      $meQuery = mysqli_query($conn, $SELECT_COUNT);
-      $Result = mysqli_fetch_assoc($meQuery); 
-      $cnt = $Result['cnt'];
+      // $SELECT_COUNT = "SELECT COUNT(*) AS cnt FROM stock_package WHERE item_code = '$value' AND PackgeCode = '$Unit[$key]' ";
+      // $meQuery = mysqli_query($conn, $SELECT_COUNT);
+      // $Result = mysqli_fetch_assoc($meQuery); 
+      // $cnt = $Result['cnt'];
 
-      if($cnt >= 1)
-      {
-        $UPDATE_STOCK = "UPDATE 
-                            stock_package
-                        SET  
-                            item_code = '$value',
-                            item_qty = ( item_qty + '$Kilo[$key]' ),
-                            item_ccqty = ( item_ccqty + '$Kilo[$key]' ),
-                            PackgeCode = '$Unit[$key]',
-                            Date_start = NOW(),
-                            Date_exp = NOW() + INTERVAL 1 DAY 
-                        WHERE item_code = '$value' ";  
-                    mysqli_query($conn, $UPDATE_STOCK);
+      // if($cnt >= 1)
+      // {
+      //   $UPDATE_STOCK = "UPDATE 
+      //                       stock_package
+      //                   SET  
+      //                       item_code = '$value',
+      //                       item_qty = ( item_qty + '$Kilo[$key]' ),
+      //                       item_ccqty = ( item_ccqty + '$Kilo[$key]' ),
+      //                       PackgeCode = '$Unit[$key]',
+      //                       Date_start = NOW(),
+      //                       Date_exp = NOW() + INTERVAL 1 DAY 
+      //                   WHERE item_code = '$value' ";  
+      //               mysqli_query($conn, $UPDATE_STOCK);
                     
-          // ========================================================================================
-                    $selectunit = "SELECT
-                                      packge_unit.Qtyperunit 
-                                    FROM
-                                      packge_unit 
-                                    WHERE
-                                      PackgeCode = '$Unit[$key]' ";
-                    $meQuery = mysqli_query($conn, $selectunit);
-                    $Result = mysqli_fetch_assoc($meQuery);
-                    $Qtyperunit = $Result['Qtyperunit'];
-                    $total_gram = ($Kilo[$key] * $Qtyperunit) / 1000 ;
+      //     // ========================================================================================
+      //               $selectunit = "SELECT
+      //                                 packge_unit.Qtyperunit 
+      //                               FROM
+      //                                 packge_unit 
+      //                               WHERE
+      //                                 PackgeCode = '$Unit[$key]' ";
+      //               $meQuery = mysqli_query($conn, $selectunit);
+      //               $Result = mysqli_fetch_assoc($meQuery);
+      //               $Qtyperunit = $Result['Qtyperunit'];
+      //               $total_gram = ($Kilo[$key] * $Qtyperunit) / 1000 ;
       
-                    $UPDATE_STOCKx = "UPDATE 
-                                        stock_process
-                                    SET  
-                                        item_ccqty = ( item_ccqty - '$total_gram' )
-                                    WHERE stock_code = '$stock_codex[$key]' ";  
-                                mysqli_query($conn, $UPDATE_STOCKx);
+      //               $UPDATE_STOCKx = "UPDATE 
+      //                                   stock_process
+      //                               SET  
+      //                                   item_ccqty = ( item_ccqty - '$total_gram' )
+      //                               WHERE stock_code = '$stock_codex[$key]' ";  
+      //                           mysqli_query($conn, $UPDATE_STOCKx);
 
-           // ========================================================================================
+      //      // ========================================================================================
                    
-      }
-      else
-      {
+      // }
+      // else
+      // {
         $INSERT_STOCK = "INSERT INTO 
                           stock_package
                          SET  
@@ -516,6 +516,7 @@ function Successprocess($conn, $DATA)
                           item_qty = '$Kilo[$key]',
                           item_ccqty = '$Kilo[$key]',
                           PackgeCode = '$Unit[$key]',
+                          DocNo = '$DocNo',
                           Date_start = NOW(),
                           Date_exp = NOW() + INTERVAL 1 DAY ";  
                   mysqli_query($conn, $INSERT_STOCK);
@@ -541,7 +542,7 @@ function Successprocess($conn, $DATA)
 
 // ========================================================================================
 
-      }
+      // }
     }
   }
   else
