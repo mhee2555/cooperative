@@ -26,7 +26,7 @@ $Permission = $_SESSION['Permission'];
     <link href="../datepicker/dist/css/datepicker.min.css" rel="stylesheet" type="text/css">
     <script src="../datepicker/dist/js/datepicker.th.js"></script>
     <script src="../datepicker/dist/js/i18n/datepicker.en.js"></script>
-    <title>บันทึกการสั่งบรรจุภัณฑ์</title>
+    <title>บันทึกการขายลำไย</title>
     <!-- CSS -->
     <link rel="stylesheet" href="assets/css/app.css">
 
@@ -53,7 +53,9 @@ $Permission = $_SESSION['Permission'];
             $("#DocNo").val("");
             $("#docdate").val("");
             $("#ModifyDate").val("");
+            $("#Customer").val("1");
             $("#Employee").val("");
+            $("#Total").val("");
          });
 
          $("#v-pills-buyers-tab").click(function()
@@ -64,6 +66,7 @@ $Permission = $_SESSION['Permission'];
     // Function 
     function Createdocument()
     {
+        var Customer = $("#Customer").val();
         var userid = '<?php echo $Userid; ?>';
         swal({
           title: "",
@@ -81,7 +84,8 @@ $Permission = $_SESSION['Permission'];
             if (result.value) {
             var data = {
               'STATUS'    : 'CreateDocument',
-              'userid'	: userid
+              'userid'	: userid,
+              'Customer'	: Customer
             };
             senddata(JSON.stringify(data));
           } else if (result.dismiss === 'cancel') {
@@ -110,14 +114,26 @@ $Permission = $_SESSION['Permission'];
         };
         senddata(JSON.stringify(data));
     }
+    function Sumitem(grade , rowid)
+    {
+        var Kilo =  parseFloat($("#Kilo_"+rowid).val());
+        var SUM =parseFloat( Kilo * grade );
+        if(isNaN(SUM) )
+        {
+            SUM = 0;
+        }
+        $("#Total_"+rowid).val(SUM);
+
+    }
     function Importdata()
     {
         var DocNo = $("#DocNo").val();
+        /* declare an checkbox array */
         var iArray = [];
         var kiloArray = [];
+        var totalArray = [];
         var item_codeArray = [];
         var unitArray = [];
-        var stock_codeArray = [];
         
         $(".checkitem:checked").each(function() 
         {
@@ -128,28 +144,24 @@ $Permission = $_SESSION['Permission'];
         {
             item_codeArray.push( $("#item_code_"+iArray[j]).val() );
             kiloArray.push( $("#Kilo_"+iArray[j]).val() );
+            totalArray.push( $("#Total_"+iArray[j]).val() );
             unitArray.push( $("#iUnit_"+iArray[j]).val() );
-            stock_codeArray.push( $("#stock_code_"+iArray[j]).val() );
         }
         // =======================================================
         var item_code = item_codeArray.join(',') ;
         var kilo = kiloArray.join(',') ;
+        var total = totalArray.join(',') ;
         var xunit = unitArray.join(',') ;
-        var stock_code = stock_codeArray.join(',') ;
         // =======================================================
         $( "#TableDetail tbody" ).empty();
-
-
-
-
         var data = 
         {
           'STATUS'  	: 'Importdata',
           'item_code'   : item_code,
           'kilo'		: kilo,
+          'total'	  	: total,
           'DocNo'		: DocNo ,
-          'xunit'		: xunit,
-          'stock_code'		: stock_code
+          'xunit'		: xunit
         };
         $('#Additem').modal('toggle');
         senddata(JSON.stringify(data));
@@ -331,60 +343,23 @@ $Permission = $_SESSION['Permission'];
           })
         
     }
-    function check_unit(i)
+    function report_Lg()
     {
-        var unit = $("#iUnit_"+i).val();
-
-        var data = {
-            'STATUS'  : 'check_unit',
-                'i'	: i,
-                'unit'	: unit
-        };
-        senddata(JSON.stringify(data));
+        var DocNo = $("#DocNo").val();
+        var Employee = $("#Employee").val();
+        var docdate = $("#docdate").val();
+        var Customer = $("#Customer").val();
         
-
+        url = "../tcreport/Report_Buy_Longan.php?eDate=" + docdate +"&DocNo=" + DocNo+"&Employee=" + Employee+"&Customer=" + Customer;
+        window.open(url);
     }
-    function Sumitem(i)
-    {
-        var qtyperunit = parseFloat($("#qtyperunit_"+i).val());
-        var qty = parseFloat($("#Kilo_"+i).val());
-        var total_stock_nan = parseFloat($("#total_stock_nan_"+i).val());
-
-        // ทุกครั้งที่พิมให้ reset
-        parseFloat($("#total_stock_"+i).val(total_stock_nan));
-        parseFloat($("#gram_"+i).val('0.00'));
-
-        var total_stock = parseFloat($("#total_stock_"+i).val());
-        var sumqty = parseFloat((qty * qtyperunit));
-        var sumqty_garm = parseFloat((sumqty / 1000));
-
-  
-        if(isNaN(sumqty_garm) )
-        {
-            sumqty_garm = '0.00';
-        }
-
-
-        var sumqty_total =  total_stock - sumqty_garm  ;
-
-
-        if(isNaN(sumqty_total) )
-        {
-            sumqty_total = total_stock_nan;
-        }
-        // จำนวนก่อน ลบ
-        parseFloat($("#gram_"+i).val(sumqty_garm));
-        
-        // จำนวนทั้งหมด ลบ กรัม
-        parseFloat($("#total_stock_"+i).val(sumqty_total));
-
-    }
+    
 //-----------------------------------------------------------------------------------------
     function senddata(data)
     {
          var form_data = new FormData();
          form_data.append("DATA",data);
-         var URL = '../process/packing_lg.php';
+         var URL = '../process/sale_lg.php';
          $.ajax
          ({
             url: URL,
@@ -435,79 +410,84 @@ $Permission = $_SESSION['Permission'];
                         $( "#Tableitem tbody" ).empty();
                               for (var i = 0; i < temp['Row']; i++) 
                               {
-                                var chkunit ="<select  class='form-control' style='width: 120px;'  id='iUnit_"+i+"' onchange='check_unit("+i+")'>";
+                                var chkunit ="<select  class='form-control'  id='iUnit_"+i+"'>";
                                     $.each(temp['Unit'], function(key, val)
                                     {
-                                        if(temp[i]['PackgeCode']==val.PackgeCode)
+                                        if(temp[i]['UnitCode']==val.UnitCode)
                                         {
-                                            chkunit += '<option selected value=" '+val.PackgeCode+' " >'+val.PackgeName+'</option>';
+                                            chkunit += '<option selected value=" '+val.UnitCode+' ">'+val.UnitName+'</option>';
                                         }
                                         else
                                         {
-                                            chkunit += '<option value="' +val.PackgeCode+' ">'+val.PackgeName+'</option>';
+                                            chkunit += '<option value="' +val.UnitCode+' ">'+val.UnitName+'</option>';
                                         }
                                     });
                                     chkunit += "</select>";
 
-                                  var chkinput = "<div class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input checkSingle checkitem'  value='"+i+"'  id= 'item_id_"+i+"' required><label class='custom-control-label ' for='item_id_"+i+"' style='margin-top: 15px;'></label></div> <input type='hidden' id='item_code_"+i+"' value='"+temp[i]['item_code']+"'> <input type='hidden' id='stock_code_"+i+"' value='"+temp[i]['stock_code']+"'>";
-                                  var Kilo = "<input type='text' id='Kilo_"+i+"' class='form-control ' autocomplete='off' style='text-align:right'  placeholder='0.00'  onkeyup='Sumitem(\""+i+"\" ) ' >  ";
-                                  var qtyperunit = "<input disabled type='text' id='qtyperunit_"+i+"' class='form-control '  value='"+temp[0]['Qtyperunit']+"'   autocomplete='off' style='text-align:right'  placeholder='0.00' >  ";
-                                  var total_stock = "<input disabled type='text' id='total_stock_"+i+"' class='form-control '  value='"+temp[i]['Grade']+"'   autocomplete='off' style='text-align:right'  placeholder='0.00' >  ";
-                                  var total_stock_nan = "<input hidden type='text' id='total_stock_nan_"+i+"' class='form-control '  value='"+temp[i]['Grade']+"'   autocomplete='off' style='text-align:right'  placeholder='0.00' >  ";
-                                  var gram = "<input disabled type='text' id='gram_"+i+"' class='form-control '     autocomplete='off' style='text-align:right'  placeholder='0.00' >  ";
+                                  var chkinput = "<div class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input checkSingle checkitem'  value='"+i+"'  id= ' item_id_"+i+" ' required><label class='custom-control-label ' for=' item_id_"+i+" ' style='margin-top: 15px;'></label></div> <input type='hidden' id='item_code_"+i+"' value='"+temp[i]['item_code']+"'>";
+                                  var Kilo = "<input type='text' id='Kilo_"+i+"' class='form-control ' autocomplete='off' style='text-align:right'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['Grade']+"\" , \""+i+"\" ) '>  ";
+                                  var Total = "<input type='text' id='Total_"+i+"' class='form-control ' autocomplete='off' style='text-align:right'  value='0.00' disabled>  ";
+
 
                                  StrTR = "<tr>"+
                                                 "<td >"+chkinput+"</td>"+
-                                                "<td style=' width: 15%; '>"+temp[i]['item_name']+"</td>"+
-                                                "<td  >"+total_stock+"</td>"+
-                                                "<td  >"+gram+"</td>"+
-                                                "<td style='width: 13%;'>"+temp[i]['DocNo']+"</td>"+
-                                                "<td  hidden>"+total_stock_nan+"</td>"+
-                                                "<td >"+Kilo+"</td>"+
-                                                "<td >"+qtyperunit+"</td>"+
-                                                "<td >"+chkunit+"</td>"+
+                                                "<td style=' width: 20%; '>"+temp[i]['item_name']+"</td>"+
+                                                "<td style=' width: 25%; ' >"+temp[i]['Grade']+"</td>"+
+                                                "<td style=' width: 120px; '>"+Kilo+"</td>"+
+                                                "<td style=' width: 130px; '>"+chkunit+"</td>"+
+                                                "<td >"+Total+"</td>"+
                                                 "</tr>";
    
                                    $('#Tableitem tbody').append( StrTR );
                               }
                     }
-                    else if(temp["form"]=='check_unit')
-                    {
-                        $("#qtyperunit_"+temp['i']).val(temp['Qtyperunit']);
-
-                        Sumitem(temp['i']);
-                    }
                     else if(temp["form"]=='ShowDetail')
                     {
                         $( "#TableDetail tbody" ).empty();
+                        // total
+                        $("#Total").val(temp['Total'].toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                        // 
                               for (var i = 0; i < temp['Row']; i++) 
                               {
-                                var chkunit ="<select  class='form-control'  id='detailUnit_"+i+"' disabled style='width: 50%;'>";
+                                var chkunit ="<select  class='form-control'  id='detailUnit_"+i+"' disabled>";
                                     $.each(temp['Unit'], function(key, val)
                                     {
-                                        if(temp[i]['UnitCode']==val.PackgeCode)
+                                        if(temp[i]['UnitCode']==val.UnitCode)
                                         {
-                                            chkunit += '<option selected value=" '+val.PackgeCode+' " >'+val.PackgeName+'</option>';
+                                            chkunit += '<option selected value=" '+val.UnitCode+' ">'+val.UnitName+'</option>';
                                         }
                                         else
                                         {
-                                            chkunit += '<option value="' +val.PackgeCode+' ">'+val.PackgeName+'</option>';
+                                            chkunit += '<option value="' +val.UnitCode+' ">'+val.UnitName+'</option>';
                                         }
                                     });
                                     chkunit += "</select>";
 
                                   var chkinput = "<div class='custom-control custom-radio'><input type='radio' class='custom-control-input checkSingle checkdetail' name='detailrow'  value='"+temp[i]['item_code']+"'  id= ' Detail_id_"+i+" ' required><label class='custom-control-label ' for=' Detail_id_"+i+" ' style='margin-top: 15px;'></label></div> ";
                                   var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' style='text-align:right' autocomplete='off'  name='KiloArray'  placeholder='0.00' value='"+temp[i]['kilo']+"' disabled>  ";
+                                  var Total = "<input type='text' id='Detail_Total_"+i+"' class='form-control ' style='text-align:right' autocomplete='off'  value='"+temp[i]['total']+"' disabled >  ";
 
                                    StrTR =   "<tr>"+
-                                                "<td style='width:10%'>"+chkinput+"</td>"+
-                                                "<td style='width:40%'>"+temp[i]['item_name']+"</td>"+
-                                                "<td style='width:10%'>"+Kilo+"</td>"+
-                                                "<td style='width:20%'>"+chkunit+"</td>"+
+                                                "<td >"+chkinput+"</td>"+
+                                                "<td style=' width: 20%; '>"+temp[i]['item_name']+"</td>"+
+                                                "<td style=' width: 25%; ' >"+temp[i]['Grade']+"</td>"+
+                                                "<td >"+Kilo+"</td>"+
+                                                "<td >"+chkunit+"</td>"+
+                                                "<td >"+Total+"</td>"+
                                                 "</tr>";
    
                                    $('#TableDetail tbody').append( StrTR );
                               }
+                    }
+                    else if(temp["form"]=='Showuser')
+                    {
+                        $("#Customer").empty();
+
+                        for (var i = 0; i < temp['Row']; i++) 
+                        {
+                            var Str = "<option value="+temp[i]['ID']+">"+temp[i]['FName']+"</option>";
+                            $("#Customer").append(Str);
+                        }
                     }
                     else if(temp["form"]=='ShowSearch')
                     {
@@ -539,6 +519,7 @@ $Permission = $_SESSION['Permission'];
                                                 "<td>"+temp[i]['DocDate']+"</td>"+
                                                 "<td>"+temp[i]['Modify_Date']+"</td>"+
                                                 "<td>"+temp[i]['employee']+"</td>"+
+                                                "<td>"+temp[i]['customer']+"</td>"+
                                                 "<td " +Style+ ">"+Status+"</td>"+
 
                                                 "</tr>";
@@ -548,7 +529,14 @@ $Permission = $_SESSION['Permission'];
                     }
                     else if(temp["form"]=='ShowDocNo')
                     {
+                        // SELECT USER
+                        $("#Customer").empty();
 
+                        for (var i = 0; i < temp['Rowuser']; i++) 
+                        {
+                            var Str = "<option value="+temp[i]['ID']+">"+temp[i]['FName']+"</option>";
+                            $("#Customer").append(Str);
+                        }
                         // 
 
                         // CLEAR DETAIL
@@ -558,6 +546,7 @@ $Permission = $_SESSION['Permission'];
                         $("#DocNo").val(temp[0]['DocNo']);
                         $("#docdate").val(temp[0]['DocDate']);
                         $("#ModifyDate").val(temp[0]['Modify_Date']);
+                        $("#Customer").val(temp[0]['customer']);
                         $("#Employee").val(temp[0]['employee']);
 
                         // DISABLED INPUT
@@ -763,7 +752,7 @@ $Permission = $_SESSION['Permission'];
                 <div class="col">
                     <h4>
                         <i class="icon icon-folder5"></i>
-                        บันทึกการสั่งบรรจุภัณฑ์ลำไย
+                        บันทึกการขายลำไย
                     </h4>
                 </div>
             </div>
@@ -771,7 +760,7 @@ $Permission = $_SESSION['Permission'];
                 <ul class="nav nav-material nav-material-white responsive-tab" id="v-pills-tab" role="tablist">
                     <li>
                         <a class="nav-link active" id="v-pills-all-tab" data-toggle="pill" href="#v-pills-all" role="tab" 
-                        aria-controls="v-pills-all"><i class="icon icon-home2"></i>สั่งบรรจุภัณฑ์ลำไย</a>
+                        aria-controls="v-pills-all"><i class="icon icon-home2"></i>การขายลำไย</a>
                     </li>
                     <li>
                         <a class="nav-link" id="v-pills-buyers-tab" data-toggle="pill" href="#v-pills-buyers" role="tab"
@@ -809,6 +798,20 @@ $Permission = $_SESSION['Permission'];
                     <div class='form-group row  text-black'>
                         <label class=" col-sm-4 form-label  h4" >ผู้บันทึก</label>
                         <input type="text" autocomplete="off"   class=" col-sm-7 form-control " id="Employee"   placeholder="ผู้บันทึก" >
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class='form-group row  text-black'>
+                        <label class=" col-sm-4 form-label  h4" >ลูกค้า</label>
+                        <select  autocomplete="off"   class=" col-sm-7 form-control " id="Customer"   placeholder="ลูกค้า" > </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class='form-group row  text-black'>
+                        <label class=" col-sm-4 form-label h4" >จำนวนเงินทั้งหมด</label>
+                        <input type="text" autocomplete="off"   class=" col-sm-7 form-control " id="Total"  placeholder="จำนวนเงินทั้งหมด" disabled="true">
                     </div>
                 </div>
             </div>
@@ -851,7 +854,7 @@ $Permission = $_SESSION['Permission'];
                             </div>
 
                             <div class=" ml-5 boxshadowx" id="HP">
-                            <button type="button" class="btn "  id="P">
+                            <button type="button" class="btn "  id="P" onclick="report_Lg()">
                                     <i class="icon-print orange lighten-2 avatar-md circle avatar-letter"></i>
                                     <div class="pt-1">พิมพ์รายงาน</div>
                             </button>
@@ -870,8 +873,10 @@ $Permission = $_SESSION['Permission'];
                                         <tr class="no-b">
                                             <th>NO.</th>
                                             <th>ชื่อรายการ</th>
+                                            <th>ราคาต่อหน่วย</th>
                                             <th>ปริมาณ</th>
                                             <th>หน่วยนับ</th>
+                                            <th>ราคารวม</th>
                                         </tr>
                                         </thead>
 
@@ -916,6 +921,7 @@ $Permission = $_SESSION['Permission'];
                                             <th>วันที่เอกสาร</th>
                                             <th>วันที่บันทึก</th>
                                             <th>ผู้บันทึก</th>
+                                            <th>ลูกค้า</th>
                                             <th>สถานะ</th>
                                         </tr>
                                         </thead>
@@ -945,7 +951,7 @@ $Permission = $_SESSION['Permission'];
 <!--------------------------------------- Modal add_customer  ------------------------------------------>
 <div class="modal fade" id="Additem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content" style='width : 140%;'>
+    <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">เพิ่ม รายการ</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -958,12 +964,10 @@ $Permission = $_SESSION['Permission'];
                                         <tr class="no-b">
                                             <th></th>
                                             <th>ชื่อรายการ</th>
-                                            <th>จำนวนทั้งหมด</th>
-                                            <th>กิโลกรัม</th>
-                                            <th>ลอต</th>
+                                            <th>ราคาต่อหน่วย</th>
                                             <th>ปริมาณ</th>
-                                            <th>กรัม</th>
-                                            <th>หน่วยบรรจุภัณฑ์</th>
+                                            <th>หน่วยนับ</th>
+                                            <th>ราคารวม</th>
                                         </tr>
                                         </thead>
 

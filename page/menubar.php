@@ -68,6 +68,10 @@
                     </li>
                     <li><a href="panel-page-dashboard2.html" ><i class="icon icon-folder5"></i>สั่งบรรจุภัณฑ์ข้าว</a>
                     </li>
+                    <li><a href="sale_lg.php" ><i class="icon icon-folder5"></i>บันทึกการขายลำไย</a>
+                    </li>
+                    <li><a href="panel-page-dashboard2.html" ><i class="icon icon-folder5"></i>บันทึกการขายข้าว</a>
+                    </li>
                 </ul>
             </li>
             <!-- ================================= -->
