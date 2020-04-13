@@ -60,6 +60,9 @@ $Permission = $_SESSION['Permission'];
     
     function edit_item()
     {
+
+        
+        var Priceperunit = $('#Priceperunit_edit').val();
         var PackgeCode = $('#PackgeCode_edit').val();
         var Qtyperunit = $('#Qtyperunit_edit').val();
         
@@ -78,7 +81,8 @@ $Permission = $_SESSION['Permission'];
                     {
                     'STATUS': 'edit_item',
                     'PackgeCode':PackgeCode,
-                    'Qtyperunit':Qtyperunit
+                    'Qtyperunit':Qtyperunit,
+                    'Priceperunit':Priceperunit
                     };
                 senddata(JSON.stringify(data));
 
@@ -114,10 +118,11 @@ $Permission = $_SESSION['Permission'];
     }
     function show_add_modal()
     {            
-            var PackgeName_add                = $('#PackgeName_add').val();
-            var Qtyperunit_add              = $('#Qtyperunit_add').val();
+            var Priceperunit_add = $('#Priceperunit_add').val();
+            var PackgeName_add = $('#PackgeName_add').val();
+            var Qtyperunit_add = $('#Qtyperunit_add').val();
 
-            if(PackgeName_add=='' || Qtyperunit_add=='' ){
+            if(PackgeName_add=='' || Qtyperunit_add=='' || Priceperunit_add=='' ){
                 swal({
                           title: '',
                           text: 'กรุณากรอกข้อมูลให้ครบ',
@@ -133,7 +138,8 @@ $Permission = $_SESSION['Permission'];
                     {
                     'STATUS': 'add_item',
                     'PackgeName_add':PackgeName_add,
-                    'Qtyperunit_add':Qtyperunit_add
+                    'Qtyperunit_add':Qtyperunit_add,
+                    'Priceperunit_add':Priceperunit_add
                     };
 
                 $('#add_item').modal('toggle');
@@ -189,7 +195,7 @@ $Permission = $_SESSION['Permission'];
                                                 "<td >"+(i+1)+"</td>"+
                                                 "<td >"+temp[i]['PackgeName']+"</td>"+
                                                 "<td >"+temp[i]['Qtyperunit']+"</td>"+
-                                                "<td ></td>"+
+                                                "<td >"+temp[i]['Priceperunit']+"</td>"+
                                                 "<td ></td>"+
                                                 "<td ></td>"+
                                                 "<td ></td>"+
@@ -204,7 +210,10 @@ $Permission = $_SESSION['Permission'];
                             $('#show_item_edit').modal('toggle');
                             $('#PackgeCode_edit').val(temp['PackgeCode']);
                             $('#PackgeName_edit').val(temp['PackgeName']);
-                            $('#Qtyperunit_edit').val(temp['Qtyperunit']);                    
+                            $('#Qtyperunit_edit').val(temp['Qtyperunit']);          
+                            $('#Priceperunit_edit').val(temp['Priceperunit']);          
+
+                                      
                     }
                     else if( (temp["form"]=='edit_item') )
                     {
@@ -439,6 +448,7 @@ $Permission = $_SESSION['Permission'];
                                             <th>NO.</th>
                                             <th>ชื่อรายการ</th>
                                             <th>ปริมาณต่อยูนิต</th>
+                                            <th>ราคาต่อยูนิต</th>
                                             <th></th>
                                         </tr>
                                         </thead>
@@ -637,7 +647,11 @@ $Permission = $_SESSION['Permission'];
             </div>
             <div class="margin_input">
             <label class="form-label mr-1" style="color:#000000;">ปริมาณต่อยูนิต</label>
-            <input type="text" id="Qtyperunit_edit" class="form-control " placeholder="ราคาต่อหน่วย">
+            <input type="text" id="Qtyperunit_edit" class="form-control " placeholder="ปริมาณต่อยูนิต">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">ราคาต่อยูนิต</label>
+            <input type="text" id="Priceperunit_edit" class="form-control " placeholder="ราคาต่อหน่วย">
             </div>
       </div>
       <div class="modal-footer">
@@ -667,6 +681,10 @@ $Permission = $_SESSION['Permission'];
             <div class="margin_input">
             <label class="form-label mr-1" style="color:#000000;">ปริมาณต่อยูนิต</label>
               <input type="text" id="Qtyperunit_add" class="form-control " placeholder="0.00">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">ราคาต่อยูนิต</label>
+              <input type="text" id="Priceperunit_add" class="form-control " placeholder="0.00">
             </div>
       </div>
       <div class="modal-footer">

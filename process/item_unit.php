@@ -9,7 +9,8 @@ function Showitem($conn, $DATA)
         $Showitem = "SELECT
                       PackgeCode,
                       PackgeName,	
-                      Qtyperunit
+                      Qtyperunit,	
+                      Priceperunit
                     FROM
                       packge_unit ";
 
@@ -18,7 +19,8 @@ function Showitem($conn, $DATA)
       while ($Result = mysqli_fetch_assoc($meQuery)) {
         $return[$count]['PackgeCode']          = $Result['PackgeCode'];
         $return[$count]['PackgeName']          = $Result['PackgeName'];
-        $return[$count]['Qtyperunit']        = $Result['Qtyperunit'];
+        $return[$count]['Qtyperunit']          = $Result['Qtyperunit'];
+        $return[$count]['Priceperunit']        = $Result['Priceperunit'];
         $count++;
       }
       $return['count']  = $count;
@@ -43,7 +45,8 @@ function show_detail_item($conn, $DATA)
     $Showunit = " SELECT
                         packge_unit.PackgeCode,
                         packge_unit.PackgeName,	
-                        packge_unit.Qtyperunit 
+                        packge_unit.Qtyperunit,	
+                        packge_unit.Priceperunit 
                       FROM
                        packge_unit
                       WHERE packge_unit.PackgeCode =  $PackgeCode ";
@@ -52,6 +55,7 @@ function show_detail_item($conn, $DATA)
       $return['PackgeCode']    = $Result['PackgeCode'];
       $return['PackgeName'] = $Result['PackgeName'];
       $return['Qtyperunit'] = $Result['Qtyperunit'];
+      $return['Priceperunit'] = $Result['Priceperunit'];
       $count=1;
       
     if($count>0){
@@ -73,10 +77,11 @@ function edit_item($conn, $DATA)
   {
     $PackgeCode = $DATA["PackgeCode"];
     $Qtyperunit = $DATA["Qtyperunit"];
+    $Priceperunit = $DATA["Priceperunit"];
 
 
 
-    $editunit = " UPDATE packge_unit SET packge_unit.Qtyperunit ='$Qtyperunit'
+    $editunit = " UPDATE packge_unit SET packge_unit.Qtyperunit ='$Qtyperunit' , packge_unit.Priceperunit ='$Priceperunit'
                       WHERE packge_unit.PackgeCode='$PackgeCode' ";
     mysqli_query($conn, $editunit);
 
@@ -105,6 +110,7 @@ function add_item($conn, $DATA)
   {
     $PackgeName_add         = $DATA["PackgeName_add"];
     $Qtyperunit_add           = $DATA["Qtyperunit_add"];
+    $Priceperunit_add           = $DATA["Priceperunit_add"];
 
     // ===================
     $Sql_ID = "SELECT
@@ -128,13 +134,15 @@ function add_item($conn, $DATA)
     $addunit = "INSERT INTO packge_unit (
                                     PackgeCode,
                                     PackgeName,
-                                    Qtyperunit
+                                    Qtyperunit,
+                                    Priceperunit
                                   )
                                   VALUES
                                     (
                                       $ID,
                                       '$PackgeName_add',
-                                      $Qtyperunit_add
+                                      $Qtyperunit_add,
+                                      $Priceperunit_add
                                     ) ";
 
     mysqli_query($conn, $addunit);

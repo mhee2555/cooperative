@@ -101,6 +101,18 @@ $Permission = $_SESSION['Permission'];
         // =======================================================
         var ItemCodeArray = [];
         var KiloArray = [];
+        var UnitArray = [];
+
+
+
+        $('select[name="UnitArray"]').each(function() 
+        {
+          if($(this).val()!="")
+          {
+            UnitArray.push($(this).val());
+          }
+        });
+        var UnitCode = UnitArray.join(',') ;
 
         $('input[name="detailrow"]').each(function() 
         {
@@ -143,7 +155,8 @@ $Permission = $_SESSION['Permission'];
                     'STATUS'    : 'Savebill',
                     'DocNo'     : DocNo ,
                     'ItemCode'  : ItemCode ,
-                    'Kilo'      : Kilo
+                    'Kilo'      : Kilo,
+                    'UnitCode'      : UnitCode
                 };
                 senddata(JSON.stringify(data));
                 $('#v-pills-buyers-tab').tab('show');
@@ -455,7 +468,7 @@ $Permission = $_SESSION['Permission'];
 
                               for (var i = 0; i < temp['Row']; i++) 
                               {
-                                var chkunit ="<select  class='form-control'  id='detailUnit_"+i+"' disabled style='width: 50%;'>";
+                                var chkunit ="<select  class='form-control'  id='detailUnit_"+i+"' disabled style='width: 50%;' name='UnitArray'>";
                                     $.each(temp['Unit'], function(key, val)
                                     {
                                         if(temp[i]['UnitCode']==val.UnitCode)
@@ -795,7 +808,7 @@ $Permission = $_SESSION['Permission'];
             <div class="row">
                 <div class="col-md-6">
                     <div class='form-group row  text-black'>
-                        <label class=" col-sm-4 form-label  h4" >เอกสารขอเบิก</label>
+                        <label class=" col-sm-4 form-label  h4" >เอกสารแปรรูป</label>
                         <input type="text" autocomplete="off"   class=" col-sm-7 form-control " id="RefDocNo"   placeholder="เอกสารขอเบิก" onclick="ShowRefDocNo();">
                     </div>
                 </div>
@@ -936,7 +949,7 @@ $Permission = $_SESSION['Permission'];
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">เอกสารการขอเบิก</h5>
+        <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">เอกสารการแปรรูป</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

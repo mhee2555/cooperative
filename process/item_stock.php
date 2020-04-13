@@ -23,7 +23,9 @@ require '../connect/connect.php';
                     FROM
                       stock_unprocess
                     INNER JOIN item ON stock_unprocess.item_code = item.item_code
+                    INNER JOIN item_unit ON item_unit.UnitCode = stock_unprocess.UnitCode 
                     WHERE DATE(stock_unprocess.Date_start) = '$Search_date'
+                    AND stock_unprocess.UnitCode = '$Search_unit' 
                     ORDER BY item.item_code DESC ";
     }
     else if($Search_type == 'process')
@@ -37,7 +39,9 @@ require '../connect/connect.php';
                   FROM
                   stock_process
                   INNER JOIN item ON stock_process.item_code = item.item_code
+                  INNER JOIN item_unit ON item_unit.UnitCode = stock_process.UnitCode 
                   WHERE DATE(stock_process.Date_start) = '$Search_date'
+                  AND stock_process.UnitCode = '$Search_unit' 
                   ORDER BY item.item_code DESC ";
     }
     else if($Search_type == 'packing')
@@ -48,12 +52,12 @@ require '../connect/connect.php';
                     stock_package.item_ccqty, 
                     TIME(stock_package.Date_start) AS Date_start, 
                     TIME(stock_package.Date_exp) AS Date_exp,
-                    item_unit.UnitName
+                    packge_unit.PackgeName
                   FROM
                   stock_package
                   INNER JOIN item ON stock_package.item_code = item.item_code
-                  INNER JOIN item_unit ON item_unit.UnitCode = stock_package.UnitCode
-                  WHERE stock_package.UnitCode = '$Search_unit' 
+                  INNER JOIN packge_unit ON packge_unit.PackgeCode = stock_package.PackgeCode 
+                  WHERE stock_package.PackgeCode = '$Search_unit' 
                   AND DATE(stock_package.Date_start) = '$Search_date'
                   ORDER BY item.item_code DESC ";
     }
@@ -94,6 +98,8 @@ require '../connect/connect.php';
 
   function Showtype($conn, $DATA)
   {
+    $chk = $DATA["chk"];
+
     $count=0;
     $Showtype = "SELECT 
                   type_item.id,
@@ -110,11 +116,24 @@ require '../connect/connect.php';
       $return['count']  = $count;
 
       $count_unit=0;
-      $Showtype = "SELECT 
-                    item_unit.UnitCode,
-                    item_unit.UnitName 
-                   FROM 
-                   item_unit ";
+
+      if($chk==1)
+      {
+        $Showtype = "SELECT 
+                      packge_unit.PackgeCode AS UnitCode,
+                      packge_unit.PackgeName AS UnitName  
+                    FROM 
+                    packge_unit ";
+      }
+      else
+      {
+        $Showtype = "SELECT 
+                      item_unit.UnitCode,
+                      item_unit.UnitName 
+                    FROM 
+                    item_unit ";
+      }
+  
         $meQuery = mysqli_query($conn, $Showtype);
         while ($Result = mysqli_fetch_assoc($meQuery)) 
         {

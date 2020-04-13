@@ -19,14 +19,27 @@ $Permission = $_SESSION['Permission'];
     <!-- <link href="../dist/css/sweetalert2.css" rel="stylesheet"> -->
     <script src="../dist/js/sweetalert2.min.js"></script>
     <script src="../dist/js/jquery-3.3.1.min.js"></script>
-
-    <title>รายการ</title>
+    <script src="../datepicker/dist/js/datepicker-en.js"></script>
+    <link href="../datepicker/dist/css/datepicker.min.css" rel="stylesheet" type="text/css">
+    <script src="../datepicker/dist/js/datepicker.th.js"></script>
+    <script src="../datepicker/dist/js/i18n/datepicker.en.js"></script>
+    <title>เกณฑ์ราคาลำใย</title>
     <!-- CSS -->
     <link rel="stylesheet" href="assets/css/app.css">
 
     <script type="text/javascript">
-      $(document).ready(function(e){
+      $(document).ready(function(e)
+      {
+        var d = new Date();
+        var month = d.getMonth()+1;
+        var day = d.getDate();
+        var output = d.getFullYear() + '-' +
+            ((''+month).length<2 ? '0' : '') + month + '-' +
+            ((''+day).length<2 ? '0' : '') + day;
+        $("#Search").val(output);
+  
         Showitem();
+        Showitem_edit();
         // ค้นหา
         $("#Search").on("keyup", function() 
         {
@@ -38,6 +51,21 @@ $Permission = $_SESSION['Permission'];
         });
         // 
     });
+
+
+
+    
+    function Showitem_edit()
+    {
+        var Search = $('#Search').val();
+
+        var data = 
+        {
+            'STATUS': 'Showitem_edit',
+            'Search':Search
+        };
+        senddata(JSON.stringify(data));
+    }
 
     function Showitem()
     {
@@ -201,6 +229,27 @@ $Permission = $_SESSION['Permission'];
                                                 "</tr>";
    
                                    $('#Tableitem tbody').append( StrTR );
+                              }
+                    }
+                    else if( (temp["form"]=='Showitem_edit') )
+                    {
+                              $( "#Tableitem_eidt tbody" ).empty();
+                              for (var i = 0; i < temp['count']; i++) 
+                              {
+                                //   var ShowEdit = "<a href='javascript:void(0)'  onclick='showmodal("+temp[i]['ID_Grade']+");'><i class='icon-pencil'></i></a> <a href='javascript:void(0)' onclick='delete_item("+temp[i]['ID_Grade']+");' style='margin-left:5%;'><i class='icon-delete_forever'></i></a>";
+
+                                 StrTR = "<tr>"+
+                                                "<td >"+(i+1)+"</td>"+
+                                                "<td >"+temp[i]['item_name']+"</td>"+
+                                                "<td >"+temp[i]['Grade']+"</td>"+
+                                                "<td ></td>"+
+                                                "<td ></td>"+
+                                                "<td ></td>"+
+                                                "<td ></td>"+
+                                                "<td ></td>"+
+                                                "</tr>";
+   
+                                   $('#Tableitem_eidt tbody').append( StrTR );
                               }
                     }
                     else if( (temp["form"]=='show_detail_item') )
@@ -408,7 +457,7 @@ $Permission = $_SESSION['Permission'];
                 <div class="col">
                     <h4>
                         <i class="icon-package"></i>
-                        รายการ
+                        เกณฑ์ราคาลำใย
                     </h4>
                 </div>
             </div>
@@ -418,7 +467,10 @@ $Permission = $_SESSION['Permission'];
                         <a class="nav-link active" id="v-pills-all-tab" data-toggle="pill" href="#v-pills-all"
                            role="tab" aria-controls="v-pills-all"><i class="icon icon-home2"></i>เกณฑ์ราคาลำใย</a>
                     </li>
-           
+                    <li>
+                        <a class="nav-link" id="v-pills-buyers-tab" data-toggle="pill" href="#v-pills-buyers" role="tab"
+                           aria-controls="v-pills-buyers"><i class="icon icon-face"></i>ประวัติแก้ไขย้อนหลัง</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -540,78 +592,43 @@ $Permission = $_SESSION['Permission'];
             <!-- START BUYERS -->
             <div class="tab-pane animated fadeInUpShort" id="v-pills-buyers" role="tabpanel" aria-labelledby="v-pills-buyers-tab">
                 <div class="row">
-
-                    <div class="col-md-3 my-3">
-                        <div class="card no-b">
-                            <div class="card-body text-center p-5">
-                                <div class="avatar avatar-xl mb-3">
-                                    <img  src="assets/img/dummy/u11.png" alt="User Image">
-                                </div>
-                                <div>
-                                    <h6 class="p-t-10">Alexander Pierce</h6>
-                                    alexander@paper.com
-                                </div>
-                                <a href="#" class="btn btn-success btn-sm mt-3">View Profile</a>
-                            </div>
-                        </div>
+                    <div class="col-md-3 mt-2 ">
+                        <input type="text" class ="form-control datepicker-here"  placeholder="ค้นหาจากวันที่" id="Search" data-language='en' data-date-format='yyyy-mm-dd'>
                     </div>
-
-                    <div class="col-md-3 my-3">
-                        <div class="card no-b">
-                            <div class="card-body text-center p-5">
-                                <div class="avatar avatar-xl mb-3">
-                                    <img  src="assets/img/dummy/u12.png" alt="User Image">
-                                </div>
-                                <div>
-                                    <h6 class="p-t-10">Alexander Pierce</h6>
-                                    alexander@paper.com
-                                </div>
-                                <a href="#" class="btn btn-success btn-sm mt-3">View Profile</a>
-                            </div>
-                        </div>
-                    </div>
-
+                <div class="col-md-3  mt-2 ">
+                    <button type="button" class="btn btn-primary btn-lg" onclick="Showitem_edit()"><i class="icon-search3"></i>ค้นหา</button>
                 </div>
             </div>
-            <!-- END BUYERS -->
+        <div class="row my-3">
+                    <div class="col-md-12">
+                        <div class="card r-0 shadow">
+                            <div class="table-responsive">
+                                <form>
+                                    <!-- SHOW USER -->
+                                    <table class="table table-striped table-hover r-0" id="Tableitem_eidt">
+                                        <thead id="theadsum" >
+                                        <tr class="no-b">
+                                            <th>NO.</th>
+                                            <th>NAME</th>
+                                            <th>PRICE</th>
+                                            <th hidden>ROLE</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
 
-            <div class="tab-pane animated fadeInUpShort" id="v-pills-sellers" role="tabpanel" aria-labelledby="v-pills-sellers-tab">
-                <div class="row">
+                                        <tbody  id="tbody"  >
 
-                    <div class="col-md-3 mb-3">
-                        <div class="card no-b p-3">
-                            <div>
-                                <div class="image mr-3 avatar-lg float-left">
-                                    <span class="avatar-letter avatar-letter-a avatar-lg  circle"></span>
-                                </div>
-                                <div class="mt-1">
-                                    <div>
-                                        <strong>Alexander Pierce</strong>
-                                    </div>
-                                    <small> alexander@paper.com</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="card no-b p-3">
-                            <div>
-                                <div class="image mr-3 avatar-lg float-left">
-                                    <span class="avatar-letter avatar-letter-c avatar-lg  circle"></span>
-                                </div>
-                                <div class="mt-1">
-                                    <div>
-                                        <strong>Clexander Pierce</strong>
-                                    </div>
-                                    <small>clexander@paper.com</small>
-                                </div>
+                           
+                                    
+                                        </tbody>
+                                    </table>
+                                    <!-- =============== -->
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
         </div>
-    </div>
     <!--Add New Message Fab Button-->
     <a hidden  href="panel-page-users-create.html" class="btn-fab btn-fab-md fab-right fab-right-bottom-fixed shadow btn-primary"><i
             class="icon-add"></i></a>

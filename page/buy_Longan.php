@@ -203,6 +203,19 @@ $Permission = $_SESSION['Permission'];
         // =======================================================
         var ItemCodeArray = [];
         var KiloArray = [];
+        var UnitArray = [];
+        
+
+        $('select[name="UnitArray"]').each(function() 
+        {
+          if($(this).val()!="")
+          {
+            UnitArray.push($(this).val());
+          }
+        });
+        var UnitCode = UnitArray.join(',') ;
+
+        // ========================================================
 
         $('input[name="detailrow"]').each(function() 
         {
@@ -221,6 +234,7 @@ $Permission = $_SESSION['Permission'];
           }
         });
         var Kilo = KiloArray.join(',') ;
+
         // ========================================================
 
         var DocNo = $("#DocNo").val();
@@ -245,7 +259,8 @@ $Permission = $_SESSION['Permission'];
                     'STATUS'      : 'Savebill',
                     'DocNo'      : DocNo ,
                     'ItemCode'      : ItemCode ,
-                    'Kilo'      : Kilo
+                    'Kilo'      : Kilo,
+                    'UnitCode'      : UnitCode
                 };
                 senddata(JSON.stringify(data));
                 $('#v-pills-buyers-tab').tab('show');
@@ -457,7 +472,7 @@ $Permission = $_SESSION['Permission'];
                         // 
                               for (var i = 0; i < temp['Row']; i++) 
                               {
-                                var chkunit ="<select  class='form-control'  id='detailUnit_"+i+"' disabled>";
+                                var chkunit ="<select  class='form-control'  id='detailUnit_"+i+"' disabled name='UnitArray'>";
                                     $.each(temp['Unit'], function(key, val)
                                     {
                                         if(temp[i]['UnitCode']==val.UnitCode)

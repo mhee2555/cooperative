@@ -489,7 +489,7 @@ $Permission = $_SESSION['Permission'];
                 </div>
                 <div class="col-md-3  mt-2 ">
                 <button type="button" class="btn btn-primary btn-lg" onclick="getUser()"><i class="icon-search3"></i>ค้นหา</button>
-                    <button type="button"  data-toggle="modal" data-target="#add_customer"  class="btn btn-success btn-lg ml-3" ><i class="icon-person_add"></i>&nbsp;เพิ่ม&nbsp;</button>
+                <button type="button"  data-toggle="modal" data-target="#add_customer"  class="btn btn-success btn-lg ml-3" ><i class="icon-person_add"></i>&nbsp;เพิ่ม&nbsp;</button>
                 </div>
             </div>
                 <div class="row my-3">

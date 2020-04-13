@@ -795,7 +795,7 @@ $Permission = $_SESSION['Permission'];
             <div class="row">
                 <div class="col-md-6">
                     <div class='form-group row  text-black'>
-                        <label class=" col-sm-4 form-label  h4" >เอกสารขอเบิก</label>
+                        <label class=" col-sm-4 form-label  h4" >เอกสารแปรรูป</label>
                         <input type="text" autocomplete="off"   class=" col-sm-7 form-control " id="RefDocNo"   placeholder="เอกสารขอเบิก" onclick="ShowRefDocNo();">
                     </div>
                 </div>
@@ -936,7 +936,7 @@ $Permission = $_SESSION['Permission'];
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">เอกสารการขอเบิก</h5>
+        <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">เอกสารการแปรรูป</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

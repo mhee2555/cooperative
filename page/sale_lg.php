@@ -123,7 +123,7 @@ $Permission = $_SESSION['Permission'];
         };
         senddata(JSON.stringify(data));
     }
-    function Sumitem(ccqty ,rowid)
+    function Sumitem(ccqty ,rowid , Priceperunit)
     {
         // ค่าเบิิก
         var draw =  parseFloat($("#draw_"+rowid).val());
@@ -133,11 +133,13 @@ $Permission = $_SESSION['Permission'];
 
         //หักลบ
         var total = parseFloat(ccqty - draw);
+        var price = parseFloat(draw * Priceperunit);
 
         if(total <= 0)
         {
           $("#draw_"+rowid).val(ccqty); 
           $("#ccqty_total_"+rowid).val(0); 
+          $("#price_total_"+rowid).val(price); 
         }
         else
         {
@@ -145,8 +147,17 @@ $Permission = $_SESSION['Permission'];
           {
             total = fix;
           }
+
+          if(isNaN(price))
+          {
+            price = '0.00';
+          }
+
           $("#ccqty_total_"+rowid).val(total); 
+          $("#price_total_"+rowid).val(price); 
         }
+
+     
 
     }
     function Importdata()
@@ -157,7 +168,8 @@ $Permission = $_SESSION['Permission'];
         var stock_codeArray = [];
         var item_codeArray = [];
         var unitArray = [];
-
+        var priceArray = [];
+    
         $(".checkitem:checked").each(function() 
         {
             iArray.push($(this).val());
@@ -165,6 +177,7 @@ $Permission = $_SESSION['Permission'];
         // =======================================================
         for(var j=0;j<iArray.length; j++)
         {
+            priceArray.push( $("#price_total_"+iArray[j]).val() );
             item_codeArray.push( $("#item_code_"+iArray[j]).val() );
             kiloArray.push( $("#draw_"+iArray[j]).val() );
             stock_codeArray.push( $("#stock_code_"+iArray[j]).val() );
@@ -175,6 +188,7 @@ $Permission = $_SESSION['Permission'];
         var kilo = kiloArray.join(',') ;
         var stock_code = stock_codeArray.join(',') ;
         var xunit = unitArray.join(',') ;
+        var price = priceArray.join(',') ;
         // =======================================================
 
         $( "#TableDetail tbody" ).empty();
@@ -186,7 +200,8 @@ $Permission = $_SESSION['Permission'];
           'kilo'		: kilo,
           'DocNo'		: DocNo,
           'stock_code'  : stock_code,
-          'xunit'		: xunit
+          'xunit'		: xunit,
+          'price'		: price
         };
         $('#Additem').modal('toggle');
         senddata(JSON.stringify(data));
@@ -461,24 +476,27 @@ $Permission = $_SESSION['Permission'];
                                     chkunit += "</select>";
 
                                     var chkinput = "<div class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input checkSingle checkitem'  value='"+i+"'  id= ' item_id_"+i+" ' required><label class='custom-control-label ' for=' item_id_"+i+" ' style='margin-top: 15px;'></label></div> <input type='hidden' id='item_code_"+i+"' value='"+temp[i]['item_code']+"'><input type='hidden' id='stock_code_"+i+"' value='"+temp[i]['stock_code']+"'>";
-                                  var draw = "<input type='text' id='draw_"+i+"' class='form-control ' autocomplete='off' style='text-align:right;width: 100px;'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['item_ccqty']+"\" , \""+i+"\" ) '>  ";
+                                  var draw = "<input type='text' id='draw_"+i+"' class='form-control ' autocomplete='off' style='text-align:right;width: 100px;'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['item_ccqty']+"\" , \""+i+"\" , \""+temp[i]['Priceperunit']+"\" ) '>  ";
                                   var qty_total = "<input type='text' id='qty_total_"+i+"' class='form-control ' autocomplete='off' style='text-align:right'   placeholder='0.00' value='"+temp[i]['item_qty']+"'  disabled>  ";
                                   var qty_cc = "<input type='text' id='ccqty_total_"+i+"' class='form-control ' autocomplete='off' style='text-align:right'  placeholder='0.00' value='"+temp[i]['item_ccqty']+"'  disabled>  ";
+                                  var Priceperunit = "<input type='text' id='Priceperunit_total_"+i+"' class='form-control ' autocomplete='off' style='text-align:right'  placeholder='0.00' value='"+temp[i]['Priceperunit']+"'  disabled>  ";
+                                  var price = "<input type='text' id='price_total_"+i+"' class='form-control ' autocomplete='off' style='text-align:right'  placeholder='0.00'  disabled>  ";
                                   // hidden
                                   var fix = "<input type='hidden' id='fix_"+i+"' value='"+temp[i]['item_ccqty']+"'  >  ";
 
                                  StrTR = "<tr>"+
                                                 "<td >"+chkinput+"</td>"+
-                                                "<td style='width: 15%;'>"+temp[i]['item_name']+"</td>"+
+                                                "<td style='width: 10%;'>"+temp[i]['item_name']+"</td>"+
                                                 "<td >"+qty_total+"</td>"+
                                                 "<td >"+qty_cc+"</td>"+
-                                                "<td style='width: 13%;'>"+temp[i]['DocNo']+"</td>"+
+                                                "<td >"+price+"</td>"+
+                                                "<td style='width: 11%;'>"+temp[i]['DocNo']+"</td>"+
                                                 // "<td >"+temp[i]['date_exp']+"</td>"+
                                                 "<td >"+draw+"</td>"+
                                                 "<td >"+chkunit+"</td>"+
+                                                "<td >"+Priceperunit+"</td>"+
                                                 "<td hidden>"+fix+"</td>"+
                                                 "</tr>";
-   
                                    $('#Tableitem tbody').append( StrTR );
                               }
                     }
@@ -486,9 +504,11 @@ $Permission = $_SESSION['Permission'];
                     {
                         $( "#TableDetail tbody" ).empty();
                         // total
+                        $("#Total").val(temp['total'].toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+
                               for (var i = 0; i < temp['Row']; i++) 
                               {
-                                var chkunit ="<select  class='form-control'  id='detailUnit_"+i+"' disabled style='width: 50%;'>";
+                                var chkunit ="<select  class='form-control'  id='detailUnit_"+i+"' disabled style='width: 100%;'>";
                                     $.each(temp['Unit'], function(key, val)
                                     {
                                         if(temp[i]['PackgeCode']==val.PackgeCode)
@@ -505,12 +525,13 @@ $Permission = $_SESSION['Permission'];
                                   var chkinput = "<div class='custom-control custom-radio'><input type='radio' class='custom-control-input checkSingle checkdetail' name='detailrow'  value='"+temp[i]['item_code']+"'  id= ' Detail_id_"+i+" ' required><label class='custom-control-label ' for=' Detail_id_"+i+" ' style='margin-top: 15px;'></label></div> ";
                                   var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' style='text-align:right' autocomplete='off'  name='KiloArray'  placeholder='0.00' value='"+temp[i]['kilo']+"' disabled>  ";
                                   var stock_code = "<input type='text' hidden id='Detail_stock_code_"+i+"' class='form-control ' style='text-align:right' autocomplete='off'  name='stock_codeArray'  placeholder='0.00' value='"+temp[i]['stock_code']+"' disabled>  ";
-
+                                  var total = "<input type='text' id='Detail_total_"+i+"' class='form-control ' style='text-align:right' autocomplete='off'  name='totalArray'  placeholder='0.00' value='"+temp[i]['total']+"' disabled>  ";
                                    StrTR =   "<tr>"+
                                                 "<td style='width:10%'>"+chkinput+"</td>"+
                                                 "<td style='width:40%'>"+temp[i]['item_name']+"</td>"+
                                                 "<td style='width:10%'>"+Kilo+"</td>"+
-                                                "<td style='width:20%'>"+chkunit+"</td>"+
+                                                "<td style='width:10%'>"+chkunit+"</td>"+
+                                                "<td style='width:10%'>"+total+"</td>"+
                                                 "<td style='width:20%'>"+stock_code+"</td>"+
                                                 "</tr>";
    
@@ -915,7 +936,8 @@ $Permission = $_SESSION['Permission'];
                                             <th >NO.</th>
                                             <th >ชื่อรายการ</th>
                                             <th>ขาย</th>
-                                            <th >หน่วยนับ</th>
+                                            <th >หน่วยบรรจุภัณฑ์</th>
+                                            <th >ราคารวม</th>
                                         </tr>
                                         </thead>
 
@@ -990,7 +1012,7 @@ $Permission = $_SESSION['Permission'];
 <!--------------------------------------- Modal add_customer  ------------------------------------------>
 <div class="modal fade" id="Additem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content" style='width : 140%;'>
+    <div class="modal-content" style='width : 160%;margin-left: -35%;'>
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">เพิ่ม รายการ</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -1014,10 +1036,12 @@ $Permission = $_SESSION['Permission'];
                                             <th>ชื่อรายการ</th>
                                             <th>จำนวนทั้งหมด</th>
                                             <th>คงเหลือ</th>
+                                            <th>ราคา</th>
                                             <th>ลอต</th>
                                             <!-- <th>หมดอายุ</th> -->
                                             <th>ขาย</th>
                                             <th>หน่วยบรรจุภัณฑ์</th>
+                                            <th>ราคาต่อหน่วย</th>
                                         </tr>
                                         </thead>
                                         <tbody  id="tbody">

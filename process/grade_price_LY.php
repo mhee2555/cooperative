@@ -40,6 +40,46 @@ function Showitem($conn, $DATA)
     }
 
   }
+  function Showitem_edit($conn, $DATA)
+  {
+    $Search = $DATA["Search"];
+
+    $count = 0;
+
+        $Showitem = "SELECT
+                      log_grade_longan.ID_Grade,
+                      item.item_name,	
+                      log_grade_longan.Grade 
+                    FROM
+                      log_grade_longan
+                    INNER JOIN item ON 
+                    log_grade_longan.item_code = item.item_code
+                    WHERE DATE(edit_date) = '$Search'  ";
+
+ 
+      $meQuery = mysqli_query($conn, $Showitem);
+      while ($Result = mysqli_fetch_assoc($meQuery)) {
+        $return[$count]['item_name']          = $Result['item_name'];
+        $return[$count]['ID_Grade']          = $Result['ID_Grade'];
+        $return[$count]['Grade']          = $Result['Grade'];
+        $count++;
+      }
+      $return['count']  = $count;
+    if($count>0){
+      $return['status'] = "success";
+      $return['form'] = "Showitem_edit";
+      echo json_encode($return);
+      mysqli_close($conn);
+      die;
+    }else{
+      $return['status'] = "notfound";
+      $return['msg'] = "notfound";
+      echo json_encode($return);
+      mysqli_close($conn);
+      die;
+    }
+
+  }
 function show_detail_item($conn, $DATA)
   {
     $ID = $DATA["ID"];
@@ -81,6 +121,18 @@ function show_detail_item($conn, $DATA)
     $editcustomer = " UPDATE grade_price SET grade_price.Grade ='$item_price_edit'
                       WHERE grade_price.ID_Grade='$ID' ";
     mysqli_query($conn, $editcustomer);
+
+    $select = "SELECT * FROM grade_price WHERE grade_price.ID_Grade='$ID'"; 
+    $meQuery = mysqli_query($conn, $select);
+    $Result = mysqli_fetch_assoc($meQuery); 
+      $item_code = $Result['item_code'];
+      $Grade = $Result['Grade'];
+
+    $insert = "INSERT INTO log_grade_longan SET Grade = $Grade , item_code = $item_code , edit_date = NOW() ";
+    mysqli_query($conn, $insert);
+
+
+
     $return['status'] = "success";
     $return['form'] = "edit_item";
     echo json_encode($return);
@@ -165,7 +217,11 @@ function show_detail_item($conn, $DATA)
         delete_item($conn, $DATA);  
       }elseif ($DATA['STATUS'] == 'add_item') {
         add_item($conn, $DATA);  
-      }        
+      } elseif ($DATA['STATUS'] == 'Showitem_edit') {
+        Showitem_edit($conn, $DATA);  
+      } 
+      
+      
     else
     {
         $return['status'] = "error";

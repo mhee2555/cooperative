@@ -102,10 +102,12 @@ function ShowItem($conn, $DATA)
           sup.item_ccqty,
           TIME(sup.Date_exp) as date_exp,
           sup.DocNo,
-          sup.PackgeCode
+          sup.PackgeCode,
+          packge_unit.Priceperunit
           FROM
           stock_package sup
           INNER JOIN item ON item.item_code = sup.item_code 
+          INNER JOIN packge_unit ON packge_unit.PackgeCode = sup.PackgeCode 
           WHERE 
            sup.item_ccqty <> 0 
           AND TIMEDIFF(sup.Date_exp , NOW() ) > 0
@@ -122,6 +124,7 @@ function ShowItem($conn, $DATA)
       $return[$count]['item_ccqty'] = $Result['item_ccqty'];
       $return[$count]['date_exp'] = $Result['date_exp'];
       $return[$count]['PackgeCode'] = $Result['PackgeCode'];
+      $return[$count]['Priceperunit'] = $Result['Priceperunit'];
       $count++;
       $boolean = true;
     }
@@ -166,12 +169,14 @@ function Importdata($conn, $DATA)
   $kilo = $DATA["kilo"];
   $stock_code = $DATA["stock_code"];
   $unit = $DATA["xunit"];
+  $price = $DATA["price"];
 
   #========================================
   $item_codex  = explode(",", $item_code);
   $kilox       = explode(",", $kilo);
   $stock_codex = explode(",", $stock_code);
   $unitx      = explode(",", $unit);
+  $pricex      = explode(",", $price);
   #========================================
 
   foreach ($item_codex as $key => $value)
@@ -198,7 +203,8 @@ function Importdata($conn, $DATA)
                       item_code = '$value',
                       kilo = '$kilox[$key]',
                       PackgeCode = '$unitx[$key]',
-                      stock_code = '$stock_codex[$key]' ";
+                      stock_code = '$stock_codex[$key]',
+                      total = '$pricex[$key]' ";
 
                   mysqli_query($conn, $insert);
     }
@@ -209,10 +215,13 @@ function Importdata($conn, $DATA)
                       Sale_DocNo = '$DocNo',
                       item_code = '$value',
                       kilo = ( kilo + '$kilox[$key]' ),
-                      PackgeCode = '$unitx[$key]'
+                      PackgeCode = '$unitx[$key]' ,
+                      total = ( total + '$pricex[$key]' )
+
                 WHERE
                         Sale_DocNo = '$DocNo'
-                AND    item_code = '$value'  ";
+                AND    item_code = '$value'
+                AND    PackgeCode = '$unitx[$key]'  ";
 
                   mysqli_query($conn, $update);
     }
@@ -233,6 +242,7 @@ function ShowDetail($conn, $DATA)
               dd.item_code,
               item.item_name,
               dd.kilo,
+              dd.total,
               dd.PackgeCode,
               stock_package.stock_code
             FROM
@@ -247,12 +257,28 @@ function ShowDetail($conn, $DATA)
               $return[$count]['item_code']      = $Result['item_code'];
               $return[$count]['item_name']      = $Result['item_name'];
               $return[$count]['kilo']           = $Result['kilo'];
+              $return[$count]['total']           = $Result['total'];
               $return[$count]['PackgeCode']       = $Result['PackgeCode'];
               $return[$count]['stock_code']       = $Result['stock_code'];
+              $Total +=  $Result['total'];
+              $return['total']           = $Total;
+
               $count ++ ;
               $boolean = true;
             }
             $return['Row'] = $count;
+
+
+
+            $UPDATE = "UPDATE sale_longan SET Total = $Total WHERE DocNo = '$DocNo' ";
+            mysqli_query($conn, $UPDATE);
+
+
+
+
+
+
+
 
             $cntUnit = 0;
             $xSql = "SELECT packge_unit.PackgeCode,packge_unit.PackgeName

@@ -70,19 +70,23 @@ $Permission = $_SESSION['Permission'];
         // 
     });
 
-    function Showitem()
+    function Showitem(chk)
     {
         var Search_type = $('#Search_type').val();
         var Search_date = $('#Search_date').val();
         var Search_unit = $('#Search_unit').val();
-        if(Search_type == 'packing')
+        if(chk != 1)
         {
-            $('#Search_unit_row').attr('hidden' , false);
+            if(Search_type == 'packing')
+            {
+                Showtype(1);
+            }
+            else
+            {
+                Showtype(2);
+            }
         }
-        else
-        {
-            $('#Search_unit_row').attr('hidden' , true);
-        }
+
         var data = 
         {
             'STATUS': 'Showitem',
@@ -92,14 +96,17 @@ $Permission = $_SESSION['Permission'];
         };
         senddata(JSON.stringify(data));
     }
-    function Showtype()
+
+    function Showtype(chk)
     {
         var data = 
         {
-            'STATUS': 'Showtype'
+            'STATUS': 'Showtype',
+            'chk':chk
         };
         senddata(JSON.stringify(data));
     }
+
     function ShowSearch()
     {
         var datepicker = $("#datepicker").val();
@@ -111,6 +118,7 @@ $Permission = $_SESSION['Permission'];
         };
         senddata(JSON.stringify(data));
     }
+
     function ShowSearch_rice()
     {
         var datepicker = $("#datepicker2").val();
@@ -122,6 +130,7 @@ $Permission = $_SESSION['Permission'];
         };
         senddata(JSON.stringify(data));
     }
+
     function showdetaildraw(DocNo)
     {
         var data = 
@@ -131,6 +140,7 @@ $Permission = $_SESSION['Permission'];
         };
         senddata(JSON.stringify(data));     
     }
+
     function showdetaildraw_rice(DocNo)
     {
         var data = 
@@ -140,6 +150,7 @@ $Permission = $_SESSION['Permission'];
         };
         senddata(JSON.stringify(data));     
     }
+
     function approve(status)
     {
         var stock_code_Array = [];
@@ -174,6 +185,7 @@ $Permission = $_SESSION['Permission'];
         $('#showdetaildraw').modal('toggle');
         senddata(JSON.stringify(data));    
     }
+
     function approve_rice(status)
     {
         var stock_code_Array = [];
@@ -633,8 +645,8 @@ $Permission = $_SESSION['Permission'];
                 <div class="col-md-3 mt-2 " >
                     <input type="text" class =  "form-control  datepicker-here " placeholder="ค้นหาจากวันที่" id="Search_date" data-language='en' data-date-format='yyyy-mm-dd'>
                 </div>
-                <div class="col-md-3 mt-2 " id= 'Search_unit_row' hidden>
-                    <select  type="text" class =  "form-control " placeholder="หน่วยนับ" id="Search_unit" onchange="Showitem()"> </select>
+                <div class="col-md-3 mt-2 " id= 'Search_unit_row' >
+                    <select  type="text" class =  "form-control " placeholder="หน่วยนับ" id="Search_unit" onchange="Showitem(1)"> </select>
                 </div>
                 <!-- <div class=" mt-2 ml-3" >
                 <button type="button" class="btn btn-primary btn-lg" onclick="Showitem()"><i class="icon-search3"></i>ค้นหา</button>
