@@ -274,7 +274,7 @@ require '../connect/connect.php';
               dds.draw_DocNo,
               dds.kilo,
               item.item_name ,
-              sup.item_ccqty,
+              dds.item_ccqty,
               DATE(sup.Date_exp) as date,
               TIME(sup.Date_exp) as time,
               dds.stock_code,
@@ -343,7 +343,7 @@ require '../connect/connect.php';
               dds.draw_DocNo,
               dds.kilo,
               item.item_name ,
-              sup.item_ccqty,
+              dds.item_ccqty,
               DATE(sup.Date_exp) as date,
               TIME(sup.Date_exp) as time,
               dds.stock_code,
@@ -426,8 +426,8 @@ require '../connect/connect.php';
 
       foreach ($givex as $key => $value)
       {
-        $updateSTOCK="UPDATE stock_unprocess SET item_ccqty = (item_ccqty - $value) WHERE stock_code = '$stock_codex[$key]' ";
-        mysqli_query($conn, $updateSTOCK);
+        // $updateSTOCK="UPDATE stock_unprocess SET item_ccqty = (item_ccqty - $value) WHERE stock_code = '$stock_codex[$key]' ";
+        // mysqli_query($conn, $updateSTOCK);
 
         $updateDRAWSUB="UPDATE draw_detail_sub SET give = $value WHERE stock_code = '$stock_codex[$key]' AND draw_detail_sub.draw_DocNo = '$DocNo' ";
         mysqli_query($conn, $updateDRAWSUB);
@@ -459,7 +459,19 @@ require '../connect/connect.php';
     }
     else
     {
-      // Update status = 9
+
+
+      foreach ($givex as $key => $value)
+      {
+        $updateSTOCK="UPDATE stock_unprocess SET item_ccqty = (item_ccqty + $value) WHERE stock_code = '$stock_codex[$key]' ";
+        mysqli_query($conn, $updateSTOCK);
+
+        $updateDRAWSUB="UPDATE draw_detail_sub SET give = 0 WHERE stock_code = '$stock_codex[$key]' AND draw_detail_sub.draw_DocNo = '$DocNo' ";
+        mysqli_query($conn, $updateDRAWSUB);
+      }
+
+      
+      // Update status = 8
       $updateSTATUS = "UPDATE draw SET IsStatus = '$status' WHERE DocNo = '$DocNo' ";
       mysqli_query($conn, $updateSTATUS);
     }
@@ -487,8 +499,8 @@ require '../connect/connect.php';
 
       foreach ($givex as $key => $value)
       {
-        $updateSTOCK="UPDATE stock_unprocess SET item_ccqty = (item_ccqty - $value) WHERE stock_code = '$stock_codex[$key]' ";
-        mysqli_query($conn, $updateSTOCK);
+        // $updateSTOCK="UPDATE stock_unprocess SET item_ccqty = (item_ccqty - $value) WHERE stock_code = '$stock_codex[$key]' ";
+        // mysqli_query($conn, $updateSTOCK);
 
         $updateDRAWSUB="UPDATE draw_rice_detail_sub SET give = $value WHERE stock_code = '$stock_codex[$key]' AND draw_rice_detail_sub.draw_DocNo = '$DocNo' ";
         mysqli_query($conn, $updateDRAWSUB);
@@ -519,6 +531,17 @@ require '../connect/connect.php';
     }
     else
     {
+
+      foreach ($givex as $key => $value)
+      {
+        $updateSTOCK="UPDATE stock_unprocess SET item_ccqty = (item_ccqty + $value) WHERE stock_code = '$stock_codex[$key]' ";
+        mysqli_query($conn, $updateSTOCK);
+
+        $updateDRAWSUB="UPDATE draw_rice_detail_sub SET give = 0 WHERE stock_code = '$stock_codex[$key]' AND draw_rice_detail_sub.draw_DocNo = '$DocNo' ";
+        mysqli_query($conn, $updateDRAWSUB);
+      }
+
+
       // Update status = 9
       $updateSTATUS = "UPDATE draw_rice SET IsStatus = '$status' WHERE DocNo = '$DocNo' ";
       mysqli_query($conn, $updateSTATUS);

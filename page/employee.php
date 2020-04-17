@@ -473,25 +473,25 @@ $Permission = $_SESSION['Permission'];
     <div class="container-fluid animatedParent animateOnce">
         <div class="tab-content my-3" id="v-pills-tabContent">
             <div class="tab-pane animated fadeInUpShort show active" id="v-pills-all" role="tabpanel" aria-labelledby="v-pills-all-tab">
-            <div class="row">
-                <div class="col-md-3 mt-2 ">
-                    <select class =  " custom-select  "  id="Permission" onchange="getUser()">
-                        <option value="0">ค้นหาตามการเข้าถึง</option>
-                        <option value="1">ผู้จัดการ</option>
-                        <option value="2">การตลาด</option>
-                        <option value="3">แปรรูป</option>
-                        <option value="4">รวบรวม</option>
-                        <option value="5">การส่งออก</option>
-                    </select>
+                <div class="row">
+                    <div class="col-md-3 mt-2 ">
+                        <select class =  " custom-select  "  id="Permission" onchange="getUser()">
+                            <option value="0">ค้นหาตามการเข้าถึง</option>
+                            <option value="1">ผู้จัดการ</option>
+                            <option value="2">การตลาด</option>
+                            <option value="3">แปรรูป</option>
+                            <option value="4">รวบรวม</option>
+                            <option value="5">การส่งออก</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mt-2 ">
+                        <input type="text" class =  "form-control " placeholder="ค้นหาจากชื่อ-นามสกุล" id="Search">
+                    </div>
+                    <div class="col-md-3  mt-2 ">
+                        <button type="button" class="btn btn-primary btn-lg" onclick="getUser()"><i class="icon-search3"></i>ค้นหา</button>
+                        <button type="button"  data-toggle="modal" data-target="#add_customer"  class="btn btn-success btn-lg ml-3" ><i class="icon-person_add"></i>&nbsp;เพิ่ม&nbsp;</button>
+                    </div>
                 </div>
-                <div class="col-md-3 mt-2 ">
-                    <input type="text" class =  "form-control " placeholder="ค้นหาจากชื่อ-นามสกุล" id="Search">
-                </div>
-                <div class="col-md-3  mt-2 ">
-                <button type="button" class="btn btn-primary btn-lg" onclick="getUser()"><i class="icon-search3"></i>ค้นหา</button>
-                <button type="button"  data-toggle="modal" data-target="#add_customer"  class="btn btn-success btn-lg ml-3" ><i class="icon-person_add"></i>&nbsp;เพิ่ม&nbsp;</button>
-                </div>
-            </div>
                 <div class="row my-3">
                     <div class="col-md-12">
                         <div class="card r-0 shadow">
@@ -584,7 +584,6 @@ $Permission = $_SESSION['Permission'];
                         </div>
                     </div>
                 </div>
-
                 <nav class="my-3" aria-label="Page navigation">
                     <ul class="pagination">
                         <li class="page-item"><a class="page-link" href="#">Previous</a>
@@ -599,7 +598,6 @@ $Permission = $_SESSION['Permission'];
                         </li>
                     </ul>
                 </nav>
-                
             </div>
 
             <!-- START BUYERS -->

@@ -630,7 +630,7 @@ $Permission = $_SESSION['Permission'];
     </header>
     <div class="container-fluid animatedParent animateOnce">
         <div class="tab-content my-3" id="v-pills-tabContent">
-            <div class="tab-pane animated fadeInUpShort show active" id="v-pills-all" role="tabpanel" aria-labelledby="v-pills-all-tab">
+        <div class="tab-pane animated fadeInUpShort show active" id="v-pills-all" role="tabpanel" aria-labelledby="v-pills-all-tab">
             <div class="row">
                 <div class="col-md-3 mt-2 ">
                     <select class ="custom-select" id="Search_type"  onchange="Showitem()">
@@ -778,7 +778,7 @@ $Permission = $_SESSION['Permission'];
                         </li>
                     </ul>
                 </nav>
-            </div>
+        </div>
 
             <!-- SEARCH -->
             <div class="tab-pane animated fadeInUpShort" id="v-pills-buyers" role="tabpanel" aria-labelledby="v-pills-buyers-tab">

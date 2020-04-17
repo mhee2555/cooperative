@@ -234,6 +234,15 @@ function Importdata($conn, $DATA)
   foreach ($item_codex as $key => $value)
   {
 
+    $select_stock = "SELECT item_ccqty FROM stock_unprocess WHERE stock_code = '$stock_codex[$key]' ";
+    $meQuery = mysqli_query($conn, $select_stock);
+    $Result = mysqli_fetch_assoc($meQuery);
+    $item_ccqty = $Result['item_ccqty'];
+
+
+
+
+
     // insert_chk
     $insert_chk = "INSERT INTO  draw_detail_sub
     SET 
@@ -241,7 +250,8 @@ function Importdata($conn, $DATA)
         item_code = '$value',
         kilo = '$kilox[$key]',
         stock_code = '$stock_codex[$key]',
-        UnitCode = '$unitx[$key]' ";
+        UnitCode = '$unitx[$key]',
+        item_ccqty = '$item_ccqty' ";
 
     mysqli_query($conn, $insert_chk);
     // checkinsert
@@ -255,6 +265,11 @@ function Importdata($conn, $DATA)
               $meQuery = mysqli_query($conn, $count);
               $Result = mysqli_fetch_assoc($meQuery);
               $chkUpdate = $Result['Cnt'];
+
+    $update_stock = "UPDATE stock_unprocess SET item_ccqty = (item_ccqty - '$kilox[$key]' ) WHERE  stock_code = '$stock_codex[$key]' ";
+    mysqli_query($conn, $update_stock);
+
+
 
     if ($chkUpdate == 0) 
     {

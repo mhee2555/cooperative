@@ -72,6 +72,8 @@
                     </li>
                     <li><a href="panel-page-dashboard2.html" ><i class="icon icon-folder5"></i>บันทึกการขายข้าว</a>
                     </li>
+                    <li><a href="transport.php" ><i class="icon icon-folder5"></i>ขนส่ง</a>
+                    </li>
                 </ul>
             </li>
             <!-- ================================= -->
