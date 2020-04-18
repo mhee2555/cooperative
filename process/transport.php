@@ -36,7 +36,26 @@ function ShowDoc($conn, $DATA)
   }
   else if($type == 2)
   {
+    $select_doc = "SELECT
+                    sale_rice.DocNo, 
+                    sale_rice.DocDate, 
+                    sale_rice.IsStatus, 
+                    users.FName
+                  FROM
+                    sale_rice
+                  INNER JOIN users ON users.ID = sale_rice.Customer_ID
+                  WHERE sale_rice.DocDate = '$date' AND  sale_rice.IsStatus > 0 ";
 
+                $meQuery = mysqli_query($conn, $select_doc);
+                while ($Result = mysqli_fetch_assoc($meQuery))
+                {
+                $return[$count]['DocNo'] = $Result['DocNo'];
+                $return[$count]['DocDate'] = $Result['DocDate'];
+                $return[$count]['IsStatus'] = $Result['IsStatus'];
+                $return[$count]['FName'] = $Result['FName'];
+                $count++;
+                $boolean = true;
+                }
   }
 
   $return['count']  = $count;
@@ -65,19 +84,44 @@ function show_process($conn, $DATA)
   $boolean = false;
   $count = 0;
   $DocNo  = $DATA["DocNo"];
+  $cnt = 0;
 
-  $sql = "SELECT
-            sale_longan.DocNo,
-            sale_longan.DvStartTime,
-            sale_longan.DvEndTime,
-            TIMEDIFF( sale_longan.DvEndTime, sale_longan.DvStartTime ) AS DvUseTime,
-            sale_longan.IsStatus,
-            sale_longan.signStart,
-            sale_longan.signEnd
-          FROM
-            sale_longan
-          WHERE
-            sale_longan.DocNo = '$DocNo' ";
+  $count = "SELECT COUNT(DocNo) AS cnt FROM sale_longan WHERE DocNo = '$DocNo' ";
+  $meQuery = mysqli_query($conn, $count);
+  $Result = mysqli_fetch_assoc($meQuery);
+  $cnt = $Result['cnt'];
+
+  if($cnt > 0 )
+  {
+    $sql = "SELECT
+              sale_longan.DocNo,
+              sale_longan.DvStartTime,
+              sale_longan.DvEndTime,
+              TIMEDIFF( sale_longan.DvEndTime, sale_longan.DvStartTime ) AS DvUseTime,
+              sale_longan.IsStatus,
+              sale_longan.signStart,
+              sale_longan.signEnd
+            FROM
+              sale_longan
+            WHERE
+              sale_longan.DocNo = '$DocNo' ";
+  }
+  else
+  {
+    $sql = "SELECT
+              sale_rice.DocNo,
+              sale_rice.DvStartTime,
+              sale_rice.DvEndTime,
+              TIMEDIFF( sale_rice.DvEndTime, sale_rice.DvStartTime ) AS DvUseTime,
+              sale_rice.IsStatus,
+              sale_rice.signStart,
+              sale_rice.signEnd
+            FROM
+            sale_rice
+            WHERE
+            sale_rice.DocNo = '$DocNo' ";
+  }
+  
     $meQuery = mysqli_query($conn, $sql);
     while ($Result = mysqli_fetch_assoc($meQuery))
     {
@@ -116,9 +160,24 @@ function show_process($conn, $DATA)
 function end_send($conn , $DATA)
 {
   $DocNo  = $DATA["DocNo"];
+  $cnt = 0;
 
-  $Sql = "UPDATE sale_longan SET DvEndTime = NOW() , IsStatus = 3 WHERE DocNo = '$DocNo'";
-  mysqli_query($conn, $Sql);
+  $count = "SELECT COUNT(DocNo) AS cnt FROM sale_longan WHERE DocNo = '$DocNo' ";
+  $meQuery = mysqli_query($conn, $count);
+  $Result = mysqli_fetch_assoc($meQuery);
+  $cnt = $Result['cnt'];
+
+  if($cnt > 0)
+  {
+    $Sql = "UPDATE sale_longan SET DvEndTime = NOW() , IsStatus = 3 WHERE DocNo = '$DocNo'";
+    mysqli_query($conn, $Sql);
+  }
+  else
+  {
+    $Sql = "UPDATE sale_rice SET DvEndTime = NOW() , IsStatus = 3 WHERE DocNo = '$DocNo'";
+    mysqli_query($conn, $Sql);
+  }
+
 
   $return['status'] = "success";
   $return['form'] = "end_send";
@@ -130,13 +189,41 @@ function view_detail($conn, $DATA)
 {
   $DocNo = $DATA["DocNo"];
   $count = 0;
-  $Sql = "SELECT
-            item.item_name,
-            sale_longan_detail.kilo 
-          FROM
-            sale_longan_detail
-            INNER JOIN item ON item.item_code = sale_longan_detail.item_code
-          WHERE sale_longan_detail.Sale_DocNo = '$DocNo' ";
+  $cnt = 0;
+
+  $countx = "SELECT COUNT(DocNo) AS cnt FROM sale_longan WHERE DocNo = '$DocNo' ";
+  $meQuery = mysqli_query($conn, $countx);
+  $Result = mysqli_fetch_assoc($meQuery);
+  $cnt = $Result['cnt'];
+
+
+
+
+  if($cnt > 0)
+  {
+    $Sql = "SELECT
+              item.item_name,
+              sale_longan_detail.kilo 
+            FROM
+              sale_longan_detail
+              INNER JOIN item ON item.item_code = sale_longan_detail.item_code
+            WHERE sale_longan_detail.Sale_DocNo = '$DocNo' ";
+  }
+  else
+  {
+    $Sql = "SELECT
+              item.item_name,
+              sale_rice_detail.kilo 
+            FROM
+              sale_rice_detail
+              INNER JOIN item ON item.item_code = sale_rice_detail.item_code
+            WHERE sale_rice_detail.Sale_DocNo = '$DocNo' ";
+  }
+
+
+
+
+
   $meQuery = mysqli_query($conn, $Sql);
   while ($Result = mysqli_fetch_assoc($meQuery))
   {
