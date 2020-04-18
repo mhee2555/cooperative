@@ -26,22 +26,16 @@ $Permission = $_SESSION['Permission'];
     <link href="../datepicker/dist/css/datepicker.min.css" rel="stylesheet" type="text/css">
     <script src="../datepicker/dist/js/datepicker.th.js"></script>
     <script src="../datepicker/dist/js/i18n/datepicker.en.js"></script>
-    <title>บันทึกการแปรรูปข้าว</title>
+    <title>บันทึกการสั่งบรรจุภัณฑ์ข้าว</title>
     <!-- CSS -->
     <link rel="stylesheet" href="assets/css/app.css">
 
     <script type="text/javascript">
     $(document).ready(function(e)
     {
-         // ===========DATE ITEM =======
-        var d = new Date();
-        var month = d.getMonth()+1;
-        var day = d.getDate();
-        var output = d.getFullYear() + '-' +
-            ((''+month).length<2 ? '0' : '') + month + '-' +
-            ((''+day).length<2 ? '0' : '') + day;
-        $("#dateRefDocNo").val(output);
-
+        // ========
+        Showuser();
+        // ========
         // ค้นหา
         $("#Search").on("keyup", function() 
         {
@@ -53,10 +47,19 @@ $Permission = $_SESSION['Permission'];
         });
         // 
 
+        $("#v-pills-all-tab").click(function()
+        {
+            $( "#TableDetail tbody" ).empty();
+            $("#DocNo").val("");
+            $("#docdate").val("");
+            $("#ModifyDate").val("");
+            $("#Employee").val("");
+         });
 
-
-
-
+         $("#v-pills-buyers-tab").click(function()
+         {
+            ShowSearch();
+         });
     });
     // Function 
     function Createdocument()
@@ -87,95 +90,106 @@ $Permission = $_SESSION['Permission'];
           })
 
     }
-    function Startprocess()
+    function Additem()
     {
         var DocNo = $("#DocNo").val();
-        var RefDocNo = $("#RefDocNo").val();
-        if(RefDocNo == "")
+
+        if(DocNo != "")
         {
-            swal({
-                title: '',
-                text: "กรุณาเลือกเอกสารขอเบิก",
-                type: 'warning',
-                showCancelButton: false,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                showConfirmButton: false,
-                timer: 2000,
-                confirmButtonText: 'Ok'
-                })
+            $('#Additem').modal('show');
+
+            ShowItem();
         }
-        else
-        {
-            swal({
-            title: "",
-            text: "ยืนยันการเรึ่มต้นแปรรูป",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonClass: "btn-danger",
-            confirmButtonText: "ใช่",
-            cancelButtonText: "ไม่ใช่",
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            closeOnConfirm: false,
-            closeOnCancel: false,
-            showCancelButton: true}).then(result => {
-                if (result.value)
-                {
-                    var data =
-                    {
-                        'STATUS'    : 'Startprocess',
-                        'DocNo'     : DocNo
-                    };
-                    senddata(JSON.stringify(data));
-                }
-                else if (result.dismiss === 'cancel')
-                {
-                    swal.close();
-                } 
-            })
-        }
+
     }
-    function Endprocess()
+    function ShowItem()
+    {
+        var data = 
+        {
+            'STATUS'  : 'ShowItem'
+        };
+        senddata(JSON.stringify(data));
+    }
+    function Importdata()
     {
         var DocNo = $("#DocNo").val();
-        swal({
-          title: "",
-          text: "ยืนยันการสิ้นสุดแปรรูป",
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonClass: "btn-danger",
-          confirmButtonText: "ใช่",
-          cancelButtonText: "ไม่ใช่",
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          closeOnConfirm: false,
-          closeOnCancel: false,
-          showCancelButton: true}).then(result => {
-            if (result.value)
-            {
-                var data =
-                {
-                    'STATUS'    : 'Endprocess',
-                    'DocNo'     : DocNo
-                };
-                senddata(JSON.stringify(data));
-            }
-            else if (result.dismiss === 'cancel')
-            {
-                swal.close();
-            } 
-          })  
+        var iArray = [];
+        var kiloArray = [];
+        var item_codeArray = [];
+        var unitArray = [];
+        var stock_codeArray = [];
+        
+        $(".checkitem:checked").each(function() 
+        {
+            iArray.push($(this).val());
+        });
+        // =======================================================
+        for(var j=0;j<iArray.length; j++)
+        {
+            item_codeArray.push( $("#item_code_"+iArray[j]).val() );
+            kiloArray.push( $("#Kilo_"+iArray[j]).val() );
+            unitArray.push( $("#iUnit_"+iArray[j]).val() );
+            stock_codeArray.push( $("#stock_code_"+iArray[j]).val() );
+        }
+        // =======================================================
+        var item_code = item_codeArray.join(',') ;
+        var kilo = kiloArray.join(',') ;
+        var xunit = unitArray.join(',') ;
+        var stock_code = stock_codeArray.join(',') ;
+        // =======================================================
+        $( "#TableDetail tbody" ).empty();
+
+
+
+
+        var data = 
+        {
+          'STATUS'  	: 'Importdata',
+          'item_code'   : item_code,
+          'kilo'		: kilo,
+          'DocNo'		: DocNo ,
+          'xunit'		: xunit,
+          'stock_code'		: stock_code
+        };
+        $('#Additem').modal('toggle');
+        senddata(JSON.stringify(data));
+
     }
-    function Successprocess()
+    function ShowDetail() 
+    {
+        var DocNo = $("#DocNo").val();
+        var data = {
+            'STATUS'  : 'ShowDetail',
+            'DocNo'   : DocNo
+        };
+        senddata(JSON.stringify(data));
+    }
+    function Showuser()
+    {
+        var data = {
+            'STATUS'  : 'Showuser'
+        };
+        senddata(JSON.stringify(data));
+    }
+    function ShowSearch()
+    {
+        var datepicker = $("#datepicker").val();
+
+        var data = 
+        {
+          'STATUS'  	: 'ShowSearch',
+          'datepicker' : datepicker
+
+        };
+        senddata(JSON.stringify(data));
+    }
+    function Savebill()
     {
 
         // =======================================================
         var ItemCodeArray = [];
         var KiloArray = [];
-        var UnitArray = [];
-        var stock_codeArray = [];
-        
+
         $('input[name="detailrow"]').each(function() 
         {
           if($(this).val()!="")
@@ -194,31 +208,11 @@ $Permission = $_SESSION['Permission'];
         });
         var Kilo = KiloArray.join(',') ;
         // ========================================================
-        $('select[name="UnitArray"]').each(function() 
-        {
-          if($(this).val()!="")
-          {
-            UnitArray.push($(this).val());
-          }
-        });
-        var Unit = UnitArray.join(',') ;
-
-        // ========================================================
-        $('input[name="stock_code"]').each(function() 
-        {
-          if($(this).val()!="")
-          {
-            stock_codeArray.push($(this).val());
-          }
-        });
-        var stock_code = stock_codeArray.join(',') ;
-
-        // ========================================================
 
         var DocNo = $("#DocNo").val();
         swal({
           title: "",
-          text: "ยืนยันการบันทึก",
+          text: "ยืนยันการบันทึกเอกสาร "+DocNo+" ",
           type: "warning",
           showCancelButton: true,
           confirmButtonClass: "btn-danger",
@@ -228,92 +222,25 @@ $Permission = $_SESSION['Permission'];
           cancelButtonColor: '#d33',
           closeOnConfirm: false,
           closeOnCancel: false,
-          showCancelButton: true}).then(result => {
-            if (result.value)
-            {
-                var data =
+          showCancelButton: true}).then(result => 
+          {
+              if (result.value) 
+              {
+                var data = 
                 {
-                    'STATUS'   : 'Successprocess',
-                    'DocNo' : DocNo,
-                    'ItemCode' : ItemCode,
-                    'Kilo'     : Kilo,
-                    'Unit'     : Unit,
-                    'stock_code' : stock_code
+                    'STATUS'      : 'Savebill',
+                    'DocNo'      : DocNo ,
+                    'ItemCode'      : ItemCode ,
+                    'Kilo'      : Kilo
                 };
                 senddata(JSON.stringify(data));
                 $('#v-pills-buyers-tab').tab('show');
-            }
-            else if (result.dismiss === 'cancel')
-            {
+              }
+              else if (result.dismiss === 'cancel') 
+              {
                 swal.close();
-            } 
-          })    
-    }
-    function ShowDetail() 
-    {
-        var DocNo = $("#DocNo").val();
-        var data = {
-            'STATUS'  : 'ShowDetail',
-            'DocNo'   : DocNo
-        };
-        senddata(JSON.stringify(data));
-    }
-    function ShowSearch()
-    {
-        var datepicker = $("#datepicker").val();
-
-        var data = 
-        {
-          'STATUS'  	: 'ShowSearch',
-          'datepicker' : datepicker
-
-        };
-        senddata(JSON.stringify(data));
-    }
-    function ShowRefDocNo()
-    {
-        var dateRefDocNo = $("#dateRefDocNo").val();
-        var chk_ref_status = $("#chk_ref_status").val();
-
-        $('#ShowRefDocNo').modal('show');
-
-      setTimeout(() =>
-      {
-          
-        var data = 
-                {
-                    'STATUS'        : 'ShowRefDocNo' ,
-                    'dateRefDocNo'  :  dateRefDocNo,
-                    'chk_ref_status':  chk_ref_status
-                };
-                senddata(JSON.stringify(data));
-
-
-      }, 500);
-
-        
-    }
-    function SaveRefDocNo()
-    {
-      var RefDocNo = "";
-      var DocNo = $("#DocNo").val();
-      var chk_ref_status = $("#chk_ref_status").val();
-
-        $('input[name="refrow"]:checked').each(function() 
-        {
-          RefDocNo = $(this).val();
-        });
-      var data = 
-                {
-                    'STATUS'      : 'SaveRefDocNo' ,
-                    'RefDocNo'    : RefDocNo ,
-                    'DocNo'       : DocNo ,
-                    'chk_ref_status' : chk_ref_status
-
-                };
-                senddata(JSON.stringify(data));
-                $('#ShowRefDocNo').modal('toggle');
-        
+              }
+          })
     }
     function Cancelbill()
     {
@@ -404,12 +331,60 @@ $Permission = $_SESSION['Permission'];
           })
         
     }
+    function check_unit(i)
+    {
+        var unit = $("#iUnit_"+i).val();
+
+        var data = {
+            'STATUS'  : 'check_unit',
+                'i'	: i,
+                'unit'	: unit
+        };
+        senddata(JSON.stringify(data));
+        
+
+    }
+    function Sumitem(i)
+    {
+        var qtyperunit = parseFloat($("#qtyperunit_"+i).val());
+        var qty = parseFloat($("#Kilo_"+i).val());
+        var total_stock_nan = parseFloat($("#total_stock_nan_"+i).val());
+
+        // ทุกครั้งที่พิมให้ reset
+        parseFloat($("#total_stock_"+i).val(total_stock_nan));
+        parseFloat($("#gram_"+i).val('0.00'));
+
+        var total_stock = parseFloat($("#total_stock_"+i).val());
+        var sumqty = parseFloat((qty * qtyperunit));
+        var sumqty_garm = parseFloat((sumqty / 1000));
+
+  
+        if(isNaN(sumqty_garm) )
+        {
+            sumqty_garm = '0.00';
+        }
+
+
+        var sumqty_total =  total_stock - sumqty_garm  ;
+
+
+        if(isNaN(sumqty_total) )
+        {
+            sumqty_total = total_stock_nan;
+        }
+        // จำนวนก่อน ลบ
+        parseFloat($("#gram_"+i).val(sumqty_garm));
+        
+        // จำนวนทั้งหมด ลบ กรัม
+        parseFloat($("#total_stock_"+i).val(sumqty_total));
+
+    }
 //-----------------------------------------------------------------------------------------
     function senddata(data)
     {
          var form_data = new FormData();
          form_data.append("DATA",data);
-         var URL = '../process/process_rc.php';
+         var URL = '../process/packing_rc.php';
          $.ajax
          ({
             url: URL,
@@ -423,7 +398,7 @@ $Permission = $_SESSION['Permission'];
             {
                 try 
                 {
-                  var temp = $.parseJSON(result);
+                var temp = $.parseJSON(result);
                 } 
                 catch (e) 
                 {
@@ -453,62 +428,82 @@ $Permission = $_SESSION['Permission'];
                         $("#Employee").attr('disabled' , true );
                         $("#DocNo").attr('disabled' , true );
 
-                 
 
-                        // 1 วิเรียกใช้ Function
-                        setTimeout(() =>
-                        {
-                          ShowRefDocNo();
-                        }, 500);
                     }
-                    else if(temp["form"]=='ShowRefDocNo')
+                    else if(temp["form"]=='ShowItem')
                     {
-                        $( "#TableRefDocNo tbody" ).empty();
-
+                        $( "#Tableitem tbody" ).empty();
                               for (var i = 0; i < temp['Row']; i++) 
                               {
-                                  var chkinput = "<div class='custom-control custom-radio'><input type='radio' class='custom-control-input checkSingle checkRefDocNo' name='refrow'  value='"+temp[i]['DocNo']+"'  id= ' RefDocNo_id_"+i+" ' required><label class='custom-control-label ' for=' RefDocNo_id_"+i+" ' style='margin-top: 15px;'></label></div> ";
+                                var chkunit ="<select  class='form-control' style='width: 120px;'  id='iUnit_"+i+"' onchange='check_unit("+i+")'>";
+                                    $.each(temp['Unit'], function(key, val)
+                                    {
+                                        if(temp[i]['PackgeCode']==val.PackgeCode)
+                                        {
+                                            chkunit += '<option selected value=" '+val.PackgeCode+' " >'+val.PackgeName+'</option>';
+                                        }
+                                        else
+                                        {
+                                            chkunit += '<option value="' +val.PackgeCode+' ">'+val.PackgeName+'</option>';
+                                        }
+                                    });
+                                    chkunit += "</select>";
 
-                                   StrTR =   "<tr>"+
-                                                "<td>"+chkinput+"</td>"+
-                                                "<td>"+temp[i]['DocNo']+"</td>"+
-                                                "<td>"+temp[i]['DocDate']+"</td>"+
+                                  var chkinput = "<div class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input checkSingle checkitem'  value='"+i+"'  id= 'item_id_"+i+"' required><label class='custom-control-label ' for='item_id_"+i+"' style='margin-top: 15px;'></label></div> <input type='hidden' id='item_code_"+i+"' value='"+temp[i]['item_code']+"'> <input type='hidden' id='stock_code_"+i+"' value='"+temp[i]['stock_code']+"'>";
+                                  var Kilo = "<input type='text' id='Kilo_"+i+"' class='form-control ' autocomplete='off' style='text-align:right'  placeholder='0.00'  onkeyup='Sumitem(\""+i+"\" ) ' >  ";
+                                  var qtyperunit = "<input disabled type='text' id='qtyperunit_"+i+"' class='form-control '  value='"+temp[0]['Qtyperunit']+"'   autocomplete='off' style='text-align:right'  placeholder='0.00' >  ";
+                                  var total_stock = "<input disabled type='text' id='total_stock_"+i+"' class='form-control '  value='"+temp[i]['Grade']+"'   autocomplete='off' style='text-align:right'  placeholder='0.00' >  ";
+                                  var total_stock_nan = "<input hidden type='text' id='total_stock_nan_"+i+"' class='form-control '  value='"+temp[i]['Grade']+"'   autocomplete='off' style='text-align:right'  placeholder='0.00' >  ";
+                                  var gram = "<input disabled type='text' id='gram_"+i+"' class='form-control '     autocomplete='off' style='text-align:right'  placeholder='0.00' >  ";
+
+                                 StrTR = "<tr>"+
+                                                "<td >"+chkinput+"</td>"+
+                                                "<td style=' width: 15%; '>"+temp[i]['item_name']+"</td>"+
+                                                "<td  >"+total_stock+"</td>"+
+                                                "<td  >"+gram+"</td>"+
+                                                "<td style='width: 13%;'>"+temp[i]['DocNo']+"</td>"+
+                                                "<td  hidden>"+total_stock_nan+"</td>"+
+                                                "<td >"+Kilo+"</td>"+
+                                                "<td >"+qtyperunit+"</td>"+
+                                                "<td >"+chkunit+"</td>"+
                                                 "</tr>";
    
-                                   $('#TableRefDocNo tbody').append( StrTR );
+                                   $('#Tableitem tbody').append( StrTR );
                               }
-       
+                    }
+                    else if(temp["form"]=='check_unit')
+                    {
+                        $("#qtyperunit_"+temp['i']).val(temp['Qtyperunit']);
+
+                        Sumitem(temp['i']);
                     }
                     else if(temp["form"]=='ShowDetail')
                     {
                         $( "#TableDetail tbody" ).empty();
-
                               for (var i = 0; i < temp['Row']; i++) 
                               {
-                                var chkunit ="<select  class='form-control'  id='detailUnit_"+i+"' disabled style='width: 50%;' name='UnitArray'>";
+                                var chkunit ="<select  class='form-control'  id='detailUnit_"+i+"' disabled style='width: 50%;'>";
                                     $.each(temp['Unit'], function(key, val)
                                     {
-                                        if(temp[i]['UnitCode']==val.UnitCode)
+                                        if(temp[i]['UnitCode']==val.PackgeCode)
                                         {
-                                            chkunit += '<option selected value=" '+val.UnitCode+' ">'+val.UnitName+'</option>';
+                                            chkunit += '<option selected value=" '+val.PackgeCode+' " >'+val.PackgeName+'</option>';
                                         }
                                         else
                                         {
-                                            chkunit += '<option value="' +val.UnitCode+' ">'+val.UnitName+'</option>';
+                                            chkunit += '<option value="' +val.PackgeCode+' ">'+val.PackgeName+'</option>';
                                         }
                                     });
                                     chkunit += "</select>";
 
                                   var chkinput = "<div class='custom-control custom-radio'><input type='radio' class='custom-control-input checkSingle checkdetail' name='detailrow'  value='"+temp[i]['item_code']+"'  id= ' Detail_id_"+i+" ' required><label class='custom-control-label ' for=' Detail_id_"+i+" ' style='margin-top: 15px;'></label></div> ";
-                                  var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' autocomplete='off'  name='KiloArray'  placeholder='0.00' value='"+temp[i]['kilo']+"' style='  text-align: right;' disabled>  ";
-                                  var stock_code = "<input type='text'  name='stock_code'   value='"+temp[i]['stock_code']+"'  hidden>  ";
+                                  var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' style='text-align:right' autocomplete='off'  name='KiloArray'  placeholder='0.00' value='"+temp[i]['kilo']+"' disabled>  ";
 
-                                  StrTR =   "<tr>"+
+                                   StrTR =   "<tr>"+
                                                 "<td style='width:10%'>"+chkinput+"</td>"+
                                                 "<td style='width:40%'>"+temp[i]['item_name']+"</td>"+
                                                 "<td style='width:10%'>"+Kilo+"</td>"+
                                                 "<td style='width:20%'>"+chkunit+"</td>"+
-                                                "<td style='width:20%'>"+stock_code+"</td>"+
                                                 "</tr>";
    
                                    $('#TableDetail tbody').append( StrTR );
@@ -524,25 +519,15 @@ $Permission = $_SESSION['Permission'];
                                     
                                     if(temp[i]['IsStatus']==0)
                                     {
-                                        Status = "ยังไม่ได้แปรรูป";
+                                        Status = "ยังไม่ได้บันทึก";
                                         Style  = "style='color: #3399ff;'";
                                     }
                                     else if(temp[i]['IsStatus']==1)
                                     {
-                                        Status = "เรึ่มต้นการแปรรูป";
+                                        Status = "บันทึกสำเร็จ";
                                         Style  = "style='color: #20B80E;'";
                                     }
-                                    else if(temp[i]['IsStatus']==2)
-                                    {
-                                        Status = "แปรรูปเสร็จสิ้น";
-                                        Style  = "style='color: #20B80E;'";
-                                    }
-                                    else if(temp[i]['IsStatus']==3)
-                                    {
-                                        Status = "เสร็จสิ้นกระบวนการ";
-                                        Style  = "style='color: #20B80E;'";
-                                    }
-                                    else if(temp[i]['IsStatus']==3)
+                                    else if(temp[i]['IsStatus']==9)
                                     {
                                         Status = "ยกเลิกเอกสาร";
                                         Style  = "style='color: #ff0000;'";
@@ -551,7 +536,6 @@ $Permission = $_SESSION['Permission'];
                                     StrTR =   "<tr>"+
                                                 "<td >"+chkinput+"</td>"+
                                                 "<td>"+temp[i]['DocNo']+"</td>"+
-                                                "<td>"+temp[i]['RefDocNo']+"</td>"+
                                                 "<td>"+temp[i]['DocDate']+"</td>"+
                                                 "<td>"+temp[i]['Modify_Date']+"</td>"+
                                                 "<td>"+temp[i]['employee']+"</td>"+
@@ -564,6 +548,9 @@ $Permission = $_SESSION['Permission'];
                     }
                     else if(temp["form"]=='ShowDocNo')
                     {
+
+                        // 
+
                         // CLEAR DETAIL
                         $( "#TableDetail tbody" ).empty();
                         // 
@@ -571,34 +558,14 @@ $Permission = $_SESSION['Permission'];
                         $("#DocNo").val(temp[0]['DocNo']);
                         $("#docdate").val(temp[0]['DocDate']);
                         $("#ModifyDate").val(temp[0]['Modify_Date']);
-                        $("#RefDocNo").val(temp[0]['RefDocNo']);
                         $("#Employee").val(temp[0]['employee']);
-                        $("#process").val(temp[0]['start_process']);
-                        $("#endprocess").val(temp[0]['end_process']);
 
                         // DISABLED INPUT
                         $("#ModifyDate").attr('disabled' , true );
                         $("#docdate").attr('disabled' , true );
                         $("#Employee").attr('disabled' , true );
-                        $("#RefDocNo").attr('disabled' , true );
                         $("#DocNo").attr('disabled' , true );
                         // 
-                   
-                        if(temp[0]['IsRef_Status'] == 1)
-                        {
-                            $("#RefDocNo_text").val("เอกสารสั่งแปรรูป");
-                            $("#RefDocNo_text").attr('disabled' , true );
-                        }
-                        else if(temp[0]['IsRef_Status'] == 2)
-                        {
-                            $("#RefDocNo_text").val("เอกสารสั่งบรรจุภัณฑ์");
-                            $("#RefDocNo_text").attr('disabled' , true );
-                        }
-                        else
-                        {
-                            $("#RefDocNo_text").val("");
-                            $("#RefDocNo_text").attr('disabled' , false );
-                        }
 
                         if(temp[0]['IsStatus'] == 9)
                         {
@@ -621,39 +588,18 @@ $Permission = $_SESSION['Permission'];
                         }
                         else
                         {
-                            // check process  HSP = start_pro , HEP = end_pro , HS = Save
-                            if(temp[0]['IsStatus'] == 0)
-                            {   
-                                $("#HSP").attr('hidden' , false );
-                                $("#HEP").attr('hidden' , true );
-                                $("#HS").attr('hidden' , true );
-                            }
-                            else if (temp[0]['IsStatus'] == 1)
-                            {
-                                $("#HSP").attr('hidden' , true );
-                                $("#HEP").attr('hidden' , false );
-                                $("#HS").attr('hidden' , true );
-                            }
-                            else if (temp[0]['IsStatus'] == 2)
-                            {
-                                $("#HSP").attr('hidden' , true );
-                                $("#HEP").attr('hidden' , true );
-                                $("#HS").attr('hidden' , false );
-                            }
-                            else if (temp[0]['IsStatus'] == 3)
-                            {
-                                $("#HSP").attr('hidden' , true );
-                                $("#HEP").attr('hidden' , true );
-                                $("#HS").attr('hidden' , false );
-                            }
                             // disabled
                             $("#C").attr('disabled' , false );
+                            $("#A").attr('disabled' , false );
+                            $("#S").attr('disabled' , false );
                             $("#CB").attr('disabled' , false );
                             $("#P").attr('disabled' , false );
                             $("#D").attr('disabled' , false );
 
                             // addclass
                             $("#HC").addClass('boxshadowx');
+                            $("#HA").addClass('boxshadowx');
+                            $("#HS").addClass('boxshadowx');
                             $("#HCB").addClass('boxshadowx');
                             $("#HP").addClass('boxshadowx');
                             $("#HD").addClass('boxshadowx');
@@ -666,44 +612,6 @@ $Permission = $_SESSION['Permission'];
                         $('#v-pills-all-tab').tab('show')
                         // 
                     }
-                    else if(temp["form"]=='Startprocess')
-                    {
-                        $("#process").val(temp['start_process']);
-
-                        $("#HSP").attr('hidden' , true );
-
-                        $("#HEP").attr('hidden' , false );
-
-                    }
-                    else if(temp["form"]=='SaveRefDocNo')
-                    {
-                        $("#RefDocNo").val(temp['RefDocNo']);
-                        $("#RefDocNo").attr('disabled' , true );
-                        ShowDetail();
-
-                        if(temp['chk_ref_status'] == 1)
-                        {
-                            $("#RefDocNo_text").val("เอกสารสั่งแปรรูป");
-                        }
-                        else
-                        {
-                            $("#RefDocNo_text").val("เอกสารสั่งบรรจุภัณฑ์");
-                        }
-                        $("#RefDocNo_text").attr('disabled' , true );
-                    }
-                    else if(temp["form"]=='Endprocess')
-                    {
-                        $("#endprocess").val(temp['end_process']);
-
-                        $("#HSP").attr('hidden' , true );
-
-                        $("#HEP").attr('hidden' , true );
-
-                        $("#HS").attr('hidden' , false );
-
-
-                    }
-                    
                 }
                 else if (temp['status']=="failed") 
                 {
@@ -716,8 +624,8 @@ $Permission = $_SESSION['Permission'];
                                 $( "#TableDetail tbody" ).empty();
                                 temp['msg'] = "เอกสาร "+temp['DocNo']+" ไม่มีรายละเอียด ";
                         break;
-                    case "Reffail":
-                                temp['msg'] = "ไม่พบ "+temp['chk_ref_str']+" ของวันที่ "+temp['dateRefDocNo']+"  ";
+                    case "noinput":
+                                temp['msg'] = "<?php echo $array['noinputmsg'][$language]; ?>";
                         break;
                     case "notfound":
                                 temp['msg'] = "<?php echo $array['notfoundmsg'][$language]; ?>";
@@ -789,9 +697,6 @@ $Permission = $_SESSION['Permission'];
         .boxshadowx button:hover{
             color: #bcaaa4 !important;
           }
-          .datepicker{
-          z-index:9999 !important
-        }
     </style>
     <!-- Js -->
     <!--
@@ -858,7 +763,7 @@ $Permission = $_SESSION['Permission'];
                 <div class="col">
                     <h4>
                         <i class="icon icon-folder5"></i>
-                        บันทึกการแปรรูปข้าว
+                        บันทึกการสั่งบรรจุภัณฑ์ข้าว
                     </h4>
                 </div>
             </div>
@@ -866,11 +771,11 @@ $Permission = $_SESSION['Permission'];
                 <ul class="nav nav-material nav-material-white responsive-tab" id="v-pills-tab" role="tablist">
                     <li>
                         <a class="nav-link active" id="v-pills-all-tab" data-toggle="pill" href="#v-pills-all" role="tab" 
-                        aria-controls="v-pills-all"><i class="icon icon-home2"></i>การแปรรูปข้าว</a>
+                        aria-controls="v-pills-all"><i class="icon icon-home2"></i>สั่งบรรจุภัณฑ์ข้าว</a>
                     </li>
                     <li>
                         <a class="nav-link" id="v-pills-buyers-tab" data-toggle="pill" href="#v-pills-buyers" role="tab"
-                           aria-controls="v-pills-buyers" onclick=" ShowSearch();" ><i class="icon-search3" ></i> ค้นหา </a>
+                           aria-controls="v-pills-buyers"><i class="icon-search3"></i> ค้นหา </a>
                     </li>
                 </ul>
             </div>
@@ -907,34 +812,6 @@ $Permission = $_SESSION['Permission'];
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class='form-group row  text-black'>
-                        <label class=" col-sm-4 form-label  h4" >เอกสารอ้างอิง</label>
-                        <input type="text" autocomplete="off"   class=" col-sm-7 form-control " id="RefDocNo"   placeholder="เอกสารอ้างอิง" onclick="ShowRefDocNo();">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class='form-group row  text-black'>
-                        <label class=" col-sm-4 form-label  h4" >สถานะ</label>
-                        <input type="text" autocomplete="off"   class=" col-sm-7 form-control " id="RefDocNo_text"   placeholder="สถานะ" >
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class='form-group row  text-black'>
-                        <label class=" col-sm-4 form-label  h4" >เรึ่มต้นแปรรูป</label>
-                        <input type="text" autocomplete="off"   class=" col-sm-7 form-control " id="process"   placeholder="เรึ่มต้นแปรรูป" disabled>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class='form-group row  text-black'>
-                        <label class=" col-sm-4 form-label  h4" >สิ้นสุดแปรรูป</label>
-                        <input type="text" autocomplete="off"   class=" col-sm-7 form-control " id="endprocess"   placeholder="สิ้นสุดแปรรูป" disabled>
-                    </div>
-                </div>
-            </div>
 
             <div class="row box  col-md-12 my-3 d-flex justify-content-end">
 
@@ -945,35 +822,21 @@ $Permission = $_SESSION['Permission'];
                             </button>
                             </div>
 
-                            <div class=" ml-5 boxshadowx" id="HSP" >
-                            <button type="button" class="btn "  onclick="Startprocess();" id="SP">
-                                    <i class="icon-hourglass-1  lime darken-3 avatar-md circle avatar-letter"></i>
-                                    <div class="pt-1">เรึ่มต้นการแปรรูป</div>
+                            <div class=" ml-5 boxshadowx" id="HA">
+                            <button type="button" class="btn "  onclick="Additem();" id="A">
+                                    <i class="icon-add_circle blue lighten-2 avatar-md circle avatar-letter"></i>
+                                    <div class="pt-1">เพิ่มรายการ</div>
                             </button>
                             </div>
 
-                            <div class=" ml-5 boxshadowx" id="HEP" hidden>
-                            <button type="button" class="btn "  onclick="Endprocess();" id="EP">
-                                    <i class="icon-hourglass-end green darken-3 avatar-md circle avatar-letter"></i>
-                                    <div class="pt-1">สิ้นสุดการแปรรูป</div>
-                            </button>
-                            </div>
-
-                            <div class=" ml-5 boxshadowx" id="HS" hidden>
-                            <button type="button" class="btn " onclick="Successprocess();"  id="S">
-                                    <i class="icon-save2 green lighten-2 avatar-md circle avatar-letter"></i>
-                                    <div class="pt-1">บันทึก</div>
-                            </button>
-                            </div>
-
-                            <div class=" ml-5 boxshadowx" id="HD" hidden>
+                            <div class=" ml-5 boxshadowx" id="HD">
                             <button type="button" class="btn " onclick="Deleteitem()" id="D">
                                     <i class="icon-delete  red lighten-2 avatar-md circle avatar-letter"></i>
                                     <div class="pt-1">ลบรายการ</div>
                             </button>
                             </div>
 
-                            <div class=" ml-5 boxshadowx" id="HS" hidden>
+                            <div class=" ml-5 boxshadowx" id="HS">
                             <button type="button" class="btn " onclick="Savebill()" id="S">
                                     <i class="icon-save2 green lighten-2 avatar-md circle avatar-letter"></i>
                                     <div class="pt-1">บันทึก</div>
@@ -1006,8 +869,8 @@ $Permission = $_SESSION['Permission'];
                                         <thead id="theadsum" >
                                         <tr class="no-b">
                                             <th>NO.</th>
-                                            <th style="width : 50%;">ชื่อรายการ</th>
-                                            <th>ปริมาณ(กก)</th>
+                                            <th>ชื่อรายการ</th>
+                                            <th>ปริมาณ</th>
                                             <th>หน่วยนับ</th>
                                         </tr>
                                         </thead>
@@ -1050,7 +913,6 @@ $Permission = $_SESSION['Permission'];
                                         <tr class="no-b">
                                             <th>NO.</th>
                                             <th>เลขที่เอกสาร</th>
-                                            <th>เอกสารขอเบิก</th>
                                             <th>วันที่เอกสาร</th>
                                             <th>วันที่บันทึก</th>
                                             <th>ผู้บันทึก</th>
@@ -1080,39 +942,28 @@ $Permission = $_SESSION['Permission'];
     <div class="control-sidebar-bg shadow white fixed"></div>
 </div>
 
-
-<!--------------------------------------- Modal RefDocNo  ------------------------------------------>
-<div class="modal fade" id="ShowRefDocNo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!--------------------------------------- Modal add_customer  ------------------------------------------>
+<div class="modal fade" id="Additem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
+    <div class="modal-content" style='width : 140%;'>
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">เอกสารการขอเบิก</h5>
+        <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">เพิ่ม รายการ</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <div class="row ">
-        <div class="col-md-4 mt-2 ">
-                <select  autocomplete="off" class ="form-control "  id="chk_ref_status">
-                    <option value="1">เอกสารสั่งแปรรูป</option> 
-                    <option value="2">เอกสารสั่งบรรจุภัณฑ์</option> 
-                </select>
-            </div>
-            <div class="col-md-4 mt-2 ">
-                <input type="text" autocomplete="off" class ="form-control datepicker-here" id="dateRefDocNo" data-language='en' data-date-format='yyyy-mm-dd' placeholder="ค้นหาจากวันที่">
-            </div>
-            <div class="col-md-4  mt-2 ">
-                <button type="button" class="btn btn-primary btn-lg" onclick="ShowRefDocNo()">
-                <i class="icon-search3"></i> ค้นหา </button>
-            </div>
-        </div>
-      <table class="table table-striped table-hover r-0" id="TableRefDocNo">
+      <table class="table table-striped table-hover r-0" id="Tableitem">
                                         <thead id="theadsum" >
                                         <tr class="no-b">
                                             <th></th>
-                                            <th>เลขที่เอกสาร</th>
-                                            <th>วันที่เอกสาร</th>
+                                            <th>ชื่อรายการ</th>
+                                            <th>จำนวนทั้งหมด</th>
+                                            <th>กิโลกรัม</th>
+                                            <th>ลอต</th>
+                                            <th>ปริมาณ</th>
+                                            <th>กรัม</th>
+                                            <th>หน่วยบรรจุภัณฑ์</th>
                                         </tr>
                                         </thead>
 
@@ -1123,12 +974,12 @@ $Permission = $_SESSION['Permission'];
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">ยกเลิก</button>
-        <button type="button"  class="btn btn-success" onclick="SaveRefDocNo()">ยืนยัน</button>
+        <button type="button"  class="btn btn-success" onclick="Importdata()">ยืนยัน</button>
       </div>
     </div>
   </div>
 </div>
-<!-------------------------- end RefDocNo Modal ----------------------------------------------->
+<!-------------------------- end add_customer Modal ----------------------------------------------->
 <!--/#app -->
 <script src="assets/js/app.js"></script>
 

@@ -37,9 +37,13 @@ $Permission = $_SESSION['Permission'];
 
         function showchartbuy()
         {
+
+            var type_chart = $("#type_chart").val();
+            
             var data = 
                 {
-                    'STATUS'      : 'showchartbuy'
+                    'STATUS'      : 'showchartbuy',
+                    'type_chart' : type_chart
                 };
                 senddata(JSON.stringify(data));
         }
@@ -79,8 +83,6 @@ $Permission = $_SESSION['Permission'];
 
                             var showdatebuy = "ยอดซื้อลำไยประจำวัน ( "+temp[0]['DocDate']+" ) "
                             $("#datebuy").text(showdatebuy);
-
-
                             
                             var name = [];
                             var marks = [];
@@ -105,7 +107,7 @@ $Permission = $_SESSION['Permission'];
 
                                         var graphTarget = $("#graphCanvas");
                                         var barGraph = new Chart(graphTarget, {
-                                            type: 'bar',
+                                            type: temp['type_chart'],
                                             data: chartdata
                                         });
                         }
@@ -272,6 +274,15 @@ $Permission = $_SESSION['Permission'];
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="card " id="chartbuy">
                     <div class='card-header white'> 
+                    <select class="form-control mb-3" onchange="showchartbuy()" id="type_chart">
+                        <option value="bar">bar</option>
+                        <option value="line">line</option>
+                        <option value="radar">radar</option>
+                        <option value="pie">pie</option>
+                        <option value="doughnut">doughnut</option>
+                        <option value="polarArea">polarArea</option>
+
+                    </select>
                         <strong id="datebuy"> </strong>
                     </div>
                     <div class="card-body p-0">
@@ -283,7 +294,7 @@ $Permission = $_SESSION['Permission'];
             </div>
 
  <!-- bar chart -->
-            <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="col-md-6 col-sm-6 col-xs-12" hidden>
                 <div class="card " id="chartbuy">
                     <div class='card-header white'> 
                         <select class="form-control "></select>

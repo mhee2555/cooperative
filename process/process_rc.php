@@ -84,11 +84,15 @@ function ShowDetail($conn, $DATA)
               pld.item_code,
               item.item_name,
               pld.kilo,
-              pld.UnitCode
+              pld.UnitCode,
+              pld.stock_code,
+              process_rice.IsRef_Status
             FROM
-            process_rice_detail pld
+              process_rice_detail pld 
             INNER JOIN item ON item.item_code = pld.item_code
+            INNER JOIN process_rice ON process_rice.DocNo = pld.RC_DocNo
             WHERE RC_DocNo = '$DocNo' ";
+            
             $meQuery = mysqli_query($conn, $Detail);
             while ($Result = mysqli_fetch_assoc($meQuery)) 
             {
@@ -97,23 +101,43 @@ function ShowDetail($conn, $DATA)
               $return[$count]['item_name']      = $Result['item_name'];
               $return[$count]['kilo']           = $Result['kilo'];
               $return[$count]['UnitCode']       = $Result['UnitCode'];
-
+              $return[$count]['stock_code']     = $Result['stock_code'];
+              $IsRef_Status                     = $Result['IsRef_Status'];
               $count ++ ;
               $boolean = true;
             }
             $return['Row'] = $count;
 
+
+
             $cntUnit = 0;
-            $xSql = "SELECT item_unit.UnitCode,item_unit.UnitName
-            FROM item_unit  ";
-            $xQuery = mysqli_query($conn, $xSql);
-            while ($xResult = mysqli_fetch_assoc($xQuery))
+            if($IsRef_Status == 1 )
             {
-              $return['Unit'][$cntUnit]['UnitCode'] = $xResult['UnitCode'];
-              $return['Unit'][$cntUnit]['UnitName'] = $xResult['UnitName'];
-              $cntUnit++;
+              $xSql = "SELECT item_unit.UnitCode,item_unit.UnitName
+              FROM item_unit  ";
+              $xQuery = mysqli_query($conn, $xSql);
+              while ($xResult = mysqli_fetch_assoc($xQuery))
+              {
+                $return['Unit'][$cntUnit]['UnitCode'] = $xResult['UnitCode'];
+                $return['Unit'][$cntUnit]['UnitName'] = $xResult['UnitName'];
+                $cntUnit++;
+              }
+            }
+            else
+            {
+              $xSql = "SELECT packge_unit.PackgeCode,packge_unit.PackgeName , packge_unit.Qtyperunit
+              FROM packge_unit  ";
+              $xQuery = mysqli_query($conn, $xSql);
+              while ($xResult = mysqli_fetch_assoc($xQuery))
+              {
+                $return['Unit'][$cntUnit]['UnitCode'] = $xResult['PackgeCode'];
+                $return['Unit'][$cntUnit]['UnitName'] = $xResult['PackgeName'];
+                $return[$cntUnit]['Qtyperunit'] = $xResult['Qtyperunit'];
+                $cntUnit++;
+              }
             }
 
+              
   if ($boolean) 
   {
     $return['status'] = "success";
@@ -147,7 +171,7 @@ function ShowSearch($conn, $DATA)
                   pl.IsStatus ,
                   pl.RefDocNo
                 FROM
-                process_rice pl
+                  process_rice pl
                 INNER JOIN employee emp ON emp.ID = pl.Employee_ID
                 WHERE pl.DocDate = '$datepicker' ORDER BY pl.DocNo DESC ";
 
@@ -191,15 +215,39 @@ function ShowRefDocNo($conn, $DATA)
   $count = 0;
   $boolean = false;
   $dateRefDocNo  = $DATA["dateRefDocNo"]==''?date('Y-m-d'):$DATA["dateRefDocNo"];
+  $chk_ref_status  = $DATA["chk_ref_status"];
+
+  if($chk_ref_status ==1)
+  {
+    $chk_ref_str = 'เอกสารสั่งแปรรูป' ;
+  }
+  else if ($chk_ref_status == 2)
+  {
+    $chk_ref_str = 'เอกสารสั่งบรรจุภัณฑ์' ;
+  }
   // ===========================================
-  $SelectDraw = "SELECT
-                  DocNo,
-                  DocDate 
-                FROM
-                  draw_rice 
-                WHERE
-                  IsStatus = 2 AND IsRef = 0 AND DocDate = '$dateRefDocNo' ";
-      $meQuery = mysqli_query($conn, $SelectDraw);
+
+  if($chk_ref_status == 1 )
+  {
+    $Selectdraw_rice = "SELECT
+                    DocNo,
+                    DocDate 
+                  FROM
+                    draw_rice 
+                  WHERE
+                    IsStatus = 2 AND IsRef = 0 AND DocDate = '$dateRefDocNo' ";
+  }
+  else if($chk_ref_status == 2)
+  {
+    $Selectdraw_rice = "SELECT
+                    DocNo,
+                    DocDate 
+                  FROM
+                    packing_rice 
+                  WHERE
+                    IsStatus = 1 AND IsRef = 0 AND DocDate = '$dateRefDocNo' ";
+  }
+      $meQuery = mysqli_query($conn, $Selectdraw_rice);
       while ($Result = mysqli_fetch_assoc($meQuery)) 
       {
         $return[$count]['DocNo']         = $Result['DocNo'];
@@ -212,7 +260,7 @@ function ShowRefDocNo($conn, $DATA)
       // ========================================
     if ($boolean) 
     {
-      $return['sql'] = $SelectDraw;
+      $return['sql'] = $Selectdraw_rice;
       $return['status'] = "success";
       $return['form'] = "ShowRefDocNo";
       echo json_encode($return);
@@ -221,8 +269,10 @@ function ShowRefDocNo($conn, $DATA)
     }
     else
     {
-      $return['sql'] = $SelectDraw;
-      $return['status'] = "success";
+      $return['sql'] = $Selectdraw_rice;
+      $return['chk_ref_str'] = $chk_ref_str;
+      $return['dateRefDocNo'] = $dateRefDocNo;
+      $return['status'] = "failed";
       $return['form'] = "ShowRefDocNo";
       $return['msg'] = "Reffail";
       echo json_encode($return);
@@ -236,29 +286,49 @@ function SaveRefDocNo($conn, $DATA)
   $boolean = false;
   $RefDocNo  = $DATA["RefDocNo"];
   $DocNo  = $DATA["DocNo"];
+  $chk_ref_status  = $DATA["chk_ref_status"];
   // ===========================================
-  $updateRef = "UPDATE process_rice , draw_rice SET process_rice.RefDocNo = '$RefDocNo' , draw_rice.IsRef = 1 WHERE process_rice.DocNo = '$DocNo' AND draw_rice.DocNo = '$RefDocNo' "; 
+  if($chk_ref_status ==1)
+  {
+    $updateRef = "UPDATE process_rice , draw_rice SET process_rice.RefDocNo = '$RefDocNo' , draw_rice.IsRef = 1 , process_rice.IsRef_Status = $chk_ref_status WHERE process_rice.DocNo = '$DocNo' AND draw_rice.DocNo = '$RefDocNo' "; 
+  }
+  else
+  {
+    $updateRef = "UPDATE process_rice , packing_rice SET process_rice.RefDocNo = '$RefDocNo' , packing_rice.IsRef = 1 , process_rice.IsRef_Status = $chk_ref_status WHERE process_rice.DocNo = '$DocNo' AND packing_rice.DocNo = '$RefDocNo' "; 
+  }
   mysqli_query($conn, $updateRef);
-
   // ==========================================
-  
-  $slectdraw = "SELECT
-                  draw_rice_detail.item_code, 
-                  draw_rice_detail.kilo,
-                  draw_rice_detail.UnitCode
-                FROM
-                  draw_rice_detail
-                WHERE draw_DocNo = '$RefDocNo' " ;
-
-      $meQuery = mysqli_query($conn, $slectdraw);
+  if($chk_ref_status ==1)
+  {
+    $slectdraw_rice = "SELECT
+                    draw_rice_detail.item_code, 
+                    draw_rice_detail.kilo,
+                    draw_rice_detail.UnitCode
+                  FROM
+                    draw_rice_detail
+                  WHERE draw_DocNo = '$RefDocNo' " ;
+  }
+  else
+  {
+    $slectdraw_rice = "SELECT
+                    packing_rice_detail.item_code, 
+                    packing_rice_detail.kilo,
+                    packing_rice_detail.UnitCode,
+                    packing_rice_detail.stock_code
+                  FROM
+                    packing_rice_detail
+                  WHERE Pk_DocNo = '$RefDocNo' " ;
+  }
+      $meQuery = mysqli_query($conn, $slectdraw_rice);
       while ($Result = mysqli_fetch_assoc($meQuery)) 
       {
         $item_code  = $Result['item_code'];
         $kilo       = $Result['kilo'];
         $UnitCode   = $Result['UnitCode'];
+        $stock_code   = $Result['stock_code']==null?0:$Result['stock_code'];
 
-        // insert draw detail to proces_lg
-        $insertpro = "INSERT INTO process_rice_detail SET RC_DocNo = '$DocNo' , item_code = '$item_code' , kilo = '$kilo' , UnitCode = '$UnitCode'  ";
+        // insert draw_rice detail to proces_lg
+        $insertpro = "INSERT INTO process_rice_detail SET RC_DocNo = '$DocNo' , item_code = '$item_code' , kilo = '$kilo' , UnitCode = '$UnitCode' , stock_code = '$stock_code'";
         mysqli_query($conn, $insertpro);
 
         $boolean = true;
@@ -266,6 +336,7 @@ function SaveRefDocNo($conn, $DATA)
 
       if ($boolean) 
       {
+        $return['chk_ref_status'] = $chk_ref_status;
         $return['RefDocNo'] = $RefDocNo;
         $return['status'] = "success";
         $return['form'] = "SaveRefDocNo";
@@ -367,12 +438,125 @@ function Endprocess($conn, $DATA)
 }
 function Successprocess($conn, $DATA)
 {
+  $KiloArray  = $DATA["Kilo"];
+  $ItemCodeArray  = $DATA["ItemCode"];
+  $UnitArray  = $DATA["Unit"];
   $DocNo  = $DATA["DocNo"];
+  $stock_code  = $DATA["stock_code"];
   $boolean = false;
   $count = 0;
 
-  $Sql = "UPDATE process_rice SET IsStatus = 3 WHERE process_rice.DocNo = '$DocNo' ";
-  mysqli_query($conn, $Sql);
+  // ========================================
+  $ItemCode = explode(",", $ItemCodeArray);
+  $Kilo = explode(",", $KiloArray);
+  $Unit = explode(",", $UnitArray);
+  $stock_codex = explode(",", $stock_code);
+  // ========================================
+
+
+  //==========================================================================================================
+  $Sql_status = "SELECT IsRef_Status FROM process_rice WHERE DocNo = '$DocNo' ";
+  $meQuery = mysqli_query($conn, $Sql_status);
+  $Result = mysqli_fetch_assoc($meQuery); 
+  $Status_ref = $Result['IsRef_Status'];
+
+  // 2 = สั่งบรรจุภัณฑ์
+  if($Status_ref == 2)
+  {
+    // INSERT STOCK
+    foreach ($ItemCode as $key => $value)
+    {
+      // $SELECT_COUNT = "SELECT COUNT(*) AS cnt FROM stock_package WHERE item_code = '$value' AND PackgeCode = '$Unit[$key]' ";
+      // $meQuery = mysqli_query($conn, $SELECT_COUNT);
+      // $Result = mysqli_fetch_assoc($meQuery); 
+      // $cnt = $Result['cnt'];
+
+      // if($cnt >= 1)
+      // {
+      //   $UPDATE_STOCK = "UPDATE 
+      //                       stock_package
+      //                   SET  
+      //                       item_code = '$value',
+      //                       item_qty = ( item_qty + '$Kilo[$key]' ),
+      //                       item_ccqty = ( item_ccqty + '$Kilo[$key]' ),
+      //                       PackgeCode = '$Unit[$key]',
+      //                       Date_start = NOW(),
+      //                       Date_exp = NOW() + INTERVAL 1 DAY 
+      //                   WHERE item_code = '$value' ";  
+      //               mysqli_query($conn, $UPDATE_STOCK);
+                    
+      //     // ========================================================================================
+      //               $selectunit = "SELECT
+      //                                 packge_unit.Qtyperunit 
+      //                               FROM
+      //                                 packge_unit 
+      //                               WHERE
+      //                                 PackgeCode = '$Unit[$key]' ";
+      //               $meQuery = mysqli_query($conn, $selectunit);
+      //               $Result = mysqli_fetch_assoc($meQuery);
+      //               $Qtyperunit = $Result['Qtyperunit'];
+      //               $total_gram = ($Kilo[$key] * $Qtyperunit) / 1000 ;
+      
+      //               $UPDATE_STOCKx = "UPDATE 
+      //                                   stock_process
+      //                               SET  
+      //                                   item_ccqty = ( item_ccqty - '$total_gram' )
+      //                               WHERE stock_code = '$stock_codex[$key]' ";  
+      //                           mysqli_query($conn, $UPDATE_STOCKx);
+
+      //      // ========================================================================================
+                   
+      // }
+      // else
+      // {
+        $INSERT_STOCK = "INSERT INTO 
+                          stock_package
+                         SET  
+                          item_code = '$value',
+                          item_qty = '$Kilo[$key]',
+                          item_ccqty = '$Kilo[$key]',
+                          PackgeCode = '$Unit[$key]',
+                          DocNo = '$DocNo',
+                          Date_start = NOW(),
+                          Date_exp = NOW() + INTERVAL 1 DAY ";  
+                  mysqli_query($conn, $INSERT_STOCK);
+
+          // ========================================================================================
+          $selectunit = "SELECT
+                          packge_unit.Qtyperunit 
+                        FROM
+                          packge_unit 
+                        WHERE
+                          PackgeCode = '$Unit[$key]' ";
+                $meQuery = mysqli_query($conn, $selectunit);
+                $Result = mysqli_fetch_assoc($meQuery);
+                $Qtyperunit = $Result['Qtyperunit'];
+                $total_gram = ($Kilo[$key] * $Qtyperunit) / 1000 ;
+
+                $UPDATE_STOCKx = "UPDATE 
+                            stock_process
+                        SET  
+                            item_ccqty = ( item_ccqty - '$total_gram' )
+                        WHERE stock_code = '$stock_codex[$key]' ";  
+                    mysqli_query($conn, $UPDATE_STOCKx);
+
+// ========================================================================================
+
+      // }
+    }
+  }
+  else
+  {
+    // สั่งแปรรูป นำstatus ไปอ้่างอิงต่อ 
+    $Sql = "UPDATE process_rice SET IsStatus = 3 WHERE process_rice.DocNo = '$DocNo' ";
+    mysqli_query($conn, $Sql);
+  }
+
+
+
+  //==========================================================================================================
+
+
 
   ShowSearch($conn, $DATA);
 
@@ -393,9 +577,10 @@ function ShowDocNo($conn, $DATA)
                   pl.IsStatus ,
                   pl.RefDocNo ,
                   pl.start_process ,
-                  pl.end_process 
+                  pl.end_process ,
+                  pl.IsRef_Status
                 FROM
-                process_rice pl
+                  process_rice pl
                 INNER JOIN employee emp ON emp.ID = pl.Employee_ID
                 WHERE pl.DocNo = '$DocNo' ";
 
@@ -408,6 +593,7 @@ function ShowDocNo($conn, $DATA)
       $return[$count]['Modify_Date']   = $Result['Modify_Date'];
       $return[$count]['employee']      = $Result['employee'];
       $return[$count]['IsStatus']      = $Result['IsStatus'];
+      $return[$count]['IsRef_Status']      = $Result['IsRef_Status'];
       $return[$count]['start_process']      = $Result['start_process']==null?"":$Result['start_process'];
       $return[$count]['end_process']      = $Result['end_process']==null?"":$Result['end_process'];
 

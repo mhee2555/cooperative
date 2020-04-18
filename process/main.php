@@ -9,7 +9,7 @@ function showchartbuy($conn, $DATA)
   $boolean = false;
   $count = 0;
   $datepicker  = $DATA["datepicker"]==''?date('Y-m-d'):$DATA["datepicker"];
-
+  $type_chart  = $DATA["type_chart"];
   $Selectchart = "SELECT
                     SUM(kilo) AS kilo,
                     item.item_name,
@@ -38,6 +38,8 @@ function showchartbuy($conn, $DATA)
 
   if ($boolean) 
   {
+     
+    $return['type_chart'] = $type_chart;
     $return['status'] = "success";
     $return['form'] = "showchartbuy";
     echo json_encode($return);

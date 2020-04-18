@@ -13,11 +13,11 @@ function CreateDocument($conn, $DATA)
 
   // ============CREATEDOCUMENT====================
 
-  $Sql = "SELECT CONCAT('SLG',SUBSTRING(YEAR(DATE(NOW())),3,4),LPAD(MONTH(DATE(NOW())),2,0),'-',
+  $Sql = "SELECT CONCAT('SRC',SUBSTRING(YEAR(DATE(NOW())),3,4),LPAD(MONTH(DATE(NOW())),2,0),'-',
   LPAD( (COALESCE(MAX(CONVERT(SUBSTRING(DocNo,10,5),UNSIGNED INTEGER)),0)+1) ,5,0)) AS DocNo,DATE(NOW()) AS DocDate,
   CURRENT_TIME() AS RecNow
-  FROM sale_longan
-  WHERE DocNo Like CONCAT('SLG',SUBSTRING(YEAR(DATE(NOW())),3,4),LPAD(MONTH(DATE(NOW())),2,0),'%')
+  FROM sale_rice
+  WHERE DocNo Like CONCAT('SRC',SUBSTRING(YEAR(DATE(NOW())),3,4),LPAD(MONTH(DATE(NOW())),2,0),'%')
   ORDER BY DocNo DESC LIMIT 1";
 
   $meQuery = mysqli_query($conn, $Sql);
@@ -32,7 +32,7 @@ function CreateDocument($conn, $DATA)
 
   if ($count == 1) 
   {
-      $Sqlx = "INSERT INTO sale_longan (
+      $Sqlx = "INSERT INTO sale_rice (
                     DocNo,
                     DocDate,
                     Modify_Date,
@@ -111,7 +111,7 @@ function ShowItem($conn, $DATA)
           WHERE 
            sup.item_ccqty <> 0 
           AND TIMEDIFF(sup.Date_exp , NOW() ) > 0
-          AND item.item_type = '4'
+          AND item.item_type = '3'
           AND DATE(sup.Date_start) = '$datestock'";
 
     $meQuery = mysqli_query($conn, $Sql);
@@ -186,7 +186,7 @@ function Importdata($conn, $DATA)
     $count = " SELECT
                 COUNT(*) AS Cnt
                FROM
-                sale_longan_detail
+                sale_rice_detail
                WHERE
                   Sale_DocNo = '$DocNo'
                AND item_code = '$value'
@@ -198,7 +198,7 @@ function Importdata($conn, $DATA)
 
     if ($chkUpdate == 0) 
     {
-      $insert = "INSERT INTO  sale_longan_detail
+      $insert = "INSERT INTO  sale_rice_detail
                   SET 
                       Sale_DocNo = '$DocNo',
                       item_code = '$value',
@@ -211,7 +211,7 @@ function Importdata($conn, $DATA)
     }
     else
     {
-      $update = "UPDATE  sale_longan_detail
+      $update = "UPDATE  sale_rice_detail
                  SET 
                       Sale_DocNo = '$DocNo',
                       item_code = '$value',
@@ -247,7 +247,7 @@ function ShowDetail($conn, $DATA)
               dd.PackgeCode,
               stock_package.stock_code
             FROM
-              sale_longan_detail dd
+              sale_rice_detail dd
             INNER JOIN item ON item.item_code = dd.item_code
             INNER JOIN stock_package ON stock_package.stock_code = dd.stock_code
             WHERE dd.Sale_DocNo = '$DocNo' ";
@@ -271,7 +271,7 @@ function ShowDetail($conn, $DATA)
 
 
 
-            $UPDATE = "UPDATE sale_longan SET Total = $Total WHERE DocNo = '$DocNo' ";
+            $UPDATE = "UPDATE sale_rice SET Total = $Total WHERE DocNo = '$DocNo' ";
             mysqli_query($conn, $UPDATE);
 
 
@@ -369,7 +369,7 @@ function ShowSearch($conn, $DATA)
                   emp.FName AS employee ,
                   bp.IsStatus
                 FROM
-                  sale_longan bp
+                  sale_rice bp
                 INNER JOIN employee emp ON emp.ID = bp.Employee_ID
                 INNER JOIN users ON users.ID = bp.Customer_ID
                 WHERE bp.DocDate = '$datepicker' ORDER BY bp.DocNo DESC ";
@@ -439,7 +439,7 @@ function Savebill($conn, $DATA)
   }
 
   //UPDATE STATUS 
-  $Sql = "UPDATE sale_longan SET IsStatus = 1 , Modify_Date = TIME(NOW())  WHERE sale_longan.DocNo = '$DocNo'";
+  $Sql = "UPDATE sale_rice SET IsStatus = 1 , Modify_Date = TIME(NOW())  WHERE sale_rice.DocNo = '$DocNo'";
   mysqli_query($conn, $Sql);
 
 
@@ -454,7 +454,7 @@ function Cancelbill($conn, $DATA)
   $boolean = false;
   $count = 0;
 
-  $Sql = "UPDATE sale_longan SET IsStatus = 9 WHERE sale_longan.DocNo = '$DocNo'";
+  $Sql = "UPDATE sale_rice SET IsStatus = 9 WHERE sale_rice.DocNo = '$DocNo'";
   mysqli_query($conn, $Sql);
 
   ShowSearch($conn, $DATA);
@@ -477,7 +477,7 @@ function ShowDocNo($conn, $DATA)
                   emp.FName AS employee ,
                   bp.IsStatus
                 FROM
-                  sale_longan bp
+                  sale_rice bp
                 INNER JOIN employee emp ON emp.ID = bp.Employee_ID
                 INNER JOIN users ON users.ID = bp.Customer_ID
                 WHERE bp.DocNo = '$DocNo' ";
@@ -542,7 +542,7 @@ function Deleteitem($conn, $DATA)
   $DocNo  = $DATA["DocNo"];
   $itemcode  = $DATA["itemcode"];
 
-  $Delete = "DELETE FROM sale_longan_detail WHERE item_code = '$itemcode' AND Buy_DocNo = '$DocNo' ";
+  $Delete = "DELETE FROM sale_rice_detail WHERE item_code = '$itemcode' AND Buy_DocNo = '$DocNo' ";
   mysqli_query($conn, $Delete);
 
   ShowDetail($conn, $DATA);

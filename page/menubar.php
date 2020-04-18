@@ -66,11 +66,11 @@
                     </li>
                     <li><a href="packing_lg.php" ><i class="icon icon-folder5"></i>สั่งบรรจุภัณฑ์ลำไย</a>
                     </li>
-                    <li><a href="panel-page-dashboard2.html" ><i class="icon icon-folder5"></i>สั่งบรรจุภัณฑ์ข้าว</a>
+                    <li><a href="packing_rc.php" ><i class="icon icon-folder5"></i>สั่งบรรจุภัณฑ์ข้าว</a>
                     </li>
                     <li><a href="sale_lg.php" ><i class="icon icon-folder5"></i>บันทึกการขายลำไย</a>
                     </li>
-                    <li><a href="panel-page-dashboard2.html" ><i class="icon icon-folder5"></i>บันทึกการขายข้าว</a>
+                    <li><a href="sale_rc.php" ><i class="icon icon-folder5"></i>บันทึกการขายข้าว</a>
                     </li>
                     <li><a href="transport.php" ><i class="icon icon-folder5"></i>ขนส่ง</a>
                     </li>

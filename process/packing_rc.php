@@ -9,15 +9,14 @@ function CreateDocument($conn, $DATA)
   $boolean = false;
   $count = 0;
   $Employee_ID   = $DATA["userid"];
-  $Customer_ID   = $DATA["Customer"];
-
+  
   // ============CREATEDOCUMENT====================
 
-  $Sql = "SELECT CONCAT('SLG',SUBSTRING(YEAR(DATE(NOW())),3,4),LPAD(MONTH(DATE(NOW())),2,0),'-',
+  $Sql = "SELECT CONCAT('PKR',SUBSTRING(YEAR(DATE(NOW())),3,4),LPAD(MONTH(DATE(NOW())),2,0),'-',
   LPAD( (COALESCE(MAX(CONVERT(SUBSTRING(DocNo,10,5),UNSIGNED INTEGER)),0)+1) ,5,0)) AS DocNo,DATE(NOW()) AS DocDate,
   CURRENT_TIME() AS RecNow
-  FROM sale_longan
-  WHERE DocNo Like CONCAT('SLG',SUBSTRING(YEAR(DATE(NOW())),3,4),LPAD(MONTH(DATE(NOW())),2,0),'%')
+  FROM packing_rice
+  WHERE DocNo Like CONCAT('PKR',SUBSTRING(YEAR(DATE(NOW())),3,4),LPAD(MONTH(DATE(NOW())),2,0),'%')
   ORDER BY DocNo DESC LIMIT 1";
 
   $meQuery = mysqli_query($conn, $Sql);
@@ -32,20 +31,18 @@ function CreateDocument($conn, $DATA)
 
   if ($count == 1) 
   {
-      $Sqlx = "INSERT INTO sale_longan (
+      $Sqlx = "INSERT INTO packing_rice (
                     DocNo,
                     DocDate,
                     Modify_Date,
-                    Employee_ID,
-                    Customer_ID
+                    Employee_ID
                   )
                   VALUES
                     (
                       '$DocNo',
                       DATE(NOW()),
                       TIME(NOW()),
-                      $Employee_ID,
-                      $Customer_ID
+                      $Employee_ID
                     )";
 
         mysqli_query($conn, $Sqlx);
@@ -92,59 +89,47 @@ function ShowItem($conn, $DATA)
 {
   $count = 0;
   $boolean = false;
-  $datestock   = $DATA["datestock"]==''?date('Y-m-d'):$DATA["datestock"];
 
   $Sql = "SELECT
-          item.item_name ,
-          item.item_code ,
-          sup.stock_code,
-          sup.item_qty,
-          sup.item_ccqty,
-          TIME(sup.Date_exp) as date_exp,
-          sup.DocNo,
-          sup.PackgeCode,
-          packge_unit.Priceperunit
+            item.item_code,
+            item.item_name,
+            item_qty,
+            stock_process.stock_code,
+            stock_process.DocNo
           FROM
-          stock_package sup
-          INNER JOIN item ON item.item_code = sup.item_code 
-          INNER JOIN packge_unit ON packge_unit.PackgeCode = sup.PackgeCode 
-          WHERE 
-           sup.item_ccqty <> 0 
-          AND TIMEDIFF(sup.Date_exp , NOW() ) > 0
-          AND item.item_type = '4'
-          AND DATE(sup.Date_start) = '$datestock'";
-
+            item
+          INNER JOIN stock_process ON stock_process.item_code = item.item_code
+          WHERE item_type = '3'  ";
     $meQuery = mysqli_query($conn, $Sql);
     while ($Result = mysqli_fetch_assoc($meQuery)) 
     {
-      $return[$count]['DocNo'] = $Result['DocNo'];
-      $return[$count]['item_name'] = $Result['item_name'];
       $return[$count]['item_code'] = $Result['item_code'];
+      $return[$count]['item_name'] = $Result['item_name'];
+      $return[$count]['Grade'] = $Result['item_qty'];
       $return[$count]['stock_code'] = $Result['stock_code'];
-      $return[$count]['item_qty'] = $Result['item_qty'];
-      $return[$count]['item_ccqty'] = $Result['item_ccqty'];
-      $return[$count]['date_exp'] = $Result['date_exp'];
-      $return[$count]['PackgeCode'] = $Result['PackgeCode'];
-      $return[$count]['Priceperunit'] = $Result['Priceperunit'];
+      $return[$count]['DocNo'] = $Result['DocNo'];
       $count++;
       $boolean = true;
     }
     $return['Row'] = $count;
 
+
+
+
     $cntUnit = 0;
-    $xSql = "SELECT packge_unit.PackgeCode,packge_unit.PackgeName
+    $xSql = "SELECT packge_unit.PackgeCode,packge_unit.PackgeName , packge_unit.Qtyperunit
       FROM packge_unit  ";
       $xQuery = mysqli_query($conn, $xSql);
       while ($xResult = mysqli_fetch_assoc($xQuery))
       {
         $return['Unit'][$cntUnit]['PackgeCode'] = $xResult['PackgeCode'];
         $return['Unit'][$cntUnit]['PackgeName'] = $xResult['PackgeName'];
+        $return[$cntUnit]['Qtyperunit'] = $xResult['Qtyperunit'];
         $cntUnit++;
       }
 
     if ($boolean)
     {
-      $return['sql'] = $Sql;
       $return['status'] = "success";
       $return['form'] = "ShowItem";
       echo json_encode($return);
@@ -153,7 +138,6 @@ function ShowItem($conn, $DATA)
     } 
     else 
     {
-      $return['sql'] = $Sql;
       $return['status'] = "success";
       $return['form'] = "ShowItem";
       echo json_encode($return);
@@ -168,16 +152,14 @@ function Importdata($conn, $DATA)
   $DocNo = $DATA["DocNo"];
   $item_code = $DATA["item_code"];
   $kilo = $DATA["kilo"];
-  $stock_code = $DATA["stock_code"];
   $unit = $DATA["xunit"];
-  $price = $DATA["price"];
+  $stock_code = $DATA["stock_code"];
 
   #========================================
   $item_codex  = explode(",", $item_code);
   $kilox       = explode(",", $kilo);
-  $stock_codex = explode(",", $stock_code);
   $unitx      = explode(",", $unit);
-  $pricex      = explode(",", $price);
+  $stock_codex  = explode(",", $stock_code);
   #========================================
 
   foreach ($item_codex as $key => $value)
@@ -186,48 +168,43 @@ function Importdata($conn, $DATA)
     $count = " SELECT
                 COUNT(*) AS Cnt
                FROM
-                sale_longan_detail
+               packing_rice_detail
                WHERE
-                  Sale_DocNo = '$DocNo'
-               AND item_code = '$value'
-               AND PackgeCode = '$unitx[$key]'
-               AND stock_code = '$stock_codex[$key]' ";
+               Pk_DocNo = '$DocNo'
+               AND item_code = '$value' 
+               AND stock_code = '$stock_codex[$key]'
+               AND UnitCode = '$unitx[$key]' ";
               $meQuery = mysqli_query($conn, $count);
               $Result = mysqli_fetch_assoc($meQuery);
               $chkUpdate = $Result['Cnt'];
 
     if ($chkUpdate == 0) 
     {
-      $insert = "INSERT INTO  sale_longan_detail
+      $insert = "INSERT INTO  packing_rice_detail
                   SET 
-                      Sale_DocNo = '$DocNo',
+                      Pk_DocNo = '$DocNo',
                       item_code = '$value',
                       kilo = '$kilox[$key]',
-                      PackgeCode = '$unitx[$key]',
-                      stock_code = '$stock_codex[$key]',
-                      total = '$pricex[$key]' ";
+                      UnitCode = '$unitx[$key]',
+                      stock_code = '$stock_codex[$key]' ";
 
                   mysqli_query($conn, $insert);
     }
     else
     {
-      $update = "UPDATE  sale_longan_detail
+      $update = "UPDATE  packing_rice_detail
                  SET 
-                      Sale_DocNo = '$DocNo',
+                      Pk_DocNo = '$DocNo',
                       item_code = '$value',
                       kilo = ( kilo + '$kilox[$key]' ),
-                      PackgeCode = '$unitx[$key]' ,
-                      total = ( total + '$pricex[$key]' )
-
+                      UnitCode = '$unitx[$key]',
+                      stock_code = '$stock_codex[$key]'
                 WHERE
-                        Sale_DocNo = '$DocNo'
-                AND    item_code = '$value'
-                AND    PackgeCode = '$unitx[$key]'  ";
+                       Pk_DocNo = '$DocNo'
+                AND    item_code = '$value' AND stock_code = '$stock_codex[$key]' ";
 
                   mysqli_query($conn, $update);
     }
-    # ผลรวม ราคา        
-    $sumtotal +=$totalx[$key];
   }
   ShowDetail($conn, $DATA);
 }
@@ -239,58 +216,41 @@ function ShowDetail($conn, $DATA)
   $count = 0;
 
   $Detail = "SELECT
-              dd.RowID,
-              dd.item_code,
+              pkl.RowID,
+              pkl.item_code,
               item.item_name,
-              dd.kilo,
-              dd.total,
-              dd.PackgeCode,
-              stock_package.stock_code
+              pkl.kilo,
+              pkl.UnitCode
             FROM
-              sale_longan_detail dd
-            INNER JOIN item ON item.item_code = dd.item_code
-            INNER JOIN stock_package ON stock_package.stock_code = dd.stock_code
-            WHERE dd.Sale_DocNo = '$DocNo' ";
+            packing_rice_detail pkl
+            INNER JOIN item ON item.item_code = pkl.item_code
+            WHERE Pk_DocNo = '$DocNo' ";
             $meQuery = mysqli_query($conn, $Detail);
             while ($Result = mysqli_fetch_assoc($meQuery)) 
             {
               $return[$count]['RowID']          = $Result['RowID'];
               $return[$count]['item_code']      = $Result['item_code'];
               $return[$count]['item_name']      = $Result['item_name'];
+              $return[$count]['UnitCode']      = $Result['UnitCode'];
               $return[$count]['kilo']           = $Result['kilo'];
-              $return[$count]['total']           = $Result['total'];
-              $return[$count]['PackgeCode']       = $Result['PackgeCode'];
-              $return[$count]['stock_code']       = $Result['stock_code'];
-              $Total +=  $Result['total'];
-              $return['total']           = $Total;
-
               $count ++ ;
               $boolean = true;
             }
             $return['Row'] = $count;
 
-
-
-            $UPDATE = "UPDATE sale_longan SET Total = $Total WHERE DocNo = '$DocNo' ";
-            mysqli_query($conn, $UPDATE);
-
-
-
-
-
-
-
-
+                    
             $cntUnit = 0;
-            $xSql = "SELECT packge_unit.PackgeCode,packge_unit.PackgeName
+            $xSql = "SELECT packge_unit.PackgeCode,packge_unit.PackgeName , packge_unit.Qtyperunit
               FROM packge_unit  ";
               $xQuery = mysqli_query($conn, $xSql);
               while ($xResult = mysqli_fetch_assoc($xQuery))
               {
                 $return['Unit'][$cntUnit]['PackgeCode'] = $xResult['PackgeCode'];
                 $return['Unit'][$cntUnit]['PackgeName'] = $xResult['PackgeName'];
+                $return[$cntUnit]['Qtyperunit'] = $xResult['Qtyperunit'];
                 $cntUnit++;
               }
+
 
 
 
@@ -314,47 +274,6 @@ function ShowDetail($conn, $DATA)
   }
 }
 
-function Showuser($conn, $DATA)
-{
-  $boolean = false;
-  $count = 0;
-
-  $Selectuser = "SELECT
-                  users.ID,
-                  users.FName
-                FROM
-                  users ";
-
-  $meQuery = mysqli_query($conn, $Selectuser);
-  while ($Result = mysqli_fetch_assoc($meQuery)) 
-  {
-    $return[$count]['ID']          = $Result['ID'];
-    $return[$count]['FName']      = $Result['FName'];
-
-    $count ++ ;
-    $boolean = true;
-
-  }
-    $return['Row'] = $count;
-
-  if ($boolean) 
-  {
-    $return['status'] = "success";
-    $return['form'] = "Showuser";
-    echo json_encode($return);
-    mysqli_close($conn);
-    die;
-  }
-  else
-  {
-    $return['status'] = "failed";
-    $return['form'] = "Showuser";
-    echo json_encode($return);
-    mysqli_close($conn);
-    die;
-  }
-}
-
 function ShowSearch($conn, $DATA)
 {
   $datepicker  = $DATA["datepicker"]==''?date('Y-m-d'):$DATA["datepicker"];
@@ -362,17 +281,18 @@ function ShowSearch($conn, $DATA)
   $count = 0;
 
   $Showsearch = "SELECT
-                  bp.DocNo,
-                  bp.DocDate,
-                  TIME(bp.Modify_Date) AS  Modify_Date, 
-                  users.FName AS customer,
-                  emp.FName AS employee ,
-                  bp.IsStatus
+                  pkl.DocNo,
+                  pkl.DocDate,
+                  TIME( pkl.Modify_Date ) AS Modify_Date,
+                  emp.FName AS employee,
+                  pkl.IsStatus 
                 FROM
-                  sale_longan bp
-                INNER JOIN employee emp ON emp.ID = bp.Employee_ID
-                INNER JOIN users ON users.ID = bp.Customer_ID
-                WHERE bp.DocDate = '$datepicker' ORDER BY bp.DocNo DESC ";
+                  packing_rice pkl
+                  INNER JOIN employee emp ON emp.ID = pkl.Employee_ID 
+                WHERE
+                  pkl.DocDate = '$datepicker' 
+                ORDER BY
+                  pkl.DocNo DESC";
 
     $meQuery = mysqli_query($conn, $Showsearch);
     while ($Result = mysqli_fetch_assoc($meQuery)) 
@@ -380,7 +300,6 @@ function ShowSearch($conn, $DATA)
       $return[$count]['DocNo']         = $Result['DocNo'];
       $return[$count]['DocDate']       = $Result['DocDate'];
       $return[$count]['Modify_Date']   = $Result['Modify_Date'];
-      $return[$count]['customer']      = $Result['customer'];
       $return[$count]['employee']      = $Result['employee'];
       $return[$count]['IsStatus']      = $Result['IsStatus'];
 
@@ -417,33 +336,20 @@ function Savebill($conn, $DATA)
   $DocNo  = $DATA["DocNo"];
   $boolean = false;
   $count = 0;
-  $stock_codeA  = $DATA["stock_code"];
-  
+
   // ========================================
   $ItemCode = explode(",", $ItemCodeArray);
   $Kilo = explode(",", $KiloArray);
-  $stock_code = explode(",", $stock_codeA);
   // ========================================
 
 
-  // INSERT STOCK
-  foreach ($ItemCode as $key => $value)
-  {
-    $INSERT_STOCK = "UPDATE 
-                        stock_package
-                    SET  
-                        item_ccqty = (item_ccqty  - '$Kilo[$key]' )
-                   WHERE stock_code = '$stock_code[$key]' ";  
-
-    mysqli_query($conn, $INSERT_STOCK);
-  }
 
   //UPDATE STATUS 
-  $Sql = "UPDATE sale_longan SET IsStatus = 1 , Modify_Date = TIME(NOW())  WHERE sale_longan.DocNo = '$DocNo'";
+  $Sql = "UPDATE packing_rice SET IsStatus = 1 , Modify_Date = TIME(NOW())  WHERE packing_rice.DocNo = '$DocNo'";
   mysqli_query($conn, $Sql);
 
 
-  // Show SEARCH
+  // SHOW SEARCH
   ShowSearch($conn, $DATA);
 
 }
@@ -454,7 +360,7 @@ function Cancelbill($conn, $DATA)
   $boolean = false;
   $count = 0;
 
-  $Sql = "UPDATE sale_longan SET IsStatus = 9 WHERE sale_longan.DocNo = '$DocNo'";
+  $Sql = "UPDATE packing_rice SET IsStatus = 9 WHERE packing_rice.DocNo = '$DocNo'";
   mysqli_query($conn, $Sql);
 
   ShowSearch($conn, $DATA);
@@ -468,19 +374,17 @@ function ShowDocNo($conn, $DATA)
   $count = 0;
   $countuser = 0;
 
-
   $ShowDocNo = "SELECT
-                  bp.DocNo,
-                  bp.DocDate,
-                  TIME(bp.Modify_Date) AS  Modify_Date, 
-                  users.ID AS customer,
-                  emp.FName AS employee ,
-                  bp.IsStatus
+                  pkl.DocNo,
+                  pkl.DocDate,
+                  TIME( pkl.Modify_Date ) AS Modify_Date,
+                  emp.FName AS employee,
+                  pkl.IsStatus 
                 FROM
-                  sale_longan bp
-                INNER JOIN employee emp ON emp.ID = bp.Employee_ID
-                INNER JOIN users ON users.ID = bp.Customer_ID
-                WHERE bp.DocNo = '$DocNo' ";
+                packing_rice pkl
+                  INNER JOIN employee emp ON emp.ID = pkl.Employee_ID 
+                WHERE
+                 pkl.DocNo = '$DocNo'  ";
 
     $meQuery = mysqli_query($conn, $ShowDocNo);
     while ($Result = mysqli_fetch_assoc($meQuery)) 
@@ -488,7 +392,6 @@ function ShowDocNo($conn, $DATA)
       $return[$count]['DocNo']         = $Result['DocNo'];
       $return[$count]['DocDate']       = $Result['DocDate'];
       $return[$count]['Modify_Date']   = $Result['Modify_Date'];
-      $return[$count]['customer']      = $Result['customer'];
       $return[$count]['employee']      = $Result['employee'];
       $return[$count]['IsStatus']      = $Result['IsStatus'];
 
@@ -498,26 +401,6 @@ function ShowDocNo($conn, $DATA)
     }
     $return['Row'] = $count;
 
-    // ===========
-    $Selectuser = "SELECT
-                    users.ID,
-                    users.FName
-                  FROM
-                    users ";
-
-                $meQuery = mysqli_query($conn, $Selectuser);
-                while ($Result = mysqli_fetch_assoc($meQuery)) 
-                {
-                $return[$countuser]['ID']         = $Result['ID'];
-                $return[$countuser]['FName']      = $Result['FName'];
-
-                $countuser ++ ;
-                $boolean = true;
-
-                }
-                $return['Rowuser'] = $countuser;
-
-    // ===========
 
     if ($boolean) 
     {
@@ -542,11 +425,43 @@ function Deleteitem($conn, $DATA)
   $DocNo  = $DATA["DocNo"];
   $itemcode  = $DATA["itemcode"];
 
-  $Delete = "DELETE FROM sale_longan_detail WHERE item_code = '$itemcode' AND Buy_DocNo = '$DocNo' ";
+  $Delete = "DELETE FROM packing_rice_detail WHERE item_code = '$itemcode' AND Pk_DocNo = '$DocNo' ";
   mysqli_query($conn, $Delete);
-
   ShowDetail($conn, $DATA);
+}
 
+function check_unit($conn, $DATA)
+{
+  $i  = $DATA["i"];
+  $Packge_unit  = $DATA["unit"];
+
+  $cntUnit = 0;
+  $xSql = "SELECT packge_unit.Qtyperunit
+    FROM packge_unit  WHERE PackgeCode = '$Packge_unit' ";
+    $xQuery = mysqli_query($conn, $xSql);
+    while ($xResult = mysqli_fetch_assoc($xQuery))
+    {
+      $return['Qtyperunit'] = $xResult['Qtyperunit'];
+      $cntUnit++;
+    }
+
+    if ($cntUnit >=1) 
+    {
+      $return['i'] = $i;
+      $return['status'] = "success";
+      $return['form'] = "check_unit";
+      echo json_encode($return);
+      mysqli_close($conn);
+      die;
+    }
+    else
+    {
+      $return['status'] = "failed";
+      $return['form'] = "check_unit";
+      echo json_encode($return);
+      mysqli_close($conn);
+      die;
+    }
 }
 
     $data = $_POST['DATA'];
@@ -592,6 +507,11 @@ function Deleteitem($conn, $DATA)
       {
         Deleteitem($conn, $DATA);
       }
+      else if ($DATA['STATUS'] == 'check_unit') 
+      {
+        check_unit($conn, $DATA);
+      }
+      
       else
       {
           $return['status'] = "error";
