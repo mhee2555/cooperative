@@ -502,9 +502,9 @@ $Permission = $_SESSION['Permission'];
                                     });
                                     chkunit += "</select>";
                                   var chkinput = "<div class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input checkSingle checkitem'  value='"+i+"'  id= ' item_id_"+i+" ' required><label class='custom-control-label ' for=' item_id_"+i+" ' style='margin-top: 15px;'></label></div> <input type='hidden' id='item_code_"+i+"' value='"+temp[i]['item_code']+"'>";
-                                  var Kilo = "<input type='text' id='Kilo_"+i+"' class='form-control  text-right' autocomplete='off'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['Grade']+"\" , \""+i+"\" ) '>  ";
+                                  var Kilo = "<input type='text' id='Kilo_"+i+"' class='form-control numonly  text-right' autocomplete='off'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['Grade']+"\" , \""+i+"\" ) '>  ";
                                   var Total = "<input type='text' id='Total_"+i+"' class='form-control  text-right' autocomplete='off'  value='0.00' disabled>  ";
-                                  var moisture = "<input type='text' id='moisture_"+i+"' class='form-control text-right' autocomplete='off'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['Grade']+"\" , \""+i+"\" ) '>  ";
+                                  var moisture = "<input type='text' id='moisture_"+i+"' class='form-control numonly text-right' autocomplete='off'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['Grade']+"\" , \""+i+"\" ) '>  ";
                                   var Total_p = "<input type='text' id='Total_p_"+i+"' class='form-control  text-right' autocomplete='off'  value='0.00' disabled>  ";
                                  StrTR = "<tr>"+
                                                 "<td >"+chkinput+"</td>"+
@@ -519,6 +519,10 @@ $Permission = $_SESSION['Permission'];
    
                                    $('#Tableitem tbody').append( StrTR );
                               }
+                              $('.numonly').on('input', function()
+                              {
+                                this.value = this.value.replace(/[^0-9.]/g, ''); //<-- replace all other than given set of values
+                              });
                     }
                     else if(temp["form"]=='Sumitem')
                     {
@@ -551,8 +555,8 @@ $Permission = $_SESSION['Permission'];
                                     });
                                     chkunit += "</select>";
                                   var chkinput = "<div class='custom-control custom-radio'><input type='radio' class='custom-control-input checkSingle checkdetail' name='detailrow'  value='"+temp[i]['item_code']+"'  id= ' Detail_id_"+i+" ' required><label class='custom-control-label ' for=' Detail_id_"+i+" ' style='margin-top: 15px;'></label></div> ";
-                                  var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control '  style='text-align:right' autocomplete='off' name='KiloArray' placeholder='0.00' value='"+temp[i]['kilo']+"' style='width: 75%;'>  ";
-                                  var moisture = "<input type='text' id='Detail_moisture_"+i+"' class='form-control '  style='text-align:right' autocomplete='off'  placeholder='0.00' value='"+temp[i]['moisture']+"' style='width: 75%;'>  ";
+                                  var Kilo = "<input disabled type='text' id='Detail_Kilo_"+i+"' class='form-control '  style='text-align:right' autocomplete='off' name='KiloArray' placeholder='0.00' value='"+temp[i]['kilo']+"' style='width: 75%;'>  ";
+                                  var moisture = "<input type='text' disabled id='Detail_moisture_"+i+"' class='form-control '  style='text-align:right' autocomplete='off'  placeholder='0.00' value='"+temp[i]['moisture']+"' style='width: 75%;'>  ";
                                   var Total = "<input type='text' id='Detail_Total_"+i+"' class='form-control '  style='text-align:right' autocomplete='off'  value='"+temp[i]['total']+"' disabled style='width: 75%;'>  ";
                                   var STotal = "<input type='text' id='Detail_STotal_"+i+"' class='form-control '  style='text-align:right' autocomplete='off'  value='"+temp[i]['Sumtotal']+"' disabled style='width: 75%;'>  ";
                                    StrTR =   "<tr>"+

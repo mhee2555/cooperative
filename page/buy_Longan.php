@@ -448,7 +448,7 @@ $Permission = $_SESSION['Permission'];
                                     chkunit += "</select>";
 
                                   var chkinput = "<div class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input checkSingle checkitem'  value='"+i+"'  id= ' item_id_"+i+" ' required><label class='custom-control-label ' for=' item_id_"+i+" ' style='margin-top: 15px;'></label></div> <input type='hidden' id='item_code_"+i+"' value='"+temp[i]['item_code']+"'>";
-                                  var Kilo = "<input type='text' id='Kilo_"+i+"' class='form-control ' autocomplete='off' style='text-align:right'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['Grade']+"\" , \""+i+"\" ) '>  ";
+                                  var Kilo = "<input type='text' id='Kilo_"+i+"' class='form-control numonly' autocomplete='off' style='text-align:right'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['Grade']+"\" , \""+i+"\" ) '>  ";
                                   var Total = "<input type='text' id='Total_"+i+"' class='form-control ' autocomplete='off' style='text-align:right'  value='0.00' disabled>  ";
 
 
@@ -463,6 +463,10 @@ $Permission = $_SESSION['Permission'];
    
                                    $('#Tableitem tbody').append( StrTR );
                               }
+                              $('.numonly').on('input', function()
+                              {
+                                this.value = this.value.replace(/[^0-9.]/g, ''); //<-- replace all other than given set of values
+                              });
                     }
                     else if(temp["form"]=='ShowDetail')
                     {
@@ -487,13 +491,14 @@ $Permission = $_SESSION['Permission'];
                                     chkunit += "</select>";
 
                                   var chkinput = "<div class='custom-control custom-radio'><input type='radio' class='custom-control-input checkSingle checkdetail' name='detailrow'  value='"+temp[i]['item_code']+"'  id= ' Detail_id_"+i+" ' required><label class='custom-control-label ' for=' Detail_id_"+i+" ' style='margin-top: 15px;'></label></div> ";
-                                  var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' style='text-align:right' autocomplete='off'  name='KiloArray'  placeholder='0.00' value='"+temp[i]['kilo']+"' disabled>  ";
-                                  var Total = "<input type='text' id='Detail_Total_"+i+"' class='form-control ' style='text-align:right' autocomplete='off'  value='"+temp[i]['total']+"' disabled >  ";
+                                  var Kilo = "<input type='text' disabled id='Detail_Kilo_"+i+"' class='form-control ' style='text-align:right' autocomplete='off'  name='KiloArray'  placeholder='0.00' value='"+temp[i]['kilo']+"' disabled>  ";
+                                  var Total = "<input type='text' disabled id='Detail_Total_"+i+"' class='form-control ' style='text-align:right' autocomplete='off'  value='"+temp[i]['total']+"' disabled >  ";
 
                                    StrTR =   "<tr>"+
                                                 "<td >"+chkinput+"</td>"+
                                                 "<td style=' width: 20%; '>"+temp[i]['item_name']+"</td>"+
-                                                "<td style=' width: 25%; ' >"+temp[i]['Grade']+"</td>"+
+                                                "<td style=' width: 20%; ' >"+temp[i]['Grade']+"</td>"+
+                                                "<td style=' width: 10%; '></td>"+
                                                 "<td >"+Kilo+"</td>"+
                                                 "<td >"+chkunit+"</td>"+
                                                 "<td >"+Total+"</td>"+
@@ -899,12 +904,13 @@ $Permission = $_SESSION['Permission'];
                             <div class="table-responsive">
                                 <form>
                                     <!-- SHOW DETAIL -->
-                                    <table class="table table-striped table-hover r-0" id="TableDetail">
+                                    <table class="table table-striped table-hover r-0 " id="TableDetail">
                                         <thead id="theadsum" >
                                         <tr class="no-b">
                                             <th>NO.</th>
                                             <th>ชื่อรายการ</th>
                                             <th>ราคาต่อหน่วย</th>
+                                            <th></th>
                                             <th>ปริมาณ</th>
                                             <th>หน่วยนับ</th>
                                             <th>ราคารวม</th>

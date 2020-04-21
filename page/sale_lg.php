@@ -566,6 +566,16 @@ $Permission = $_SESSION['Permission'];
                                         Status = "บันทึกสำเร็จ";
                                         Style  = "style='color: #20B80E;'";
                                     }
+                                    else if(temp[i]['IsStatus']==2)
+                                    {
+                                        Status = "กำลังจัดส่ง";
+                                        Style  = "style='color: #0033CC;'";
+                                    }
+                                    else if(temp[i]['IsStatus']==3)
+                                    {
+                                        Status = "จัดส่งเรียบร้อย";
+                                        Style  = "style='color: #20B80E;'";
+                                    }
                                     else if(temp[i]['IsStatus']==9)
                                     {
                                         Status = "ยกเลิกเอกสาร";
