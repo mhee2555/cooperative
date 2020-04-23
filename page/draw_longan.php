@@ -408,7 +408,7 @@ $Permission = $_SESSION['Permission'];
 
 
                                   var chkinput = "<div class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input checkSingle checkitem'  value='"+i+"'  id= ' item_id_"+i+" ' required><label class='custom-control-label ' for=' item_id_"+i+" ' style='margin-top: 15px;'></label></div> <input type='hidden' id='item_code_"+i+"' value='"+temp[i]['item_code']+"'><input type='hidden' id='stock_code_"+i+"' value='"+temp[i]['stock_code']+"'>";
-                                  var draw = "<input type='text' id='draw_"+i+"' class='form-control ' autocomplete='off' style='text-align:right;width: 100px;'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['item_ccqty']+"\" , \""+i+"\" ) '>  ";
+                                  var draw = "<input type='text' id='draw_"+i+"' class='form-control numonly' autocomplete='off' style='text-align:right;width: 100px;'  placeholder='0.00' onkeyup='Sumitem(\""+temp[i]['item_ccqty']+"\" , \""+i+"\" ) '>  ";
                                   var qty_total = "<input type='text' id='qty_total_"+i+"' class='form-control ' autocomplete='off' style='text-align:right'   placeholder='0.00' value='"+temp[i]['item_qty']+"'  disabled>  ";
                                   var qty_cc = "<input type='text' id='ccqty_total_"+i+"' class='form-control ' autocomplete='off' style='text-align:right'  placeholder='0.00' value='"+temp[i]['item_ccqty']+"'  disabled>  ";
                                   // hidden
@@ -428,6 +428,10 @@ $Permission = $_SESSION['Permission'];
    
                                    $('#Tableitem tbody').append( StrTR );
                               }
+                              $('.numonly').on('input', function()
+                              {
+                                this.value = this.value.replace(/[^0-9.]/g, ''); //<-- replace all other than given set of values
+                              });
                     }
                     else if(temp["form"]=='ShowdetailSub')
                     {

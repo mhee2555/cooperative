@@ -431,7 +431,7 @@ $Permission = $_SESSION['Permission'];
                                     chkunit += "</select>";
 
                                   var chkinput = "<div class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input checkSingle checkitem'  value='"+i+"'  id= ' item_id_"+i+" ' required><label class='custom-control-label ' for=' item_id_"+i+" ' style='margin-top: 15px;'></label></div> <input type='hidden' id='item_code_"+i+"' value='"+temp[i]['item_code']+"'>";
-                                  var Kilo = "<input type='text' id='Kilo_"+i+"' class='form-control ' autocomplete='off' style='text-align:right'  placeholder='0.00' >  ";
+                                  var Kilo = "<input type='text' id='Kilo_"+i+"' class='form-control numonly' autocomplete='off' style='text-align:right'  placeholder='0.00' >  ";
 
                                  StrTR = "<tr>"+
                                                 "<td >"+chkinput+"</td>"+
@@ -442,6 +442,10 @@ $Permission = $_SESSION['Permission'];
    
                                    $('#Tableitem tbody').append( StrTR );
                               }
+                              $('.numonly').on('input', function()
+                              {
+                                this.value = this.value.replace(/[^0-9.]/g, ''); //<-- replace all other than given set of values
+                              });
                     }
                     else if(temp["form"]=='ShowRefDocNo')
                     {
