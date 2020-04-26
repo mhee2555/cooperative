@@ -64,6 +64,12 @@ $Permission = $_SESSION['Permission'];
                         showpro();
                     }
                 });
+
+                $("#Date_Pack").datepicker({
+                    onSelect: function (date, el) {
+                        showpack();
+                    }
+                });
             });
         })(jQuery);
 
@@ -83,6 +89,7 @@ $Permission = $_SESSION['Permission'];
 
 
             showpro();
+            showpack();
         });
 
         function showchartbuy()
@@ -131,6 +138,20 @@ $Permission = $_SESSION['Permission'];
                     'STATUS'   : 'showpro',
                     'type_Pro' : type_Pro,
                     'Date_Pro' : Date_Pro
+                };
+                senddata(JSON.stringify(data));
+        }
+
+        function showpack()
+        {
+            var type_Pack = $("#type_Pack").val();
+            var Date_Pack = $("#Date_Pack").val();
+
+            var data = 
+                {
+                    'STATUS'   : 'showpack',
+                    'type_Pack' : type_Pack,
+                    'Date_Pack' : Date_Pack
                 };
                 senddata(JSON.stringify(data));
         }
@@ -334,6 +355,62 @@ $Permission = $_SESSION['Permission'];
                                 var Str = "<tr ><td  class='text-center'></td><td  class='text-center'>ไม่มีเอกสารขอแปรรูป</td><td  class='text-center'></td></tr>";
 
                                     $('#Tablepro tbody').append( Str );
+                            }
+                   
+
+                        }
+
+                        else if(temp["form"]=='showpack')
+                        {
+                            $( "#Tablepack tbody" ).empty();
+
+                            if(temp['Row'] > 0)
+                            {
+                                for (var i = 0; i < temp['Row']; i++) 
+                                {
+                                    
+                                    if(temp[i]['IsStatus']==0)
+                                    {
+                                        Status = "ยังไม่ได้บันทึก";
+                                        Style  = "style='color: #3399ff;'";
+                                    }
+                                    else if(temp[i]['IsStatus']==1)
+                                    {
+                                        Status = "รอการบรรจุภัณฑ์";
+                                        Style  = "style='color: #FF6633;'";
+                                    }
+                                    else if(temp[i]['IsStatus']==2)
+                                    {
+                                        Status = "รอการแปรรูป";
+                                        Style  = "style='color: #20B80E;'";
+                                    }
+                                    else if(temp[i]['IsStatus']==8)
+                                    {
+                                        Status = "ปฎิเสธการขอเบิก";
+                                        Style  = "style='color: #990000;'";
+                                    }
+                                    else if(temp[i]['IsStatus']==9)
+                                    {
+                                        Status = "ยกเลิกเอกสาร";
+                                        Style  = "style='color: #ff0000;'";
+                                    }
+                                    var ii = i+1;
+                                    StrTR =   "<tr>"+
+                                                "<td >"+ ii +"</td>"+
+                                                "<td>"+temp[i]['DocNo']+"</td>"+
+                                                "<td " +Style+ ">"+Status+"</td>"+
+
+                                                "</tr>";
+
+                                    $('#Tablepack tbody').append( StrTR );
+                                }
+                            }
+                            else
+                            {
+                                $('#Tablepack tbody').empty();
+                                var Str = "<tr ><td  class='text-center'></td><td  class='text-center'>ไม่มีเอกสารขอแปรรูป</td><td  class='text-center'></td></tr>";
+
+                                    $('#Tablepack tbody').append( Str );
                             }
                    
 
@@ -647,14 +724,12 @@ $Permission = $_SESSION['Permission'];
                         <div class="table-responsive">
                                         <form>
                                             <!-- SHOW USER -->
-                                            <table class="table table-striped table-hover r-0" id="Tableitem">
+                                            <table class="table table-striped table-hover r-0" id="Tablepack">
                                                 <thead id="theadsum" >
                                                 <tr class="no-b">
                                                     <th>NO.</th>
                                                     <th>เลขที่เอกสาร</th>
                                                     <th>สถานะ</th>
-                                                    <th hidden>ROLE</th>
-                                                    <th></th>
                                                 </tr>
                                                 </thead>
 

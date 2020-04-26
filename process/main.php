@@ -203,6 +203,75 @@ function showpro($conn, $DATA)
    die;
  }
 }
+
+function showpack($conn, $DATA)
+{
+  $boolean = false;
+  $count = 0;
+  $type_Pack   = $DATA["type_Pack"];
+  $Date_Pack   = $DATA["Date_Pack"];
+
+  if($type_Pack == 'longan')
+  {
+    $Sql = "SELECT
+              d.DocNo,
+              d.DocDate,
+              TIME(d.Modify_Date) AS  Modify_Date, 
+              d.IsStatus
+            FROM
+            packing_longan d
+            WHERE d.DocDate = '$Date_Pack'
+            AND  d.IsStatus = 1 
+            AND IsRef = 0 
+            ORDER BY d.DocNo DESC ";
+  }
+  else
+  {
+    $Sql = "SELECT
+            d.DocNo,
+            d.DocDate,
+            TIME(d.Modify_Date) AS  Modify_Date, 
+            d.IsStatus
+          FROM
+          packing_rice d
+          WHERE d.DocDate = '$Date_Pro'
+          AND  d.IsStatus = 1 
+          AND IsRef = 0 
+          ORDER BY d.DocNo DESC ";
+  }
+
+
+ $meQuery = mysqli_query($conn, $Sql);
+ while ($Result = mysqli_fetch_assoc($meQuery)) 
+ {
+   $return[$count]['DocNo']         = $Result['DocNo'];
+   $return[$count]['IsStatus']      = $Result['IsStatus'];
+   $return[$count]['Modify_Date']   = $Result['Modify_Date'];
+
+   $count ++ ;
+   $boolean = true;
+ }
+
+ $return['Row'] = $count;
+
+ if ($boolean) 
+ {
+    
+   $return['status'] = "success";
+   $return['form'] = "showpack";
+   echo json_encode($return);
+   mysqli_close($conn);
+   die;
+ }
+ else
+ {
+   $return['status'] = "success";
+   $return['form'] = "showpack";
+   echo json_encode($return);
+   mysqli_close($conn);
+   die;
+ }
+}
     $data = $_POST['DATA'];
     $DATA = json_decode(str_replace ('\"','"', $data), true);
 
@@ -217,6 +286,11 @@ function showpro($conn, $DATA)
       else if($DATA['STATUS'] == 'showpro')
       {
         showpro($conn, $DATA);
+      }
+
+      else if($DATA['STATUS'] == 'showpack')
+      {
+        showpack($conn, $DATA);
       }
       else
       {
