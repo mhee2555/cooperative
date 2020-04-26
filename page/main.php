@@ -33,6 +33,8 @@ $Permission = $_SESSION['Permission'];
     
             (function ($) {
             $(document).ready(function () {
+
+
                 $("#DateBuy_Start").datepicker({
                     onSelect: function (date, el) {
                         showchartbuy();
@@ -56,6 +58,12 @@ $Permission = $_SESSION['Permission'];
                         showchartsale();
                     }
                 });
+
+                $("#Date_Pro").datepicker({
+                    onSelect: function (date, el) {
+                        showpro();
+                    }
+                });
             });
         })(jQuery);
 
@@ -63,7 +71,18 @@ $Permission = $_SESSION['Permission'];
 
         $(document).ready(function(e)
         {
-    
+
+                var d = new Date();
+                var month = d.getMonth()+1;
+                var day = d.getDate();
+                var output = d.getFullYear() + '-' +
+                    ((''+month).length<2 ? '0' : '') + month + '-' +
+                    ((''+day).length<2 ? '0' : '') + day;
+                $("#Date_Pro").val(output);
+                $("#Date_Pack").val(output);
+
+
+            showpro();
         });
 
         function showchartbuy()
@@ -98,6 +117,20 @@ $Permission = $_SESSION['Permission'];
                     'DateSale_Start'  : DateSale_Start,
                     'DateSale_End'    : DateSale_End,
                     'type_sale_chart_select'    : type_sale_chart_select
+                };
+                senddata(JSON.stringify(data));
+        }
+
+        function showpro()
+        {
+            var type_Pro = $("#type_Pro").val();
+            var Date_Pro = $("#Date_Pro").val();
+
+            var data = 
+                {
+                    'STATUS'   : 'showpro',
+                    'type_Pro' : type_Pro,
+                    'Date_Pro' : Date_Pro
                 };
                 senddata(JSON.stringify(data));
         }
@@ -250,6 +283,62 @@ $Permission = $_SESSION['Permission'];
 
                         }
 
+                        else if(temp["form"]=='showpro')
+                        {
+                            $( "#Tablepro tbody" ).empty();
+
+                            if(temp['Row'] > 0)
+                            {
+                                for (var i = 0; i < temp['Row']; i++) 
+                                {
+                                    
+                                    if(temp[i]['IsStatus']==0)
+                                    {
+                                        Status = "ยังไม่ได้บันทึก";
+                                        Style  = "style='color: #3399ff;'";
+                                    }
+                                    else if(temp[i]['IsStatus']==1)
+                                    {
+                                        Status = "รออนุมัติ";
+                                        Style  = "style='color: #FF6633;'";
+                                    }
+                                    else if(temp[i]['IsStatus']==2)
+                                    {
+                                        Status = "รอการแปรรูป";
+                                        Style  = "style='color: #20B80E;'";
+                                    }
+                                    else if(temp[i]['IsStatus']==8)
+                                    {
+                                        Status = "ปฎิเสธการขอเบิก";
+                                        Style  = "style='color: #990000;'";
+                                    }
+                                    else if(temp[i]['IsStatus']==9)
+                                    {
+                                        Status = "ยกเลิกเอกสาร";
+                                        Style  = "style='color: #ff0000;'";
+                                    }
+                                    var ii = i+1;
+                                    StrTR =   "<tr>"+
+                                                "<td >"+ ii +"</td>"+
+                                                "<td>"+temp[i]['DocNo']+"</td>"+
+                                                "<td " +Style+ ">"+Status+"</td>"+
+
+                                                "</tr>";
+
+                                    $('#Tablepro tbody').append( StrTR );
+                                }
+                            }
+                            else
+                            {
+                                $('#Tablepro tbody').empty();
+                                var Str = "<tr ><td  class='text-center'></td><td  class='text-center'>ไม่มีเอกสารขอแปรรูป</td><td  class='text-center'></td></tr>";
+
+                                    $('#Tablepro tbody').append( Str );
+                            }
+                   
+
+                        }
+
                     }
                     else if (temp['status']=="failed") 
                     {
@@ -396,7 +485,7 @@ $Permission = $_SESSION['Permission'];
                 <div class="col">
                     <h4>
                         <i class="icon icon-bubble_chart"></i>
-                        หน้าหลัก
+                        แดชบอร์ด
                     </h4>
                 </div>
             </div>
@@ -404,7 +493,7 @@ $Permission = $_SESSION['Permission'];
                     <ul class="nav responsive-tab nav-material nav-material-white">
                             <li>
                                 <a class="nav-link active" href="panel-element-morris.html">
-                                    <i class="icon icon-bubble_chart"></i>หน้าหลัก</a>
+                                    <i class="icon icon-bubble_chart"></i>แดชบอร์ด</a>
                             </li>
                         </ul>
             </div>
@@ -414,7 +503,7 @@ $Permission = $_SESSION['Permission'];
     <div class="container-fluid">
         <div class="row my-3">
             <!-- bar chart -->
-            <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="col-md-6 col-sm-6 col-xs-12"  <?php if($PmID <> 1) echo 'hidden'; ?>>
                 <div class="card " id="chartbuy">
                     <div class='card-header white'> 
 
@@ -437,9 +526,6 @@ $Permission = $_SESSION['Permission'];
                             <option value="polarArea">polarArea</option>
                         </select>                     
                     </div>
-
-
-                    
                     <div class = 'row justify-content-center' >
                         <input class="form-control mb-3 col-md-5 datepicker-here" id='DateBuy_Start' data-language='en' data-date-format='yyyy-mm-dd'  placeholder="ค้นหาจากวันที่เรึ่ม">
                         <h4 class="col-md-1" > </h4>
@@ -456,7 +542,7 @@ $Permission = $_SESSION['Permission'];
             </div>
 
  <!-- bar chart -->
-            <div class="col-md-6 col-sm-6 col-xs-12" >
+            <div class="col-md-6 col-sm-6 col-xs-12" <?php if($PmID <> 1) echo 'hidden'; ?>>
                 <div class="card " id="chartbuy">
                     <div class='card-header white'> 
                         <div class = 'row justify-content-center' >
@@ -478,9 +564,6 @@ $Permission = $_SESSION['Permission'];
                                 <option value="polarArea">polarArea</option>
                             </select>                     
                         </div>
-
-
-                        
                         <div class = 'row justify-content-center' >
                             <input class="form-control mb-3 col-md-5 datepicker-here" id='DateSale_Start' data-language='en' data-date-format='yyyy-mm-dd'  placeholder="ค้นหาจากวันที่เรึ่ม">
                             <h4 class="col-md-1" > </h4>
@@ -496,6 +579,95 @@ $Permission = $_SESSION['Permission'];
             </div> 
 
 
+            <div class="col-md-6 col-sm-6 col-xs-12 mt-3">
+                <div class="card " id="chartbuy">
+                    <div class='card-header white'> 
+
+                    <div class = 'row justify-content-center' >
+                        <h4 class="col-md-12 text-center mb-3" >การขอแปรรูปสินค้า</h4>
+                    </div>
+
+                
+                    <div class = 'row justify-content-center' >
+                        <select class="form-control mb-3 col-md-5 " id="type_Pro" onchange="showpro()">
+                                <option  value="longan"> ลำไย </option>
+                                <option  value="rice"> ข้าว </option>
+                        </select>   
+                        <h4 class="col-md-1" > </h4>
+                        <input class="form-control mb-3 col-md-5 datepicker-here" id='Date_Pro'data-language='en' data-date-format='yyyy-mm-dd'  placeholder="ค้นหาจากวันที่">
+                    </div>
+                        <!-- <strong id="datebuy"> </strong> -->
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                                    <form>
+                                        <!-- SHOW USER -->
+                                        <table class="table table-striped table-hover r-0" id="Tablepro">
+                                            <thead id="theadsum" >
+                                            <tr class="no-b">
+                                                <th>NO.</th>
+                                                <th>เลขที่เอกสาร</th>
+                                                <th>สถานะ</th>
+                                            </tr>
+                                            </thead>
+
+                                            <tbody  id="tbodypro"  >
+
+                                            </tbody>
+                                        </table>
+                                        <!-- =============== -->
+                                    </form>
+                                </div>                    
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <div class="col-md-6 col-sm-6 col-xs-12 mt-3">
+                <div class="card " id="chartbuy">
+                    <div class='card-header white'> 
+
+                    <div class = 'row justify-content-center' >
+                        <h4 class="col-md-12 text-center mb-3" >การขอบรรจุภัณฑ์</h4>
+                    </div>
+
+                    <div class = 'row justify-content-center' >
+                        <select class="form-control mb-3 col-md-5 " id="type_Pack" onchange="showpack()">
+                                <option  value="longan"> ลำไย </option>
+                                <option  value="rice"> ข้าว </option>
+                        </select>   
+                        <h4 class="col-md-1" > </h4>
+                        <input class="form-control mb-3 col-md-5 datepicker-here" id='Date_Pack'data-language='en' data-date-format='yyyy-mm-dd'  placeholder="ค้นหาจากวันที่">
+                    </div>
+                        <!-- <strong id="datebuy"> </strong> -->
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                                        <form>
+                                            <!-- SHOW USER -->
+                                            <table class="table table-striped table-hover r-0" id="Tableitem">
+                                                <thead id="theadsum" >
+                                                <tr class="no-b">
+                                                    <th>NO.</th>
+                                                    <th>เลขที่เอกสาร</th>
+                                                    <th>สถานะ</th>
+                                                    <th hidden>ROLE</th>
+                                                    <th></th>
+                                                </tr>
+                                                </thead>
+
+                                                <tbody  id="tbody"  >
+
+                                                </tbody>
+                                            </table>
+                                            <!-- =============== -->
+                                        </form>
+                                    </div>                     
+                    </div>
+                </div>
+            </div>
             <!-- /line graph -->
         </div>
     </div>

@@ -134,6 +134,75 @@ function showchartsale($conn, $DATA)
     die;
   }
 }
+
+function showpro($conn, $DATA)
+{
+  $boolean = false;
+  $count = 0;
+  $type_Pro   = $DATA["type_Pro"];
+  $Date_Pro   = $DATA["Date_Pro"];
+
+  if($type_Pro == 'longan')
+  {
+    $Sql = "SELECT
+              d.DocNo,
+              d.DocDate,
+              TIME(d.Modify_Date) AS  Modify_Date, 
+              d.IsStatus
+            FROM
+              draw d
+            WHERE d.DocDate = '$Date_Pro'
+            AND  (d.IsStatus = 1 OR d.IsStatus = 2)
+            AND IsRef = 0 
+            ORDER BY d.DocNo DESC ";
+  }
+  else
+  {
+    $Sql = "SELECT
+            d.DocNo,
+            d.DocDate,
+            TIME(d.Modify_Date) AS  Modify_Date, 
+            d.IsStatus
+          FROM
+            draw_rice d
+          WHERE d.DocDate = '$Date_Pro'
+          AND  (d.IsStatus = 1 OR d.IsStatus = 2)
+          AND IsRef = 0 
+          ORDER BY d.DocNo DESC ";
+  }
+
+
+ $meQuery = mysqli_query($conn, $Sql);
+ while ($Result = mysqli_fetch_assoc($meQuery)) 
+ {
+   $return[$count]['DocNo']         = $Result['DocNo'];
+   $return[$count]['IsStatus']      = $Result['IsStatus'];
+   $return[$count]['Modify_Date']   = $Result['Modify_Date'];
+
+   $count ++ ;
+   $boolean = true;
+ }
+
+ $return['Row'] = $count;
+
+ if ($boolean) 
+ {
+    
+   $return['status'] = "success";
+   $return['form'] = "showpro";
+   echo json_encode($return);
+   mysqli_close($conn);
+   die;
+ }
+ else
+ {
+   $return['status'] = "success";
+   $return['form'] = "showpro";
+   echo json_encode($return);
+   mysqli_close($conn);
+   die;
+ }
+}
     $data = $_POST['DATA'];
     $DATA = json_decode(str_replace ('\"','"', $data), true);
 
@@ -144,6 +213,10 @@ function showchartsale($conn, $DATA)
       else if($DATA['STATUS'] == 'showchartsale')
       {
         showchartsale($conn, $DATA);
+      }
+      else if($DATA['STATUS'] == 'showpro')
+      {
+        showpro($conn, $DATA);
       }
       else
       {

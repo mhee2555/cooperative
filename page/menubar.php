@@ -46,7 +46,7 @@
                 <i class="icon icon-angle-left s-18 pull-right"></i></a>
                 <!-- เมนูข้างใน แดชบอร์ด -->
                 <ul class="treeview-menu" >
-                    <li <?php if($PmID <> 1) echo 'hidden'; ?>><a href="main.php" ><i class="icon icon-folder5"></i>แดชบอร์ด</a>
+                    <li ><a href="main.php" ><i class="icon icon-folder5"></i>แดชบอร์ด</a>
                     </li>
                     <li <?php if($PmID <> 4) echo 'hidden'; ?>><a href="buy_Longan.php"><i class="icon icon-folder5"></i>บันทึกการซื้อลำไย</a>
                     </li>
@@ -64,9 +64,9 @@
                     </li>
                     <li <?php if($PmID <> 3) echo 'hidden'; ?>><a href="stockp_rice.php" ><i class="icon icon-folder5"></i>บันทึกการรับเข้าข้าวแปรรูป</a>
                     </li>
-                    <li <?php if($PmID <> 3) echo 'hidden'; ?>><a href="packing_lg.php" ><i class="icon icon-folder5"></i>สั่งบรรจุภัณฑ์ลำไย</a>
+                    <li <?php if($PmID <> 2) echo 'hidden'; ?>><a href="packing_lg.php" ><i class="icon icon-folder5"></i>สั่งบรรจุภัณฑ์ลำไย</a>
                     </li>
-                    <li <?php if($PmID <> 3) echo 'hidden'; ?>><a href="packing_rc.php" ><i class="icon icon-folder5"></i>สั่งบรรจุภัณฑ์ข้าว</a>
+                    <li <?php if($PmID <> 2) echo 'hidden'; ?>><a href="packing_rc.php" ><i class="icon icon-folder5"></i>สั่งบรรจุภัณฑ์ข้าว</a>
                     </li>
                     <li <?php if($PmID <> 2) echo 'hidden'; ?>><a href="sale_lg.php" ><i class="icon icon-folder5"></i>บันทึกการขายลำไย</a>
                     </li>

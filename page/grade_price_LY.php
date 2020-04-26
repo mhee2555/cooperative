@@ -503,67 +503,6 @@ $Permission = $_SESSION['Permission'];
 
                                         <tbody  id="tbody"  >
 
-                                        <tr hidden>
-                                            <td >
-                                                <div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input checkSingle" id="user_id_1" required><label class="custom-control-label" for="user_id_1"></label></div>
-                                            </td>
-
-                                            <td>
-                                                <div>
-                                                    <div>
-                                                        <strong>Alexander Pierce</strong>
-                                                    </div>
-                                                    <small> alexander@paper.com</small>
-                                                </div>
-                                            </td>
-
-                                            <td>2</td>
-                                            <td>256</td>
-
-                                            <td>+92 333 123 136</td>
-                                            <td hidden><span class="icon icon-circle s-12  mr-2 text-warning"></span> Inactive</td>
-                                            <td hidden><span class="r-3 badge badge-success ">Administrator</span></td>
-
-
-                                            <td>
-                                                <a href="panel-page-profile.html"><i class="icon-eye mr-3"></i></a>
-                                                <a href="panel-page-profile.html"><i class="icon-pencil"></i></a>
-                                            </td>
-                                        </tr>
-
-                                        <tr hidden>
-                                            <td>
-                                                <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" class="custom-control-input checkSingle"
-                                                           id="user_id_5" required><label
-                                                        class="custom-control-label" for="user_id_5"></label>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div class="avatar avatar-md mr-3 mt-1 float-left">
-                                                    <img  src="assets/img/dummy/u5.png" alt="">
-                                                </div>
-                                                <div>
-                                                    <div>
-                                                        <strong>Alexander Pierce</strong>
-                                                    </div>
-                                                    <small> alexander@paper.com</small>
-                                                </div>
-                                            </td>
-                                            <td>2</td>
-                                            <td>6,000</td>
-
-                                            <td>+92 333 123 136</td>
-                                            <td><span class="icon icon-circle s-12  mr-2 text-success"></span> Active</td>
-
-                                            <td><span class="r-3 badge badge-warning">Seller</span></td>
-                                            <td>
-                                                <a href="panel-page-profile.html"><i class="icon-eye mr-3"></i></a>
-                                                <a href="panel-page-profile.html"><i class="icon-pencil"></i></a>
-                                            </td>
-                                        </tr>
-                                    
                                         </tbody>
                                     </table>
                                     <!-- =============== -->
