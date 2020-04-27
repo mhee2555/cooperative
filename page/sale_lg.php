@@ -33,6 +33,8 @@ $Permission = $_SESSION['Permission'];
     <script type="text/javascript">
     $(document).ready(function(e)
     {
+        $("#P").attr('disabled' , true );
+
         var d = new Date();
       var month = d.getMonth()+1;
       var day = d.getDate();
@@ -401,7 +403,7 @@ $Permission = $_SESSION['Permission'];
         var docdate = $("#docdate").val();
         var Customer = $("#Customer").val();
         
-        url = "../tcreport/Report_Buy_Longan.php?eDate=" + docdate +"&DocNo=" + DocNo+"&Employee=" + Employee+"&Customer=" + Customer;
+        url = "../tcreport/Report_sale_lg.php?eDate=" + docdate +"&DocNo=" + DocNo+"&Employee=" + Employee+"&Customer=" + Customer;
         window.open(url);
     }
     
@@ -647,6 +649,9 @@ $Permission = $_SESSION['Permission'];
                             $("#HCB").removeClass('boxshadowx');
                             $("#HP").removeClass('boxshadowx');
                             $("#HD").removeClass('boxshadowx');
+
+                            }else if(temp[0]['IsStatus'] == 1){
+                            $("#P").attr('disabled' , false );
                         }
                         else
                         {
@@ -655,7 +660,7 @@ $Permission = $_SESSION['Permission'];
                             $("#A").attr('disabled' , false );
                             $("#S").attr('disabled' , false );
                             $("#CB").attr('disabled' , false );
-                            $("#P").attr('disabled' , false );
+                            $("#P").attr('disabled' , true );
                             $("#D").attr('disabled' , false );
 
                             // addclass

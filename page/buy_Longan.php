@@ -48,6 +48,9 @@ $Permission = $_SESSION['Permission'];
         // 
         $("#P").attr('disabled' , true );
         $("#P2").attr('disabled' , true );
+
+
+        
         $("#v-pills-all-tab").click(function()
         {
             $( "#TableDetail tbody" ).empty();

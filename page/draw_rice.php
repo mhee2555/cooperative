@@ -26,13 +26,14 @@ $Permission = $_SESSION['Permission'];
     <link href="../datepicker/dist/css/datepicker.min.css" rel="stylesheet" type="text/css">
     <script src="../datepicker/dist/js/datepicker.th.js"></script>
     <script src="../datepicker/dist/js/i18n/datepicker.en.js"></script>
-    <title>บันทึกกาขอเบิก</title>
+    <title>บันทึกกาขอเบิกข้าว</title>
     <!-- CSS -->
     <link rel="stylesheet" href="assets/css/app.css">
 
     <script type="text/javascript">
     $(document).ready(function(e)
     {
+        $("#P").attr('disabled' , true );
       // ===========DATE ITEM =======
       var d = new Date();
       var month = d.getMonth()+1;
@@ -322,6 +323,18 @@ $Permission = $_SESSION['Permission'];
           })
         
     }
+    function report_rc(){
+   
+   var DocNo = $("#DocNo").val();
+   var Employee = $("#Employee").val();
+   var docdate = $("#docdate").val();
+
+
+       url = "../tcreport/Report_draw_rice.php?eDate=" + docdate +"&DocNo=" + DocNo+"&Employee=" + Employee;
+       window.open(url);
+
+
+}
 //-----------------------------------------------------------------------------------------
     function senddata(data)
     {
@@ -535,6 +548,23 @@ $Permission = $_SESSION['Permission'];
                             $("#HCB").removeClass('boxshadowx');
                             $("#HP").removeClass('boxshadowx');
                             $("#HD").removeClass('boxshadowx');
+                        }else if(temp[0]['IsStatus'] == 2)
+                        {
+                            // disabled
+                            $("#C").attr('disabled' , false );
+                            $("#A").attr('disabled' , false );
+                            $("#S").attr('disabled' , false );
+                            $("#CB").attr('disabled' , false );
+                            $("#P").attr('disabled' , false );
+                            $("#D").attr('disabled' , false );
+
+                            // addclass
+                            $("#HC").addClass('boxshadowx');
+                            $("#HA").addClass('boxshadowx');
+                            $("#HS").addClass('boxshadowx');
+                            $("#HCB").addClass('boxshadowx');
+                            $("#HP").addClass('boxshadowx');
+                            $("#HD").addClass('boxshadowx');
                         }
                         else
                         {
@@ -543,7 +573,7 @@ $Permission = $_SESSION['Permission'];
                             $("#A").attr('disabled' , false );
                             $("#S").attr('disabled' , false );
                             $("#CB").attr('disabled' , false );
-                            $("#P").attr('disabled' , false );
+                            $("#P").attr('disabled' , true );
                             $("#D").attr('disabled' , false );
 
                             // addclass
@@ -719,7 +749,7 @@ $Permission = $_SESSION['Permission'];
                 <div class="col">
                     <h4>
                         <i class="icon icon-folder5"></i>
-                        บันทึกการขอเบิก
+                        บันทึกการขอเบิกข้าว
                     </h4>
                 </div>
             </div>
@@ -806,7 +836,7 @@ $Permission = $_SESSION['Permission'];
                             </div>
 
                             <div class=" ml-5 boxshadowx" id="HP">
-                            <button type="button" class="btn "  id="P">
+                            <button type="button" class="btn "  id="P"  onclick="report_rc()">
                                     <i class="icon-print orange lighten-2 avatar-md circle avatar-letter"></i>
                                     <div class="pt-1">พิมพ์รายงาน</div>
                             </button>

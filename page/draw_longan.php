@@ -26,13 +26,15 @@ $Permission = $_SESSION['Permission'];
     <link href="../datepicker/dist/css/datepicker.min.css" rel="stylesheet" type="text/css">
     <script src="../datepicker/dist/js/datepicker.th.js"></script>
     <script src="../datepicker/dist/js/i18n/datepicker.en.js"></script>
-    <title>บันทึกกาขอเบิก</title>
+    <title>บันทึกกาขอเบิกลำใย</title>
     <!-- CSS -->
     <link rel="stylesheet" href="assets/css/app.css">
 
     <script type="text/javascript">
     $(document).ready(function(e)
     {
+
+        $("#P").attr('disabled' , true );
       // ===========DATE ITEM =======
       var d = new Date();
       var month = d.getMonth()+1;
@@ -54,7 +56,6 @@ $Permission = $_SESSION['Permission'];
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
             });
         });
-        // 
     });
     // 
     
@@ -335,6 +336,20 @@ $Permission = $_SESSION['Permission'];
           })
         
     }
+
+    function report_Lg(){
+   
+        var DocNo = $("#DocNo").val();
+        var Employee = $("#Employee").val();
+        var docdate = $("#docdate").val();
+
+
+            url = "../tcreport/Report_draw_longan.php?eDate=" + docdate +"&DocNo=" + DocNo+"&Employee=" + Employee;
+            window.open(url);
+   
+       
+    
+    }
 //-----------------------------------------------------------------------------------------
     function senddata(data)
     {
@@ -568,7 +583,7 @@ $Permission = $_SESSION['Permission'];
                         $("#Employee").attr('disabled' , true );
                         $("#DocNo").attr('disabled' , true );
                         // 
-
+                  
                         if(temp[0]['IsStatus'] == 9)
                         {
                             // disabled
@@ -587,8 +602,7 @@ $Permission = $_SESSION['Permission'];
                             $("#HCB").removeClass('boxshadowx');
                             $("#HP").removeClass('boxshadowx');
                             $("#HD").removeClass('boxshadowx');
-                        }
-                        else
+                        }else if(temp[0]['IsStatus'] == 2)
                         {
                             // disabled
                             $("#C").attr('disabled' , false );
@@ -596,6 +610,23 @@ $Permission = $_SESSION['Permission'];
                             $("#S").attr('disabled' , false );
                             $("#CB").attr('disabled' , false );
                             $("#P").attr('disabled' , false );
+                            $("#D").attr('disabled' , false );
+
+                            // addclass
+                            $("#HC").addClass('boxshadowx');
+                            $("#HA").addClass('boxshadowx');
+                            $("#HS").addClass('boxshadowx');
+                            $("#HCB").addClass('boxshadowx');
+                            $("#HP").addClass('boxshadowx');
+                            $("#HD").addClass('boxshadowx');
+                        }
+                        else{
+                            // disabled
+                            $("#C").attr('disabled' , false );
+                            $("#A").attr('disabled' , false );
+                            $("#S").attr('disabled' , false );
+                            $("#CB").attr('disabled' , false );
+                            $("#P").attr('disabled' , true );
                             $("#D").attr('disabled' , false );
 
                             // addclass
@@ -771,7 +802,7 @@ $Permission = $_SESSION['Permission'];
                 <div class="col">
                     <h4>
                         <i class="icon icon-folder5"></i>
-                        บันทึกการขอเบิก
+                        บันทึกการขอเบิกลำใย
                     </h4>
                 </div>
             </div>
@@ -858,7 +889,7 @@ $Permission = $_SESSION['Permission'];
                             </div>
 
                             <div class=" ml-5 boxshadowx" id="HP">
-                            <button type="button" class="btn "  id="P">
+                            <button type="button" class="btn "  id="P" onclick="report_Lg()">
                                     <i class="icon-print orange lighten-2 avatar-md circle avatar-letter"></i>
                                     <div class="pt-1">พิมพ์รายงาน</div>
                             </button>
