@@ -24,9 +24,9 @@
                 <div class="clearfix"></div>
                 <div class="collapse multi-collapse" id="userSettingsCollapse">
                     <div class="list-group mt-3 shadow">
-                        <a href="index.html" class="list-group-item list-group-item-action ">
+                        <!-- <a href="index.html" class="list-group-item list-group-item-action ">
                             <i class="mr-2 icon-umbrella text-blue"></i>โปรไฟล์
-                        </a>
+                        </a> -->
                         <a href="#" class="list-group-item list-group-item-action"><i
                                 class="mr-2 icon-cogs text-yellow"></i>เปลี่ยนรหัสผ่าน</a>
                         <a href="../index.php" class="list-group-item list-group-item-action"><i
@@ -46,33 +46,33 @@
                 <i class="icon icon-angle-left s-18 pull-right"></i></a>
                 <!-- เมนูข้างใน แดชบอร์ด -->
                 <ul class="treeview-menu" >
-                    <li><a href="main.php" ><i class="icon icon-folder5"></i>หน้าหลัก</a>
+                    <li ><a href="main.php" ><i class="icon icon-folder5"></i>แดชบอร์ด</a>
                     </li>
-                    <li><a href="buy_Longan.php"><i class="icon icon-folder5"></i>บันทึกการซื้อลำไย</a>
+                    <li <?php if($PmID <> 4) echo 'hidden'; ?>><a href="buy_Longan.php"><i class="icon icon-folder5"></i>บันทึกการซื้อลำไย</a>
                     </li>
-                    <li><a href="buy_rice.php"><i class="icon icon-folder5"></i>บันทึกการซื้อข้าว</a>
+                    <li <?php if($PmID <> 4) echo 'hidden'; ?>><a href="buy_rice.php"><i class="icon icon-folder5"></i>บันทึกการซื้อข้าว</a>
                     </li>
-                    <li><a href="draw_longan.php" ><i class="icon icon-folder5"></i>บันทึกการขอเบิกลำไย</a>
+                    <li <?php if($PmID <> 3) echo 'hidden'; ?>><a href="draw_longan.php" ><i class="icon icon-folder5"></i>บันทึกการขอเบิกลำไย</a>
                     </li>
-                    <li><a href="draw_rice.php" ><i class="icon icon-folder5"></i>บันทึกการขอเบิกข้าว</a>
+                    <li <?php if($PmID <> 3) echo 'hidden'; ?>><a href="draw_rice.php" ><i class="icon icon-folder5"></i>บันทึกการขอเบิกข้าว</a>
                     </li>
-                    <li><a href="process_lg.php" ><i class="icon icon-folder5"></i>บันทึกการแปรรูปลำไย</a>
+                    <li <?php if($PmID <> 3) echo 'hidden'; ?>><a href="process_lg.php" ><i class="icon icon-folder5"></i>บันทึกการแปรรูปลำไย</a>
                     </li>
-                    <li><a href="process_rc.php" ><i class="icon icon-folder5"></i>บันทึกการแปรรูปข้าว</a>
+                    <li <?php if($PmID <> 3) echo 'hidden'; ?>><a href="process_rc.php" ><i class="icon icon-folder5"></i>บันทึกการแปรรูปข้าว</a>
                     </li>
-                    <li><a href="stockp_lg.php" ><i class="icon icon-folder5"></i>บันทึกการรับเข้าลำไยแปรรูป</a>
+                    <li <?php if($PmID <> 3) echo 'hidden'; ?>><a href="stockp_lg.php" ><i class="icon icon-folder5"></i>บันทึกการรับเข้าลำไยแปรรูป</a>
                     </li>
-                    <li><a href="stockp_rice.php" ><i class="icon icon-folder5"></i>บันทึกการรับเข้าข้าวแปรรูป</a>
+                    <li <?php if($PmID <> 3) echo 'hidden'; ?>><a href="stockp_rice.php" ><i class="icon icon-folder5"></i>บันทึกการรับเข้าข้าวแปรรูป</a>
                     </li>
-                    <li><a href="packing_lg.php" ><i class="icon icon-folder5"></i>สั่งบรรจุภัณฑ์ลำไย</a>
+                    <li <?php if($PmID <> 2) echo 'hidden'; ?>><a href="packing_lg.php" ><i class="icon icon-folder5"></i>สั่งบรรจุภัณฑ์ลำไย</a>
                     </li>
-                    <li><a href="packing_rc.php" ><i class="icon icon-folder5"></i>สั่งบรรจุภัณฑ์ข้าว</a>
+                    <li <?php if($PmID <> 2) echo 'hidden'; ?>><a href="packing_rc.php" ><i class="icon icon-folder5"></i>สั่งบรรจุภัณฑ์ข้าว</a>
                     </li>
-                    <li><a href="sale_lg.php" ><i class="icon icon-folder5"></i>บันทึกการขายลำไย</a>
+                    <li <?php if($PmID <> 2) echo 'hidden'; ?>><a href="sale_lg.php" ><i class="icon icon-folder5"></i>บันทึกการขายลำไย</a>
                     </li>
-                    <li><a href="sale_rc.php" ><i class="icon icon-folder5"></i>บันทึกการขายข้าว</a>
+                    <li <?php if($PmID <> 2) echo 'hidden'; ?>><a href="sale_rc.php" ><i class="icon icon-folder5"></i>บันทึกการขายข้าว</a>
                     </li>
-                    <li><a href="transport.php" ><i class="icon icon-folder5"></i>ขนส่ง</a>
+                    <li <?php if($PmID <> 5) echo 'hidden'; ?>><a href="transport.php" ><i class="icon icon-folder5"></i>ขนส่ง</a>
                     </li>
                 </ul>
             </li>
@@ -253,7 +253,7 @@
                 </a>
             </div>
             <!--Top Menu Start -->
-<div class="navbar-custom-menu">
+<div class="navbar-custom-menu" hidden>
     <ul class="nav navbar-nav">
         <!-- Messages-->
         <li class="dropdown custom-dropdown messages-menu">

@@ -13,6 +13,7 @@
     <link rel="icon" href="assets/img/basic/favicon.ico" type="image/x-icon">
     <title>LOGIN-COOPERATIVE</title>
     <!-- CSS -->
+    <link href="https://fonts.googleapis.com/css?family=Krub&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/app.css">
     <script src="dist/js/sweetalert2.min.js"></script>
     <script src="dist/js/jquery-3.3.1.min.js"></script>
@@ -173,6 +174,9 @@
 
     </script>
     <style>
+        body , .swal2-popup{
+            font-family: 'Krub', sans-serif;
+        }
         .loader {
             position: fixed;
             left: 0;
@@ -248,13 +252,13 @@
 </div>
 <div id="app">
 <main>
-    <div id="primary" class="p-t-b-100 height-full ">
+    <div id="primary" class="p-t-b-100 height-full " style="background: #fff !important;">
         <div class="container">
             <div class="row">
                 <div class="col-lg-4 mx-md-auto">
                     <div class="text-center">
-                        <img src="assets/img/dummy/u5.png" alt="">
-                        <h3 class="mt-2">LOGIN-COOPERATIVE</h3>
+                        <img src="page/assets/img/basic/download.jfif" alt="" style="width: 35%;">
+                        <h3 class="mt-2">สหกรณ์การเกษตรสันป่าตอง</h3>
                         <!-- <p class="p-t-b-20">Hey Soldier welcome back signin now there is lot of new stuff waiting
                             for you</p> -->
                     </div>
