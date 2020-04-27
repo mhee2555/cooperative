@@ -100,7 +100,7 @@ function Savebill($conn, $DATA)
                         item_ccqty = '$Kilo[$key]',
                         UnitCode = '$UnitCode[$key]',
                         Date_start = NOW(),
-                        Date_exp = NOW() + INTERVAL 1 DAY,
+                        Date_exp = NOW() + INTERVAL 90 DAY,
                         DocNo = '$DocNo' ";  
 
     mysqli_query($conn, $INSERT_STOCK);

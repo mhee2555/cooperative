@@ -99,7 +99,8 @@ function ShowItem($conn, $DATA)
           FROM
             item
           INNER JOIN stock_process ON stock_process.item_code = item.item_code
-          WHERE item_type = '3'  ";
+          WHERE item_type = '3'
+          AND TIMEDIFF(stock_process.Date_exp , NOW() ) > 0  ";
     $meQuery = mysqli_query($conn, $Sql);
     while ($Result = mysqli_fetch_assoc($meQuery)) 
     {

@@ -518,7 +518,7 @@ function Successprocess($conn, $DATA)
                           PackgeCode = '$Unit[$key]',
                           DocNo = '$DocNo',
                           Date_start = NOW(),
-                          Date_exp = NOW() + INTERVAL 1 DAY ";  
+                          Date_exp = NOW() + INTERVAL 365 DAY ";  
                   mysqli_query($conn, $INSERT_STOCK);
 
           // ========================================================================================
