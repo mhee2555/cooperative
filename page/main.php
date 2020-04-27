@@ -580,7 +580,7 @@ $Permission = $_SESSION['Permission'];
     <div class="container-fluid">
         <div class="row my-3">
             <!-- bar chart -->
-            <div class="col-md-6 col-sm-6 col-xs-12"  <?php if($PmID <> 1) echo 'hidden'; ?>>
+            <div class="col-md-6 col-sm-6 col-xs-12"  <?php if($PmID <> 1 && $PmID <> 2) echo 'hidden'; ?>>
                 <div class="card " id="chartbuy">
                     <div class='card-header white'> 
 
@@ -619,7 +619,7 @@ $Permission = $_SESSION['Permission'];
             </div>
 
  <!-- bar chart -->
-            <div class="col-md-6 col-sm-6 col-xs-12" <?php if($PmID <> 1) echo 'hidden'; ?>>
+            <div class="col-md-6 col-sm-6 col-xs-12" <?php if($PmID <> 1  && $PmID <> 2) echo 'hidden'; ?>>
                 <div class="card " id="chartbuy">
                     <div class='card-header white'> 
                         <div class = 'row justify-content-center' >
@@ -656,10 +656,9 @@ $Permission = $_SESSION['Permission'];
             </div> 
 
 
-            <div class="col-md-6 col-sm-6 col-xs-12 mt-3">
+            <div class="col-md-6 col-sm-6 col-xs-12 mt-3" <?php if($PmID <> 1  && $PmID <> 3 && $PmID <> 4) echo 'hidden'; ?>>
                 <div class="card " id="chartbuy">
                     <div class='card-header white'> 
-
                     <div class = 'row justify-content-center' >
                         <h4 class="col-md-12 text-center mb-3" >การขอแปรรูปสินค้า</h4>
                     </div>
@@ -702,7 +701,7 @@ $Permission = $_SESSION['Permission'];
 
 
 
-            <div class="col-md-6 col-sm-6 col-xs-12 mt-3">
+            <div class="col-md-6 col-sm-6 col-xs-12 mt-3" <?php if($PmID <> 1  && $PmID <> 3 && $PmID <> 2) echo 'hidden'; ?>>
                 <div class="card " id="chartbuy">
                     <div class='card-header white'> 
 

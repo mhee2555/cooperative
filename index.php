@@ -107,9 +107,20 @@
                             confirmButtonText: 'Ok',
                             showConfirmButton: false
                         });
-                        setTimeout(function(){ 
+
+                        if(temp['PmID'] == 5)
+                        {
+                            setTimeout(function(){ 
+                            window.location.href = 'page/transport.php';
+                            }, 1000);
+                        }
+                        else
+                        {
+                            setTimeout(function(){ 
                             window.location.href = 'page/main.php';
-                        }, 1000);
+                            }, 1000);
+                        }
+                 
                     }
                 }
                 else if (temp['status']=="failed") 

@@ -249,7 +249,64 @@ function view_detail($conn, $DATA)
   }
 }
 
+function view_address($conn, $DATA)
+{
+  $DocNo = $DATA["DocNo"];
+  $count = 0;
+  $cnt = 0;
 
+  $countx = "SELECT COUNT(DocNo) AS cnt FROM sale_longan WHERE DocNo = '$DocNo' ";
+  $meQuery = mysqli_query($conn, $countx);
+  $Result = mysqli_fetch_assoc($meQuery);
+  $cnt = $Result['cnt'];
+
+
+  
+
+  if($cnt > 0)
+  {
+    $Sql = "SELECT Customer_ID FROM sale_longan WHERE DocNo = '$DocNo'  ";
+    $meQuery = mysqli_query($conn, $Sql);
+    $Result = mysqli_fetch_assoc($meQuery);
+    $Customer_ID = $Result['Customer_ID'];
+
+  }
+  else
+  {
+    $Sql = "SELECT Customer_ID FROM sale_rice WHERE DocNo = '$DocNo'  ";
+    $meQuery = mysqli_query($conn, $Sql);
+    $Result = mysqli_fetch_assoc($meQuery);
+    $Customer_ID = $Result['Customer_ID'];
+
+  }
+
+
+
+
+  $address = "SELECT address FROM users WHERE ID = '$Customer_ID' ";
+  $meQuery = mysqli_query($conn, $address);
+  while ($Result = mysqli_fetch_assoc($meQuery))
+  {
+    $return['address'] = $Result['address'];
+    $count ++ ;
+  }
+
+  $return['cnt'] = $count;
+
+  if ($count > 0) {
+      $return['status'] = "success";
+      $return['form'] = "view_address";
+      echo json_encode($return);
+      mysqli_close($conn);
+      die;
+  } else {
+      $return['status'] = "success";
+      $return['form'] = "view_address";
+      echo json_encode($return);
+      mysqli_close($conn);
+      die;
+  }
+}
 
 
 
@@ -275,6 +332,10 @@ function view_detail($conn, $DATA)
       else if ($DATA['STATUS'] == 'view_detail') 
       {
         view_detail($conn, $DATA);
+      }
+      else if ($DATA['STATUS'] == 'view_address') 
+      {
+        view_address($conn, $DATA);
       }
       else
       {

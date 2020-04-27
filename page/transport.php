@@ -114,6 +114,17 @@ $Permission = $_SESSION['Permission'];
           };
           senddata(JSON.stringify(data));
         }
+
+        function view_address()
+        {
+          DocNo =  $('#DocNo').text();
+          var data = {
+            'DocNo': DocNo,
+            'STATUS': 'view_address'
+          };
+          senddata(JSON.stringify(data));
+        }
+				
         function end_send()
         {
           DocNo =  $('#DocNo').text();
@@ -345,6 +356,29 @@ $Permission = $_SESSION['Permission'];
 
                             $("#lg_body").append(Str);
                             $("#md_lg").modal('show');
+                        } 
+												else if (temp["form"] == 'view_address')
+                        {
+                          $("#ad_body").empty();
+
+                            var Str = "<table class='table table-bordered table-sm'>";
+                            Str += "			<thead>";
+                            Str += "				<tr>";
+                            Str += "					<th>ที่อยู่</th>";
+                            Str += "				</tr>";
+                            Str += "			</thead>";
+                            Str += "			<tbody>";
+
+                              Str += "					<tr>";
+                              Str += "						<td class='text-left pl-3'>" + temp['address'] + "</td>";
+                              Str += "					</tr>";
+                            
+
+                            Str += "				</tbody>";
+                            Str += "			</table>";
+
+                            $("#ad_body").append(Str);
+                            $("#md_ad").modal('show');
                         } 
 
                     }
@@ -642,6 +676,10 @@ $Permission = $_SESSION['Permission'];
                       <button onclick="view_detail()" class="btn btn-block btn-info">รายละเอียด</button>
                     </div>
 
+										<div class="col-md-8 col-sm-12 mx-auto my-4">
+                      <button onclick="view_address()" class="btn btn-block btn-info">ที่อยู่</button>
+                    </div>
+										
                     <div id="sign_zone_start" class="text-center" hidden>
                       <div><b>ลายเซนต์ผู้ส่ง</b></div>
                       <div class="row justify-content-center">
@@ -757,7 +795,23 @@ $Permission = $_SESSION['Permission'];
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
-				<div id="lg_body" class="modal-body text-center" style="max-height: calc(100vh - 210px);overflow-y: auto;">
+				<div id="lg_body" class="modal-body text-center" style="max-height: calc(100vh - 210px);overflow-y: auto;"> 
+			 </div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="md_ad" tabindex="-1" role="dialog" aria-hidden='false'>
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div id="ad_body" class="modal-body text-center" style="max-height: calc(100vh - 210px);overflow-y: auto;">
+
+
+
 <!-- /.right-sidebar -->
 <!-- Add the sidebar's background. This div must be placed
          immediately after the control sidebar -->

@@ -5,11 +5,11 @@ require '../connect/connect.php';
     $count = 0;
     $Showitem = "SELECT
                     item.item_name,	
-                    grade_price.Grade,
+                    grade_price_rice.Grade,
                     DATE(NOW()) as DATE
                 FROM
-                    grade_price
-                INNER JOIN item ON  grade_price.item_code = item.item_code";
+                  grade_price_rice
+                INNER JOIN item ON  grade_price_rice.item_code = item.item_code";
                 $meQuery = mysqli_query($conn, $Showitem);
                 while ($Result = mysqli_fetch_assoc($meQuery))
                 {
@@ -20,7 +20,7 @@ require '../connect/connect.php';
                     $mess .=   $item_name[$count] . "  ราคา " . $Grade[$count] . "  บาท" . "\n" ;          
                     $count ++;
                 }
-                $header = "อัพเดตราคาลำไย ประจำวันที่  ";
+                $header = "อัพเดตราคาข้าว ประจำวันที่  ";
                 $message = $header . $DATE .
                         "\n". $mess ;
 

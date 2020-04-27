@@ -46,7 +46,7 @@
                 <i class="icon icon-angle-left s-18 pull-right"></i></a>
                 <!-- เมนูข้างใน แดชบอร์ด -->
                 <ul class="treeview-menu" >
-                    <li ><a href="main.php" ><i class="icon icon-folder5"></i>แดชบอร์ด</a>
+                    <li <?php if( $PmID <> 1 && $PmID <> 2 && $PmID <> 3 && $PmID <> 4 ) echo 'hidden'; ?>><a href="main.php" ><i class="icon icon-folder5"></i>แดชบอร์ด</a>
                     </li>
                     <li <?php if($PmID <> 4) echo 'hidden'; ?>><a href="buy_Longan.php"><i class="icon icon-folder5"></i>บันทึกการซื้อลำไย</a>
                     </li>
@@ -123,7 +123,7 @@
             <!--    inbox================================ -->
             <!-- <li class="treeview "><a href="#"> <i class="icon icon-package light-green-text s-18"></i>
                     <span>พนักงาน</span> -->
-             <i class="icon icon-angle-left s-18 pull-right"></i></a>
+             <!-- <i class="icon icon-angle-left s-18 pull-right"></i></a> -->
                 <!-- <span   class="badge r-3 badge-success pull-right">20</span> -->
                 <!-- <ul class="treeview-menu">
                     <li><a href="employee.php"><i class="icon icon-circle-o"></i>ข้อมูลพนักงาน</a>

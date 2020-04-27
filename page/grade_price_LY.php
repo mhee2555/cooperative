@@ -479,7 +479,6 @@ $Permission = $_SESSION['Permission'];
         <div class="tab-content my-3" id="v-pills-tabContent">
             <div class="tab-pane animated fadeInUpShort show active" id="v-pills-all" role="tabpanel" aria-labelledby="v-pills-all-tab">
             <div class="row">
-
                 <div class="col-md-10">
                     <button type="button" style=" float: right;"  data-toggle="modal" class="btn btn-success btn-lg ml-3" onclick="line_notify()"><i class="icon-comment"></i>&nbsp;ส่งข้อมูลเข้า Line@&nbsp;</button>
                 </div>

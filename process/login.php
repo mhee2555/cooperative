@@ -30,6 +30,8 @@ function checklogin($conn,$DATA)
         $_SESSION['FName']     = $Result['FName'];
         $_SESSION['ID']             = $Result['ID'];
         $_SESSION['Permission']       = $Result['Permission'];
+        $return['PmID']         = $Result['PmID'];
+
         $boolean = true;
       }
       if($boolean)
