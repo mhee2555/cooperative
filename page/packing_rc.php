@@ -33,6 +33,7 @@ $Permission = $_SESSION['Permission'];
     <script type="text/javascript">
     $(document).ready(function(e)
     {
+        $("#P").attr('disabled' , true );
         // ========
         Showuser();
         // ========
@@ -379,6 +380,19 @@ $Permission = $_SESSION['Permission'];
         parseFloat($("#total_stock_"+i).val(sumqty_total));
 
     }
+function report_rc(){
+   
+   var DocNo = $("#DocNo").val();
+   var Employee = $("#Employee").val();
+   var docdate = $("#docdate").val();
+
+
+       url = "../tcreport/Report_packing_rc.php?eDate=" + docdate +"&DocNo=" + DocNo+"&Employee=" + Employee;
+       window.open(url);
+
+
+
+}
 //-----------------------------------------------------------------------------------------
     function senddata(data)
     {
@@ -589,6 +603,8 @@ $Permission = $_SESSION['Permission'];
                             $("#HCB").removeClass('boxshadowx');
                             $("#HP").removeClass('boxshadowx');
                             $("#HD").removeClass('boxshadowx');
+                        }else if(temp[0]['IsStatus'] == 1){
+                            $("#P").attr('disabled' , false );
                         }
                         else
                         {
@@ -597,7 +613,7 @@ $Permission = $_SESSION['Permission'];
                             $("#A").attr('disabled' , false );
                             $("#S").attr('disabled' , false );
                             $("#CB").attr('disabled' , false );
-                            $("#P").attr('disabled' , false );
+                            $("#P").attr('disabled' , true );
                             $("#D").attr('disabled' , false );
 
                             // addclass
@@ -855,7 +871,7 @@ $Permission = $_SESSION['Permission'];
                             </div>
 
                             <div class=" ml-5 boxshadowx" id="HP">
-                            <button type="button" class="btn "  id="P">
+                            <button type="button" class="btn "  id="P" onclick="report_rc()">
                                     <i class="icon-print orange lighten-2 avatar-md circle avatar-letter"></i>
                                     <div class="pt-1">พิมพ์รายงาน</div>
                             </button>

@@ -987,9 +987,9 @@ $Permission = $_SESSION['Permission'];
                             </button>
                             </div>
 
-                            <div class=" ml-5 boxshadowx" id="HP">
+                            <div class=" ml-5 boxshadowx" id="HP" hidden>
                             <button type="button" class="btn "  id="P">
-                                    <i class="icon-print orange lighten-2 avatar-md circle avatar-letter"></i>
+                                    <i class="icon-print orange lighten-2 avatar-md circle avatar-letter" ></i>
                                     <div class="pt-1">พิมพ์รายงาน</div>
                             </button>
                             </div>
