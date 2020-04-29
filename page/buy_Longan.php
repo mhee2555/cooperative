@@ -202,77 +202,97 @@ $Permission = $_SESSION['Permission'];
     }
     function Savebill()
     {
+      var chkrow  =   $( ".chkrow" ).length;
 
-        // =======================================================
-        var ItemCodeArray = [];
-        var KiloArray = [];
-        var UnitArray = [];
-        
-
-        $('select[name="UnitArray"]').each(function() 
+        if(chkrow > 0)
         {
-          if($(this).val()!="")
-          {
-            UnitArray.push($(this).val());
-          }
-        });
-        var UnitCode = UnitArray.join(',') ;
+            // =======================================================
+            var ItemCodeArray = [];
+            var KiloArray = [];
+            var UnitArray = [];
+            
 
-        // ========================================================
+            $('select[name="UnitArray"]').each(function() 
+            {
+            if($(this).val()!="")
+            {
+                UnitArray.push($(this).val());
+            }
+            });
+            var UnitCode = UnitArray.join(',') ;
 
-        $('input[name="detailrow"]').each(function() 
-        {
-          if($(this).val()!="")
-          {
-              ItemCodeArray.push($(this).val());
-          }
-        });
-        var ItemCode = ItemCodeArray.join(',') ;
-        // ========================================================
-        $('input[name="KiloArray"]').each(function() 
-        {
-          if($(this).val()!="")
-          {
-            KiloArray.push($(this).val());
-          }
-        });
-        var Kilo = KiloArray.join(',') ;
+            // ========================================================
 
-        // ========================================================
+            $('input[name="detailrow"]').each(function() 
+            {
+            if($(this).val()!="")
+            {
+                ItemCodeArray.push($(this).val());
+            }
+            });
+            var ItemCode = ItemCodeArray.join(',') ;
+            // ========================================================
+            $('input[name="KiloArray"]').each(function() 
+            {
+            if($(this).val()!="")
+            {
+                KiloArray.push($(this).val());
+            }
+            });
+            var Kilo = KiloArray.join(',') ;
 
-        var DocNo = $("#DocNo").val();
-        swal({
-          title: "",
-          text: "ยืนยันการบันทึกเอกสาร "+DocNo+" ",
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonClass: "btn-danger",
-          confirmButtonText: "ใช่",
-          cancelButtonText: "ไม่ใช่",
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          closeOnConfirm: false,
-          closeOnCancel: false,
-          showCancelButton: true}).then(result => 
-          {
-              if (result.value) 
-              {
-                var data = 
+            // ========================================================
+
+            var DocNo = $("#DocNo").val();
+            swal({
+            title: "",
+            text: "ยืนยันการบันทึกเอกสาร "+DocNo+" ",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "ใช่",
+            cancelButtonText: "ไม่ใช่",
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            closeOnConfirm: false,
+            closeOnCancel: false,
+            showCancelButton: true}).then(result => 
+            {
+                if (result.value) 
                 {
-                    'STATUS'      : 'Savebill',
-                    'DocNo'      : DocNo ,
-                    'ItemCode'      : ItemCode ,
-                    'Kilo'      : Kilo,
-                    'UnitCode'      : UnitCode
-                };
-                senddata(JSON.stringify(data));
-                $('#v-pills-buyers-tab').tab('show');
-              }
-              else if (result.dismiss === 'cancel') 
-              {
-                swal.close();
-              }
-          })
+                    var data = 
+                    {
+                        'STATUS'      : 'Savebill',
+                        'DocNo'      : DocNo ,
+                        'ItemCode'      : ItemCode ,
+                        'Kilo'      : Kilo,
+                        'UnitCode'      : UnitCode
+                    };
+                    senddata(JSON.stringify(data));
+                    $('#v-pills-buyers-tab').tab('show');
+                }
+                else if (result.dismiss === 'cancel') 
+                {
+                    swal.close();
+                }
+            })
+        }
+        else
+        {
+            swal({
+                title: '',
+                text: 'กรุณาเพิ่มรายการก่อนบันทึก',
+                type: 'warning',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                showConfirmButton: false,
+                timer: 2000,
+                confirmButtonText: 'Ok'
+                })
+        }
+
+       
     }
     function Cancelbill()
     {
@@ -497,7 +517,7 @@ $Permission = $_SESSION['Permission'];
                                   var Kilo = "<input type='text' disabled id='Detail_Kilo_"+i+"' class='form-control ' style='text-align:right' autocomplete='off'  name='KiloArray'  placeholder='0.00' value='"+temp[i]['kilo']+"' disabled>  ";
                                   var Total = "<input type='text' disabled id='Detail_Total_"+i+"' class='form-control ' style='text-align:right' autocomplete='off'  value='"+temp[i]['total']+"' disabled >  ";
 
-                                   StrTR =   "<tr>"+
+                                   StrTR =   "<tr class='chkrow'>"+
                                                 "<td >"+chkinput+"</td>"+
                                                 "<td style=' width: 20%; '>"+temp[i]['item_name']+"</td>"+
                                                 "<td style=' width: 20%; ' >"+temp[i]['Grade']+"</td>"+

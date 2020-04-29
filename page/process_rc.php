@@ -89,13 +89,61 @@ $Permission = $_SESSION['Permission'];
     }
     function Startprocess()
     {
-        var DocNo = $("#DocNo").val();
-        var RefDocNo = $("#RefDocNo").val();
-        if(RefDocNo == "")
+        var chkrow  =   $( ".chkrow" ).length;
+        if(chkrow > 0)
+        {
+            var DocNo = $("#DocNo").val();
+            var RefDocNo = $("#RefDocNo").val();
+            if(RefDocNo == "")
+            {
+                swal({
+                    title: '',
+                    text: "กรุณาเลือกเอกสารขอเบิก",
+                    type: 'warning',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    confirmButtonText: 'Ok'
+                    })
+            }
+            else
+            {
+                swal({
+                title: "",
+                text: "ยืนยันการเรึ่มต้นแปรรูป",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "ใช่",
+                cancelButtonText: "ไม่ใช่",
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                closeOnConfirm: false,
+                closeOnCancel: false,
+                showCancelButton: true}).then(result => {
+                    if (result.value)
+                    {
+                        var data =
+                        {
+                            'STATUS'    : 'Startprocess',
+                            'DocNo'     : DocNo
+                        };
+                        senddata(JSON.stringify(data));
+                    }
+                    else if (result.dismiss === 'cancel')
+                    {
+                        swal.close();
+                    } 
+                })
+            }
+        }
+        else
         {
             swal({
                 title: '',
-                text: "กรุณาเลือกเอกสารขอเบิก",
+                text: 'กรุณาเพิ่มรายการก่อนบันทึก',
                 type: 'warning',
                 showCancelButton: false,
                 confirmButtonColor: '#3085d6',
@@ -105,36 +153,7 @@ $Permission = $_SESSION['Permission'];
                 confirmButtonText: 'Ok'
                 })
         }
-        else
-        {
-            swal({
-            title: "",
-            text: "ยืนยันการเรึ่มต้นแปรรูป",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonClass: "btn-danger",
-            confirmButtonText: "ใช่",
-            cancelButtonText: "ไม่ใช่",
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            closeOnConfirm: false,
-            closeOnCancel: false,
-            showCancelButton: true}).then(result => {
-                if (result.value)
-                {
-                    var data =
-                    {
-                        'STATUS'    : 'Startprocess',
-                        'DocNo'     : DocNo
-                    };
-                    senddata(JSON.stringify(data));
-                }
-                else if (result.dismiss === 'cancel')
-                {
-                    swal.close();
-                } 
-            })
-        }
+
     }
     function Endprocess()
     {
@@ -503,7 +522,7 @@ $Permission = $_SESSION['Permission'];
                                   var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' autocomplete='off'  name='KiloArray'  placeholder='0.00' value='"+temp[i]['kilo']+"' style='  text-align: right;' disabled>  ";
                                   var stock_code = "<input type='text'  name='stock_code'   value='"+temp[i]['stock_code']+"'  hidden>  ";
 
-                                  StrTR =   "<tr>"+
+                                  StrTR =   "<tr class='chkrow'>"+
                                                 "<td style='width:10%'>"+chkinput+"</td>"+
                                                 "<td style='width:40%'>"+temp[i]['item_name']+"</td>"+
                                                 "<td style='width:10%'>"+Kilo+"</td>"+

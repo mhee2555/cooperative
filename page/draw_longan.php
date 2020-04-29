@@ -204,36 +204,58 @@ $Permission = $_SESSION['Permission'];
     }
     function Savebill()
     {
-        var DocNo = $("#DocNo").val();
-        swal({
-          title: "",
-          text: "ยืนยันการบันทึกเอกสาร "+DocNo+" ",
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonClass: "btn-danger",
-          confirmButtonText: "ใช่",
-          cancelButtonText: "ไม่ใช่",
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          closeOnConfirm: false,
-          closeOnCancel: false,
-          showCancelButton: true}).then(result => 
-          {
-              if (result.value) 
-              {
-                var data = 
+        var chkrow  =   $( ".chkrow" ).length;
+        if(chkrow > 0)
+        {
+                
+            var DocNo = $("#DocNo").val();
+            swal({
+            title: "",
+            text: "ยืนยันการบันทึกเอกสาร "+DocNo+" ",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "ใช่",
+            cancelButtonText: "ไม่ใช่",
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            closeOnConfirm: false,
+            closeOnCancel: false,
+            showCancelButton: true}).then(result => 
+            {
+                if (result.value) 
                 {
-                    'STATUS'      : 'Savebill',
-                    'DocNo'      : DocNo 
-                };
-                senddata(JSON.stringify(data));
-                $('#v-pills-buyers-tab').tab('show');
-              }
-              else if (result.dismiss === 'cancel') 
-              {
-                swal.close();
-              }
-          })
+                    var data = 
+                    {
+                        'STATUS'      : 'Savebill',
+                        'DocNo'      : DocNo 
+                    };
+                    senddata(JSON.stringify(data));
+                    $('#v-pills-buyers-tab').tab('show');
+                }
+                else if (result.dismiss === 'cancel') 
+                {
+                    swal.close();
+                }
+            })
+        }
+        else
+        {
+            swal({
+                title: '',
+                text: 'กรุณาเพิ่มรายการก่อนบันทึก',
+                type: 'warning',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                showConfirmButton: false,
+                timer: 2000,
+                confirmButtonText: 'Ok'
+                })
+        }
+
+
+
     }
     function Cancelbill()
     {
@@ -508,7 +530,7 @@ $Permission = $_SESSION['Permission'];
                                   var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' autocomplete='off'  name='KiloArray'  placeholder='0.00' value='"+temp[i]['kilo']+"' style='text-align: right;'>  ";
                                   var ShowEdit = "<a href='javascript:void(0)'  onclick='showdetailsub("+temp[i]['item_code']+");'><i style='font-size : 30px; ' class='icon-search3'></i></a> ";
 
-                                   StrTR =   "<tr>"+
+                                   StrTR =   "<tr class='chkrow'>"+
                                                 "<td style='width:10%'>"+chkinput+"</td>"+
                                                 "<td style='width:40%'>"+temp[i]['item_name']+"</td>"+
                                                 "<td style='width:10%'>"+Kilo+"</td>"+

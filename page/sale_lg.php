@@ -239,73 +239,92 @@ $Permission = $_SESSION['Permission'];
     }
     function Savebill()
     {
+        var chkrow  =   $( ".chkrow" ).length;
 
-        // =======================================================
-        var ItemCodeArray = [];
-        var KiloArray = [];
-        var stock_codeArray = [];
+        if(chkrow > 0)
+        {
+            // =======================================================
+            var ItemCodeArray = [];
+            var KiloArray = [];
+            var stock_codeArray = [];
 
-        $('input[name="stock_codeArray"]').each(function() 
-        {
-          if($(this).val()!="")
-          {
-            stock_codeArray.push($(this).val());
-          }
-        });
-        var stock_code = stock_codeArray.join(',') ;
-        // ==========================================================
-        $('input[name="detailrow"]').each(function() 
-        {
-          if($(this).val()!="")
-          {
-              ItemCodeArray.push($(this).val());
-          }
-        });
-        var ItemCode = ItemCodeArray.join(',') ;
-        // ========================================================
-        $('input[name="KiloArray"]').each(function() 
-        {
-          if($(this).val()!="")
-          {
-            KiloArray.push($(this).val());
-          }
-        });
-        var Kilo = KiloArray.join(',') ;
-        // ========================================================
+            $('input[name="stock_codeArray"]').each(function() 
+            {
+            if($(this).val()!="")
+            {
+                stock_codeArray.push($(this).val());
+            }
+            });
+            var stock_code = stock_codeArray.join(',') ;
+            // ==========================================================
+            $('input[name="detailrow"]').each(function() 
+            {
+            if($(this).val()!="")
+            {
+                ItemCodeArray.push($(this).val());
+            }
+            });
+            var ItemCode = ItemCodeArray.join(',') ;
+            // ========================================================
+            $('input[name="KiloArray"]').each(function() 
+            {
+            if($(this).val()!="")
+            {
+                KiloArray.push($(this).val());
+            }
+            });
+            var Kilo = KiloArray.join(',') ;
+            // ========================================================
 
-        var DocNo = $("#DocNo").val();
-        swal({
-          title: "",
-          text: "ยืนยันการบันทึกเอกสาร "+DocNo+" ",
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonClass: "btn-danger",
-          confirmButtonText: "ใช่",
-          cancelButtonText: "ไม่ใช่",
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          closeOnConfirm: false,
-          closeOnCancel: false,
-          showCancelButton: true}).then(result => 
-          {
-              if (result.value) 
-              {
-                var data = 
+            var DocNo = $("#DocNo").val();
+            swal({
+            title: "",
+            text: "ยืนยันการบันทึกเอกสาร "+DocNo+" ",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "ใช่",
+            cancelButtonText: "ไม่ใช่",
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            closeOnConfirm: false,
+            closeOnCancel: false,
+            showCancelButton: true}).then(result => 
+            {
+                if (result.value) 
                 {
-                    'STATUS'      : 'Savebill',
-                    'DocNo'      : DocNo ,
-                    'ItemCode'      : ItemCode ,
-                    'Kilo'      : Kilo,
-                    'stock_code'      : stock_code
-                };
-                senddata(JSON.stringify(data));
-                $('#v-pills-buyers-tab').tab('show');
-              }
-              else if (result.dismiss === 'cancel') 
-              {
-                swal.close();
-              }
-          })
+                    var data = 
+                    {
+                        'STATUS'      : 'Savebill',
+                        'DocNo'      : DocNo ,
+                        'ItemCode'      : ItemCode ,
+                        'Kilo'      : Kilo,
+                        'stock_code'      : stock_code
+                    };
+                    senddata(JSON.stringify(data));
+                    $('#v-pills-buyers-tab').tab('show');
+                }
+                else if (result.dismiss === 'cancel') 
+                {
+                    swal.close();
+                }
+            })
+        }
+        else
+        {
+            swal({
+                title: '',
+                text: 'กรุณาเพิ่มรายการก่อนบันทึก',
+                type: 'warning',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                showConfirmButton: false,
+                timer: 2000,
+                confirmButtonText: 'Ok'
+                })
+        }
+       
     }
     function Cancelbill()
     {
@@ -532,7 +551,7 @@ $Permission = $_SESSION['Permission'];
                                   var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' style='text-align:right' autocomplete='off'  name='KiloArray'  placeholder='0.00' value='"+temp[i]['kilo']+"' disabled>  ";
                                   var stock_code = "<input type='text' hidden id='Detail_stock_code_"+i+"' class='form-control ' style='text-align:right' autocomplete='off'  name='stock_codeArray'  placeholder='0.00' value='"+temp[i]['stock_code']+"' disabled>  ";
                                   var total = "<input type='text' id='Detail_total_"+i+"' class='form-control ' style='text-align:right' autocomplete='off'  name='totalArray'  placeholder='0.00' value='"+temp[i]['total']+"' disabled>  ";
-                                   StrTR =   "<tr>"+
+                                   StrTR =   "<tr class='chkrow'>"+
                                                 "<td style='width:10%'>"+chkinput+"</td>"+
                                                 "<td style='width:40%'>"+temp[i]['item_name']+"</td>"+
                                                 "<td style='width:10%'>"+Kilo+"</td>"+

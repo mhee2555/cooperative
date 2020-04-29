@@ -215,62 +215,81 @@ $Permission = $_SESSION['Permission'];
     }
     function Savebill()
     {
-       
-        // =======================================================
-        var ItemCodeArray = [];
-        var KiloArray = [];
+        var chkrow  =   $( ".chkrow" ).length;
 
-        $('input[name="detailrow"]').each(function() 
+        if(chkrow > 0)
         {
-          if($(this).val()!="")
-          {
-              ItemCodeArray.push($(this).val());
-          }
-        });
-        var ItemCode = ItemCodeArray.join(',') ;
-        // ========================================================
-        $('input[name="KiloArray"]').each(function() 
-        {
-          if($(this).val()!="")
-          {
-            KiloArray.push($(this).val());
-          }
-        });
-        var Kilo = KiloArray.join(',') ;
-        // ========================================================
+             // =======================================================
+            var ItemCodeArray = [];
+            var KiloArray = [];
 
-        var DocNo = $("#DocNo").val();
-        swal({
-          title: "",
-          text: "ยืนยันการบันทึกเอกสาร "+DocNo+" ",
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonClass: "btn-danger",
-          confirmButtonText: "ใช่",
-          cancelButtonText: "ไม่ใช่",
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          closeOnConfirm: false,
-          closeOnCancel: false,
-          showCancelButton: true}).then(result => 
-          {
-              if (result.value) 
-              {
-                var data = 
+            $('input[name="detailrow"]').each(function() 
+            {
+            if($(this).val()!="")
+            {
+                ItemCodeArray.push($(this).val());
+            }
+            });
+            var ItemCode = ItemCodeArray.join(',') ;
+            // ========================================================
+            $('input[name="KiloArray"]').each(function() 
+            {
+            if($(this).val()!="")
+            {
+                KiloArray.push($(this).val());
+            }
+            });
+            var Kilo = KiloArray.join(',') ;
+            // ========================================================
+
+            var DocNo = $("#DocNo").val();
+            swal({
+            title: "",
+            text: "ยืนยันการบันทึกเอกสาร "+DocNo+" ",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "ใช่",
+            cancelButtonText: "ไม่ใช่",
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            closeOnConfirm: false,
+            closeOnCancel: false,
+            showCancelButton: true}).then(result => 
+            {
+                if (result.value) 
                 {
-                    'STATUS'      : 'Savebill',
-                    'DocNo'      : DocNo ,
-                    'ItemCode'      : ItemCode ,
-                    'Kilo'      : Kilo
-                };
-                senddata(JSON.stringify(data));
-                $('#v-pills-buyers-tab').tab('show');
-              }
-              else if (result.dismiss === 'cancel') 
-              {
-                swal.close();
-              }
-          })
+                    var data = 
+                    {
+                        'STATUS'      : 'Savebill',
+                        'DocNo'      : DocNo ,
+                        'ItemCode'      : ItemCode ,
+                        'Kilo'      : Kilo
+                    };
+                    senddata(JSON.stringify(data));
+                    $('#v-pills-buyers-tab').tab('show');
+                }
+                else if (result.dismiss === 'cancel') 
+                {
+                    swal.close();
+                }
+            })
+        }
+        else
+        {
+            swal({
+                title: '',
+                text: 'กรุณาเพิ่มรายการก่อนบันทึก',
+                type: 'warning',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                showConfirmButton: false,
+                timer: 2000,
+                confirmButtonText: 'Ok'
+                })
+        }
+       
     }
     function Cancelbill()
     {
@@ -559,7 +578,7 @@ $Permission = $_SESSION['Permission'];
                                   var moisture = "<input type='text' disabled id='Detail_moisture_"+i+"' class='form-control '  style='text-align:right' autocomplete='off'  placeholder='0.00' value='"+temp[i]['moisture']+"' style='width: 75%;'>  ";
                                   var Total = "<input type='text' id='Detail_Total_"+i+"' class='form-control '  style='text-align:right' autocomplete='off'  value='"+temp[i]['total']+"' disabled style='width: 75%;'>  ";
                                   var STotal = "<input type='text' id='Detail_STotal_"+i+"' class='form-control '  style='text-align:right' autocomplete='off'  value='"+temp[i]['Sumtotal']+"' disabled style='width: 75%;'>  ";
-                                   StrTR =   "<tr>"+
+                                   StrTR =   "<tr class='chkrow'>"+
                                                 "<td >"+chkinput+"</td>"+
                                                 "<td style=' width: 20%; '>"+temp[i]['item_name']+"</td>"+
                                                 "<td style=' width: 22%; ' >"+temp[i]['Grade']+"</td>"+
