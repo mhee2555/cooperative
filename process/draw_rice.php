@@ -372,6 +372,24 @@ function Cancelbill($conn, $DATA)
   $boolean = false;
   $count = 0;
 
+  $Sql_stock = "SELECT
+                  draw_detail_sub.kilo,
+                  draw_detail_sub.stock_code
+                FROM
+                  draw_detail_sub
+                WHERE draw_detail_sub.draw_DocNo = '$DocNo'";
+                $meQuery = mysqli_query($conn, $Sql_stock);
+                while ($Result = mysqli_fetch_assoc($meQuery)) 
+                {
+                  $kilo        = $Result['kilo'];
+                  $stock_code  = $Result['stock_code'];
+                  $update_stock = "UPDATE stock_unprocess SET item_ccqty = (item_ccqty + '$kilo' ) WHERE  stock_code = '$stock_code' ";
+                  mysqli_query($conn, $update_stock);
+                }
+
+
+
+
   $Sql = "UPDATE draw_rice SET IsStatus = 9 WHERE draw_rice.DocNo = '$DocNo'";
   mysqli_query($conn, $Sql);
 

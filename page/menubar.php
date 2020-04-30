@@ -27,8 +27,8 @@
                         <!-- <a href="index.html" class="list-group-item list-group-item-action ">
                             <i class="mr-2 icon-umbrella text-blue"></i>โปรไฟล์
                         </a> -->
-                        <a href="#" class="list-group-item list-group-item-action"><i
-                                class="mr-2 icon-cogs text-yellow"></i>เปลี่ยนรหัสผ่าน</a>
+                        <!-- <a href="#" class="list-group-item list-group-item-action"><i
+                                class="mr-2 icon-cogs text-yellow"></i>เปลี่ยนรหัสผ่าน</a> -->
                         <a href="../index.php" class="list-group-item list-group-item-action"><i
                                 class="mr-2 icon-security text-purple"></i>ออกจากระบบ</a>
                     </div>
