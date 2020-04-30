@@ -76,6 +76,16 @@
                     </li>
                 </ul>
             </li>
+            <li class="treeview"  >
+            <a href="main.php" ><i class="icon icon-inbox-document-text2 amber-text s-18"></i> <span>รายงาน</span>
+                <i class="icon icon-angle-left s-18 pull-right"></i></a>
+                <!-- เมนูข้างใน แดชบอร์ด -->
+                <ul class="treeview-menu" >
+                </li>
+                    <li><a href="report.php" ><i class="icon icon-documents3"></i>รายงาน</a>
+                    </li>
+                </ul>
+            </li>
             <!-- ================================= -->
 
 
