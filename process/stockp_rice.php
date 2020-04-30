@@ -78,12 +78,14 @@ function Savebill($conn, $DATA)
   $KiloArray  = $DATA["Kilo"];
   $ItemCodeArray  = $DATA["ItemCode"];
   $DocNo  = $DATA["DocNo"];
+  $UnitArray  = $DATA["UnitCode"];
   $boolean = false;
   $count = 0;
 
   // ========================================
   $ItemCode = explode(",", $ItemCodeArray);
   $Kilo = explode(",", $KiloArray);
+  $UnitCode = explode(",", $UnitArray);
   // ========================================
 
 
@@ -96,6 +98,7 @@ function Savebill($conn, $DATA)
                         item_code = '$value',
                         item_qty = '$Kilo[$key]',
                         item_ccqty = '$Kilo[$key]',
+                        UnitCode = '$UnitCode[$key]',
                         Date_start = NOW(),
                         Date_exp = NOW() + INTERVAL 90 DAY,
                         DocNo = '$DocNo' ";  

@@ -48,7 +48,7 @@ class MYPDF extends TCPDF
       $this->Cell(0, 10,  "วันที่พิมพ์รายงาน " . $printdate, 0, 1, 'R');
 
       $this->SetFont('thsarabun', 'b', 22);
-      $this->Cell(0, 10,  "รายงานการซื้อลำใย", 0, 1, 'C');
+      $this->Cell(0, 10,  "รายงานการขายข้าว", 0, 1, 'C');
       $this->SetFont('thsarabun', 'b', 20);
       $this->Cell(0, 10,  "ประจำวันที่ ".$sDateTH." ถึง ".$eDateTH, 0, 1, 'C');
       $this->Ln(10);
@@ -120,7 +120,7 @@ $pdf->AddPage('P', 'A4');
 
 $pdf->Ln(20);
 $html = '<table cellspacing="0" cellpadding="2" border="1" >
-<thead><tr style="font-size:20px;font-weight: bold;background-color: #8B8989;">
+<thead><tr style="font-size:18px;font-weight: bold;background-color: #8B8989;">
 <th  width="10 %" align="center">ลำดับ</th>
 <th  width="12 %" align="center">วันที่</th>
 <th  width="15 %" align="center">เลขที่เอกสาร</th>
@@ -132,24 +132,25 @@ $html = '<table cellspacing="0" cellpadding="2" border="1" >
 </tr> </thead>';
 
   $Sql_Detail="SELECT
-                buy_longan.DocNo,
-                buy_longan.DocDate,
-                buy_longan.Total,
+                sale_rice.DocDate,
+                sale_rice.DocNo,
+                SUM(sale_rice_detail.kilo) AS total_qty,
+                packge_unit.PackgeName,
+                sale_rice.IsStatus,
                 employee.FName,
-                buy_longan.IsStatus,
-                Sum(buy_longan_detail.kilo) AS total_qty,
-                item_unit.UnitName
+                sale_rice.Total
                 FROM
-                buy_longan
-                INNER JOIN employee ON buy_longan.Employee_ID = employee.ID
-                INNER JOIN buy_longan_detail ON buy_longan.DocNo = buy_longan_detail.Buy_DocNo
-                INNER JOIN item_unit ON buy_longan_detail.UnitCode = item_unit.UnitCode
+                sale_rice
+                INNER JOIN sale_rice_detail ON sale_rice.DocNo = sale_rice_detail.Sale_DocNo
+                INNER JOIN packge_unit ON sale_rice_detail.PackgeCode = packge_unit.PackgeCode
+                INNER JOIN employee ON sale_rice.Employee_ID = employee.ID
                 WHERE
-                DATE( buy_longan.DocDate ) BETWEEN '$sDate' AND '$eDate'
+                DATE(sale_rice.DocDate) BETWEEN '$sDate' AND '$eDate'
                 GROUP BY
-                buy_longan.DocNo
+                sale_rice.DocNo
                 ORDER BY
-                DATE( buy_longan.DocDate ) ASC
+                DATE(sale_rice.DocDate) ASC
+                
               ";
               $sump=0;
               $sumqty=0;
@@ -159,12 +160,12 @@ while ($Result_Detail = mysqli_fetch_assoc($meQuery2)) {
 
 
 
-  $html .= '<tr nobr="true" style="font-size:18px;">';
+  $html .= '<tr nobr="true" style="font-size:16px;">';
   $html .=   '<td width="10 %" align="center">' . $count . '</td>';
   $html .=   '<td width="12 %" align="center"> '.$Result_Detail['DocDate'].'</td>';
   $html .=   '<td width="15 %" align="center">'.$Result_Detail['DocNo'].'</td>';
   $html .=   '<td width="13 %" align="right">'.number_format($Result_Detail['total_qty'],0).'</td>';
-  $html .=   '<td width="12 %" align="center">'.$Result_Detail['UnitName'].'</td>';
+  $html .=   '<td width="12 %" align="center">'.$Result_Detail['PackgeName'].'</td>';
   $html .=   '<td width="13 %" align="right">'.number_format($Result_Detail['Total'],2).'</td>';
   $html .=   '<td width="15 %" align="center">'.$Result_Detail['FName'].'</td>';
 
@@ -181,7 +182,7 @@ if($Result_Detail['IsStatus']==0){
   $sump += $Result_Detail['Total'];
   $sumqty += $Result_Detail['total_qty'];
 }
-$html .= '<tr nobr="true" style="background-color: #CDCDC1;font-size:18px;" >';
+$html .= '<tr nobr="true" style="background-color: #CDCDC1;font-size:16px;" >';
   $html .=   '<td width="10 %" align="center"></td>';
   $html .=   '<td width="12 %" align="center"></td>';
   $html .=   '<td width="15 %" align="center" style="font-weight: bold;">รวม</td>';

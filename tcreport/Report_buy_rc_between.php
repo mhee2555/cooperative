@@ -48,7 +48,7 @@ class MYPDF extends TCPDF
       $this->Cell(0, 10,  "วันที่พิมพ์รายงาน " . $printdate, 0, 1, 'R');
 
       $this->SetFont('thsarabun', 'b', 22);
-      $this->Cell(0, 10,  "รายงานการซื้อลำใย", 0, 1, 'C');
+      $this->Cell(0, 10,  "รายงานการซื้อข้าว", 0, 1, 'C');
       $this->SetFont('thsarabun', 'b', 20);
       $this->Cell(0, 10,  "ประจำวันที่ ".$sDateTH." ถึง ".$eDateTH, 0, 1, 'C');
       $this->Ln(10);
@@ -132,24 +132,24 @@ $html = '<table cellspacing="0" cellpadding="2" border="1" >
 </tr> </thead>';
 
   $Sql_Detail="SELECT
-                buy_longan.DocNo,
-                buy_longan.DocDate,
-                buy_longan.Total,
+                buy_rice.DocNo,
+                buy_rice.DocDate,
+                buy_rice.Total,
                 employee.FName,
-                buy_longan.IsStatus,
-                Sum(buy_longan_detail.kilo) AS total_qty,
+                buy_rice.IsStatus,
+                Sum(buy_rice_detail.kilo) AS total_qty,
                 item_unit.UnitName
                 FROM
-                buy_longan
-                INNER JOIN employee ON buy_longan.Employee_ID = employee.ID
-                INNER JOIN buy_longan_detail ON buy_longan.DocNo = buy_longan_detail.Buy_DocNo
-                INNER JOIN item_unit ON buy_longan_detail.UnitCode = item_unit.UnitCode
+                buy_rice
+                INNER JOIN employee ON buy_rice.Employee_ID = employee.ID
+                INNER JOIN buy_rice_detail ON buy_rice.DocNo = buy_rice_detail.Buy_DocNo
+                INNER JOIN item_unit ON buy_rice_detail.UnitCode = item_unit.UnitCode
                 WHERE
-                DATE( buy_longan.DocDate ) BETWEEN '$sDate' AND '$eDate'
+                DATE( buy_rice.DocDate ) BETWEEN '$sDate' AND '$eDate'
                 GROUP BY
-                buy_longan.DocNo
+                buy_rice.DocNo
                 ORDER BY
-                DATE( buy_longan.DocDate ) ASC
+                DATE( buy_rice.DocDate ) ASC
               ";
               $sump=0;
               $sumqty=0;
