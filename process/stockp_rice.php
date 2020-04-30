@@ -415,6 +415,9 @@ function Cancelbill($conn, $DATA)
   $boolean = false;
   $count = 0;
 
+  $delete = "DELETE FROM stock_process WHERE DocNo = '$DocNo'    ";
+  mysqli_query($conn, $delete);
+
   $Sql = "UPDATE stockp_rice SET IsStatus = 9 WHERE stockp_rice.DocNo = '$DocNo'";
   mysqli_query($conn, $Sql);
 
@@ -500,6 +503,9 @@ function Deleteitem($conn, $DATA)
 {
   $DocNo  = $DATA["DocNo"];
   $itemcode  = $DATA["itemcode"];
+
+  $deletex = "DELETE FROM stock_process WHERE DocNo = '$DocNo' AND item_code = '$itemcode'    ";
+  mysqli_query($conn, $deletex);
 
   $Delete = "DELETE FROM stockp_rice_detail WHERE item_code = '$itemcode' AND stockp_DocNo = '$DocNo' ";
   mysqli_query($conn, $Delete);

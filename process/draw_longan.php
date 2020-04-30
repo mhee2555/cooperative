@@ -519,8 +519,35 @@ function Deleteitem($conn, $DATA)
   $DocNo  = $DATA["DocNo"];
   $itemcode  = $DATA["itemcode"];
 
+  $select_stock = "SELECT
+                      draw_detail_sub.kilo,
+                      draw_detail_sub.stock_code 
+                    FROM
+                      draw_detail_sub 
+                    WHERE
+                      item_code = '$itemcode' 
+                      AND draw_DocNo = '$DocNo' ";
+
+    $meQuery = mysqli_query($conn, $select_stock);
+    while ($Result = mysqli_fetch_assoc($meQuery)) 
+    {
+      $kilo         = $Result['kilo'];
+      $stock_code   = $Result['stock_code'];
+      
+      $update_stock = "UPDATE stock_unprocess SET item_ccqty = (item_ccqty + '$kilo' ) WHERE  stock_code = '$stock_code' ";
+      mysqli_query($conn, $update_stock);
+    }
+
+
   $Delete = "DELETE FROM draw_detail WHERE item_code = '$itemcode' AND draw_DocNo = '$DocNo' ";
   mysqli_query($conn, $Delete);
+
+  
+  $Delete_sub = "DELETE FROM draw_detail_sub WHERE item_code = '$itemcode' AND draw_DocNo = '$DocNo' ";
+  mysqli_query($conn, $Delete_sub);
+
+
+
 
   ShowDetail($conn, $DATA);
 

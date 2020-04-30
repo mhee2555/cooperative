@@ -450,9 +450,37 @@ function Savebill($conn, $DATA)
 
 function Cancelbill($conn, $DATA)
 {
-  $DocNo  = $DATA["DocNo"];
-  $boolean = false;
-  $count = 0;
+    $DocNo  = $DATA["DocNo"];
+    $boolean = false;
+    $count = 0;
+
+    $Sql_stock = "SELECT
+                    sale_longan_detail.kilo,
+                    sale_longan_detail.stock_code,
+                    sale_longan.IsStatus
+                  FROM
+                    sale_longan
+                    INNER JOIN sale_longan_detail ON sale_longan_detail.Sale_DocNo = sale_longan.DocNo
+                  WHERE sale_longan_detail.DocNo = '$DocNo'";
+  $meQuery = mysqli_query($conn, $Sql_stock);
+  while ($Result = mysqli_fetch_assoc($meQuery)) 
+  {
+    $kilo        = $Result['kilo'];
+    $stock_code  = $Result['stock_code'];
+    $IsStatus  = $Result['IsStatus'];
+
+    if($IsStatus > 0)
+    {
+      $update_stock = "UPDATE stock_package SET item_ccqty = (item_ccqty + '$kilo' ) WHERE  stock_code = '$stock_code' ";
+      mysqli_query($conn, $update_stock);
+    }
+
+  }
+
+
+
+
+
 
   $Sql = "UPDATE sale_longan SET IsStatus = 9 WHERE sale_longan.DocNo = '$DocNo'";
   mysqli_query($conn, $Sql);
@@ -541,6 +569,36 @@ function Deleteitem($conn, $DATA)
 {
   $DocNo  = $DATA["DocNo"];
   $itemcode  = $DATA["itemcode"];
+
+
+  $Sql_stock = "SELECT
+                  sale_longan_detail.kilo,
+                  sale_longan_detail.stock_code,
+                  sale_longan.IsStatus
+                FROM
+                  sale_longan
+                  INNER JOIN sale_longan_detail ON sale_longan_detail.Sale_DocNo = sale_longan.DocNo
+                WHERE sale_longan_detail.DocNo = '$DocNo'
+                AND sale_longan_detail.item_code = '$itemcode'   ";
+                $meQuery = mysqli_query($conn, $Sql_stock);
+                while ($Result = mysqli_fetch_assoc($meQuery)) 
+                {
+                  $kilo        = $Result['kilo'];
+                  $stock_code  = $Result['stock_code'];
+                  $IsStatus  = $Result['IsStatus'];
+
+                  if($IsStatus > 0)
+                  {
+                    $update_stock = "UPDATE stock_package SET item_ccqty = (item_ccqty + '$kilo' ) WHERE  stock_code = '$stock_code' ";
+                    mysqli_query($conn, $update_stock);
+                  }
+
+                }
+
+
+
+
+
 
   $Delete = "DELETE FROM sale_longan_detail WHERE item_code = '$itemcode' AND Buy_DocNo = '$DocNo' ";
   mysqli_query($conn, $Delete);

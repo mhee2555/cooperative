@@ -415,12 +415,18 @@ function Cancelbill($conn, $DATA)
   $boolean = false;
   $count = 0;
 
+
+
+  $delete = "DELETE FROM stock_process WHERE DocNo = '$DocNo'    ";
+  mysqli_query($conn, $delete);
+
   $Sql = "UPDATE stockp_longan SET IsStatus = 9 WHERE stockp_longan.DocNo = '$DocNo'";
   mysqli_query($conn, $Sql);
 
   ShowSearch($conn, $DATA);
 
 }
+
 function ShowDocNo($conn, $DATA)
 {
   $DocNo  = $DATA["DocNochk"];
@@ -500,6 +506,10 @@ function Deleteitem($conn, $DATA)
 {
   $DocNo  = $DATA["DocNo"];
   $itemcode  = $DATA["itemcode"];
+
+
+  $deletex = "DELETE FROM stock_process WHERE DocNo = '$DocNo' AND item_code = '$itemcode'    ";
+  mysqli_query($conn, $deletex);
 
   $Delete = "DELETE FROM stockp_longan_detail WHERE item_code = '$itemcode' AND stockp_DocNo = '$DocNo' ";
   mysqli_query($conn, $Delete);

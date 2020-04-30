@@ -431,6 +431,10 @@ function Cancelbill($conn, $DATA)
   $boolean = false;
   $count = 0;
 
+  $delete = "DELETE FROM stock_unprocess WHERE DocNo = '$DocNo'    ";
+  mysqli_query($conn, $delete);
+
+
   $Sql = "UPDATE buy_Longan SET IsStatus = 9 WHERE buy_Longan.DocNo = '$DocNo'";
   mysqli_query($conn, $Sql);
 
@@ -518,6 +522,10 @@ function Deleteitem($conn, $DATA)
 {
   $DocNo  = $DATA["DocNo"];
   $itemcode  = $DATA["itemcode"];
+
+  $deletex = "DELETE FROM stock_unprocess WHERE DocNo = '$DocNo' AND item_code = '$itemcode'    ";
+  mysqli_query($conn, $deletex);
+
 
   $Delete = "DELETE FROM buy_Longan_detail WHERE item_code = '$itemcode' AND Buy_DocNo = '$DocNo' ";
   mysqli_query($conn, $Delete);

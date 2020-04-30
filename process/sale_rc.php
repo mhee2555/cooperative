@@ -454,6 +454,32 @@ function Cancelbill($conn, $DATA)
   $boolean = false;
   $count = 0;
 
+  $Sql_stock = "SELECT
+                  sale_rice_detail.kilo,
+                  sale_rice_detail.stock_code,
+                  sale_rice.IsStatus
+                FROM
+                  sale_rice
+                  INNER JOIN sale_rice_detail ON sale_rice_detail.Sale_DocNo = sale_longan.DocNo
+                WHERE sale_rice_detail.DocNo = '$DocNo'  ";
+                $meQuery = mysqli_query($conn, $Sql_stock);
+                while ($Result = mysqli_fetch_assoc($meQuery)) 
+                {
+                  $kilo        = $Result['kilo'];
+                  $stock_code  = $Result['stock_code'];
+                  $IsStatus  = $Result['IsStatus'];
+
+                  if($IsStatus > 0)
+                  {
+                    $update_stock = "UPDATE stock_package SET item_ccqty = (item_ccqty + '$kilo' ) WHERE  stock_code = '$stock_code' ";
+                    mysqli_query($conn, $update_stock);
+                  }
+                }
+
+
+
+
+
   $Sql = "UPDATE sale_rice SET IsStatus = 9 WHERE sale_rice.DocNo = '$DocNo'";
   mysqli_query($conn, $Sql);
 
@@ -541,6 +567,36 @@ function Deleteitem($conn, $DATA)
 {
   $DocNo  = $DATA["DocNo"];
   $itemcode  = $DATA["itemcode"];
+
+  
+  $Sql_stock = "SELECT
+                  sale_rice_detail.kilo,
+                  sale_rice_detail.stock_code,
+                  sale_rice.IsStatus
+                FROM
+                  sale_rice
+                  INNER JOIN sale_rice_detail ON sale_rice_detail.Sale_DocNo = sale_longan.DocNo
+                WHERE sale_rice_detail.DocNo = '$DocNo'
+                AND sale_rice_detail.item_code = '$itemcode'   ";
+                $meQuery = mysqli_query($conn, $Sql_stock);
+                while ($Result = mysqli_fetch_assoc($meQuery)) 
+                {
+                  $kilo        = $Result['kilo'];
+                  $stock_code  = $Result['stock_code'];
+                  $IsStatus  = $Result['IsStatus'];
+
+                  if($IsStatus > 0)
+                  {
+                    $update_stock = "UPDATE stock_package SET item_ccqty = (item_ccqty + '$kilo' ) WHERE  stock_code = '$stock_code' ";
+                    mysqli_query($conn, $update_stock);
+                  }
+                }
+
+
+
+
+
+
 
   $Delete = "DELETE FROM sale_rice_detail WHERE item_code = '$itemcode' AND Buy_DocNo = '$DocNo' ";
   mysqli_query($conn, $Delete);
