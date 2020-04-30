@@ -203,36 +203,55 @@ $Permission = $_SESSION['Permission'];
     }
     function Savebill()
     {
-        var DocNo = $("#DocNo").val();
-        swal({
-          title: "",
-          text: "ยืนยันการบันทึกเอกสาร "+DocNo+" ",
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonClass: "btn-danger",
-          confirmButtonText: "ใช่",
-          cancelButtonText: "ไม่ใช่",
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          closeOnConfirm: false,
-          closeOnCancel: false,
-          showCancelButton: true}).then(result => 
-          {
-              if (result.value) 
-              {
-                var data = 
+        var chkrow  =   $( ".chkrow" ).length;
+        if(chkrow > 0)
+        {
+            var DocNo = $("#DocNo").val();
+            swal({
+            title: "",
+            text: "ยืนยันการบันทึกเอกสาร "+DocNo+" ",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "ใช่",
+            cancelButtonText: "ไม่ใช่",
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            closeOnConfirm: false,
+            closeOnCancel: false,
+            showCancelButton: true}).then(result => 
+            {
+                if (result.value) 
                 {
-                    'STATUS'      : 'Savebill',
-                    'DocNo'      : DocNo 
-                };
-                senddata(JSON.stringify(data));
-                $('#v-pills-buyers-tab').tab('show');
-              }
-              else if (result.dismiss === 'cancel') 
-              {
-                swal.close();
-              }
-          })
+                    var data = 
+                    {
+                        'STATUS'      : 'Savebill',
+                        'DocNo'      : DocNo 
+                    };
+                    senddata(JSON.stringify(data));
+                    $('#v-pills-buyers-tab').tab('show');
+                }
+                else if (result.dismiss === 'cancel') 
+                {
+                    swal.close();
+                }
+            })
+        }
+        else
+        {
+            swal({
+                title: '',
+                text: 'กรุณาเพิ่มรายการก่อนบันทึก',
+                type: 'warning',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                showConfirmButton: false,
+                timer: 2000,
+                confirmButtonText: 'Ok'
+                })
+        }
+        
     }
     function Cancelbill()
     {
@@ -413,7 +432,7 @@ $Permission = $_SESSION['Permission'];
                                   var fix = "<input type='hidden' id='fix_"+i+"' value='"+temp[i]['item_ccqty']+"'  >  ";
 
 
-                                  StrTR = "<tr>"+
+                                  StrTR = "<tr >"+
                                                 "<td >"+chkinput+"</td>"+
                                                 "<td style='width: 15%;'>"+temp[i]['item_name']+"</td>"+
                                                 "<td >"+qty_total+"</td>"+
@@ -455,7 +474,7 @@ $Permission = $_SESSION['Permission'];
                                   var chkinput = "<div class='custom-control custom-radio'><input type='radio' class='custom-control-input checkSingle checkdetail' name='detailrow'  value='"+temp[i]['item_code']+"'  id= ' Detail_id_"+i+" ' required><label class='custom-control-label ' for=' Detail_id_"+i+" ' style='margin-top: 15px;'></label></div> ";
                                   var Kilo = "<input type='text' id='Detail_Kilo_"+i+"' class='form-control ' autocomplete='off'  name='KiloArray'  placeholder='0.00' value='"+temp[i]['kilo']+"' style='text-align: right;'>  ";
 
-                                  StrTR =   "<tr>"+
+                                  StrTR =   "<tr class='chkrow'>"+
                                                 "<td style='width:10%'>"+chkinput+"</td>"+
                                                 "<td style='width:40%'>"+temp[i]['item_name']+"</td>"+
                                                 "<td style='width:10%'>"+Kilo+"</td>"+
