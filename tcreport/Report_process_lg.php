@@ -48,7 +48,7 @@ class MYPDF extends TCPDF
       $this->Cell(0, 10,  "วันที่พิมพ์รายงาน " . $printdate, 0, 1, 'R');
 
       $this->SetFont('thsarabun', 'b', 22);
-      $this->Cell(0, 10,  "รายงานการซื้อลำใย", 0, 1, 'C');
+      $this->Cell(0, 10,  "รายงานการแปรรูปลำใย", 0, 1, 'C');
       $this->SetFont('thsarabun', 'b', 20);
       $this->Cell(0, 10,  "ประจำวันที่ ".$sDateTH." ถึง ".$eDateTH, 0, 1, 'C');
       $this->Ln(10);
@@ -120,36 +120,40 @@ $pdf->AddPage('P', 'A4');
 
 $pdf->Ln(20);
 $html = '<table cellspacing="0" cellpadding="2" border="1" >
-<thead><tr style="font-size:20px;font-weight: bold;background-color: #8B8989;">
-<th  width="10 %" align="center">ลำดับ</th>
-<th  width="12 %" align="center">วันที่</th>
-<th  width="15 %" align="center">เลขที่เอกสาร</th>
-<th  width="13 %" align="center">จำนวนสินค้า</th>
-<th  width="12 %" align="center">หน่วยนับ</th>
-<th  width="13 %" align="center">จำนวนเงิน</th>
-<th  width="15 %" align="center">พนักงานซื้อ</th>
-<th  width="13 %" align="center">สถานะ</th>
+<thead><tr style="font-size:16px;font-weight: bold;background-color: #8B8989;">
+<th  width="6 %" align="center">ลำดับ</th>
+<th  width="11 %" align="center">วันที่</th>
+<th  width="12 %" align="center">เลขที่เอกสาร</th>
+<th  width="11 %" align="center">จำนวนสินค้า</th>
+<th  width="10 %" align="center">หน่วยนับ</th>
+<th  width="11 %" align="center">เริ่มแปรรูป</th>
+<th  width="11 %" align="center">แปรรูปเสร็จ</th>
+<th  width="12 %" align="center">ชื่อพนักงาน</th>
+<th  width="12 %" align="center">เอกสารอ้างอิง</th>
+<th  width="10 %" align="center">สถานะ</th>
 </tr> </thead>';
 
   $Sql_Detail="SELECT
-                buy_longan.DocNo,
-                buy_longan.DocDate,
-                buy_longan.Total,
+                process_longan.DocDate,
+                process_longan.DocNo,
+                Sum(process_longan_detail.kilo) AS total_qty,
+                item_unit.UnitName,
+                TIME(process_longan.start_process) AS sTime,
+                TIME(process_longan.end_process) AS eTime,
+                process_longan.IsStatus,
                 employee.FName,
-                buy_longan.IsStatus,
-                Sum(buy_longan_detail.kilo) AS total_qty,
-                item_unit.UnitName
+                process_longan.RefDocNo
                 FROM
-                buy_longan
-                INNER JOIN employee ON buy_longan.Employee_ID = employee.ID
-                INNER JOIN buy_longan_detail ON buy_longan.DocNo = buy_longan_detail.Buy_DocNo
-                INNER JOIN item_unit ON buy_longan_detail.UnitCode = item_unit.UnitCode
+                process_longan
+                INNER JOIN process_longan_detail ON process_longan.DocNo = process_longan_detail.Lg_DocNo
+                INNER JOIN item_unit ON item_unit.UnitCode = process_longan_detail.UnitCode
+                INNER JOIN employee ON employee.ID = process_longan.Employee_ID
                 WHERE
-                DATE( buy_longan.DocDate ) BETWEEN '$sDate' AND '$eDate'
+                DATE( process_longan.DocDate ) BETWEEN '$sDate' AND '$eDate'
+                AND process_longan.IsRef_Status=1
                 GROUP BY
-                buy_longan.DocNo
-                ORDER BY
-                DATE( buy_longan.DocDate ) ASC
+                process_longan.DocNo
+                ORDER BY process_longan.DocDate ASC
               ";
               $sump=0;
               $sumqty=0;
@@ -159,14 +163,16 @@ while ($Result_Detail = mysqli_fetch_assoc($meQuery2)) {
 
 
 
-  $html .= '<tr nobr="true" style="font-size:18px;">';
-  $html .=   '<td width="10 %" align="center">' . $count . '</td>';
-  $html .=   '<td width="12 %" align="center"> '.$Result_Detail['DocDate'].'</td>';
-  $html .=   '<td width="15 %" align="center">'.$Result_Detail['DocNo'].'</td>';
-  $html .=   '<td width="13 %" align="right">'.number_format($Result_Detail['total_qty'],0).'</td>';
-  $html .=   '<td width="12 %" align="center">'.$Result_Detail['UnitName'].'</td>';
-  $html .=   '<td width="13 %" align="right">'.number_format($Result_Detail['Total'],2).'</td>';
-  $html .=   '<td width="15 %" align="center">'.$Result_Detail['FName'].'</td>';
+  $html .= '<tr nobr="true" style="font-size:14px;">';
+  $html .=   '<td width="6 %" align="center">' . $count . '</td>';
+  $html .=   '<td width="11 %" align="center"> '.$Result_Detail['DocDate'].'</td>';
+  $html .=   '<td width="12 %" align="center">'.$Result_Detail['DocNo'].'</td>';
+  $html .=   '<td width="11 %" align="right">'.number_format($Result_Detail['total_qty'],0).'</td>';
+  $html .=   '<td width="10 %" align="center">'.$Result_Detail['UnitName'].'</td>';
+  $html .=   '<td width="11 %" align="center">'.$Result_Detail['sTime'].'</td>';
+  $html .=   '<td width="11 %" align="center">'.$Result_Detail['eTime'].'</td>';
+  $html .=   '<td width="12 %" align="center">'.$Result_Detail['FName'].'</td>';
+  $html .=   '<td width="12 %" align="center">'.$Result_Detail['RefDocNo'].'</td>';
 
 if($Result_Detail['IsStatus']==0){
   $IsStatus="ยังไม่ได้บันทึก";
@@ -175,21 +181,23 @@ if($Result_Detail['IsStatus']==0){
 }else{
   $IsStatus="ยกเลิกเอกสาร";
 }
-  $html .=   '<td width="13 %" align="center">'.$IsStatus.'</td>';
+  $html .=   '<td width="10 %" align="center">'.$IsStatus.'</td>';
   $html .=  '</tr>';
   $count++;
   $sump += $Result_Detail['Total'];
   $sumqty += $Result_Detail['total_qty'];
 }
-$html .= '<tr nobr="true" style="background-color: #CDCDC1;font-size:18px;" >';
+$html .= '<tr nobr="true" style="background-color: #CDCDC1;font-size:14px;" >';
+  $html .=   '<td width="6 %" align="center"></td>';
+  $html .=   '<td width="11 %" align="center"></td>';
+  $html .=   '<td width="12 %" align="center" style="font-weight: bold;">รวม</td>';
+  $html .=   '<td width="11 %" align="right" style="font-weight: bold;">'.number_format($sumqty,0).'</td>';
   $html .=   '<td width="10 %" align="center"></td>';
-  $html .=   '<td width="12 %" align="center"></td>';
-  $html .=   '<td width="15 %" align="center" style="font-weight: bold;">รวม</td>';
-  $html .=   '<td width="13 %" align="right" style="font-weight: bold;">'.number_format($sumqty,0).'</td>';
-  $html .=   '<td width="12 %" align="center"></td>';
-  $html .=   '<td width="13 %" align="right" style="font-weight: bold;">'.number_format($sump,2).'</td>';
-  $html .=   '<td width="15 %" align="center" ></td>';
-  $html .=   '<td width="13 %" align="center" ></td>';
+  $html .=   '<td width="11 %" align="center" ></td>';
+  $html .=   '<td width="11 %" align="center" ></td>';
+  $html .=   '<td width="12 %" align="center" ></td>';
+  $html .=   '<td width="12 %" align="center" ></td>';
+  $html .=   '<td width="10 %" align="center" ></td>';
   $html .=  '</tr>';
 $html .= '</table>';
 
