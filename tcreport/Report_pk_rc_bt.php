@@ -26,9 +26,9 @@ class MYPDF extends TCPDF
   public function Header()
   {
     $datetime = new DatetimeTH();
-    // $eDateTH = $_GET['eDate'];
-    // $eDateTH = explode("/",$eDateTH);
-    // $eDateTH = $eDateTH[0]." ".$datetime->getTHmonthFromnum($eDateTH[1])." พ.ศ. ".$datetime->getTHyear($eDateTH[2]);
+    $eDateTH = $_GET['eDate'];
+    $eDateTH = explode("/",$eDateTH);
+    $eDateTH = $eDateTH[0]." ".$datetime->getTHmonthFromnum($eDateTH[1])." พ.ศ. ".$datetime->getTHyear($eDateTH[2]);
 
     $sDateTH = $_GET['sDate'];
     $sDateTH = explode("/",$sDateTH);
@@ -48,9 +48,9 @@ class MYPDF extends TCPDF
       $this->Cell(0, 10,  "วันที่พิมพ์รายงาน " . $printdate, 0, 1, 'R');
 
       $this->SetFont('thsarabun', 'b', 22);
-      $this->Cell(0, 10,  "รายงานการรับเข้าคลังสินค้าไม่ได้แปรรูป", 0, 1, 'C');
+      $this->Cell(0, 10,  "รายงานการบรรจุภัณฑ์ข้าว", 0, 1, 'C');
       $this->SetFont('thsarabun', 'b', 20);
-      $this->Cell(0, 10,  "ประจำวันที่ ".$sDateTH, 0, 1, 'C');
+      $this->Cell(0, 10,  "ประจำวันที่ ".$sDateTH." ถึง ".$eDateTH, 0, 1, 'C');
       $this->Ln(10);
 
     }
@@ -101,9 +101,9 @@ $sDate = $_GET['sDate'];
 $sDate = explode("/",$sDate);
 $sDate = $sDate[2].'-'.$sDate[1].'-'.$sDate[0];
 
-// $eDate = $_GET['eDate'];
-// $eDate = explode("/",$eDate);
-// $eDate = $eDate[2].'-'.$eDate[1].'-'.$eDate[0];
+$eDate = $_GET['eDate'];
+$eDate = explode("/",$eDate);
+$eDate = $eDate[2].'-'.$eDate[1].'-'.$eDate[0];
 
 
 
@@ -120,36 +120,40 @@ $pdf->AddPage('P', 'A4');
 
 $pdf->Ln(20);
 $html = '<table cellspacing="0" cellpadding="2" border="1" >
-<thead><tr style="font-size:18px;font-weight: bold;background-color: #8B8989;">
-<th  width="8 %" align="center">ลำดับ</th>
-<th  width="12 %" align="center">รหัสคลังสินค้า</th>
-<th  width="11 %" align="center">รายการ</th>
-<th  width="12 %" align="center">เวลารับเข้า</th>
-<th  width="12 %" align="center">จำนวน</th>
-<th  width="16 %" align="center">จำนวนคงเหลือ</th>
-<th  width="15 %" align="center">หน่วยนับ</th>
-<th  width="15 %" align="center">เลขที่เอกสาร</th>
-
+<thead><tr style="font-size:16px;font-weight: bold;background-color: #8B8989;">
+<th  width="6 %" align="center">ลำดับ</th>
+<th  width="11 %" align="center">วันที่</th>
+<th  width="12 %" align="center">เลขที่เอกสาร</th>
+<th  width="11 %" align="center">จำนวนสินค้า</th>
+<th  width="10 %" align="center">หน่วยนับ</th>
+<th  width="11 %" align="center">เริ่มบรรจุภัณฑ์</th>
+<th  width="11 %" align="center">บรรจุภัณฑ์เสร็จ</th>
+<th  width="12 %" align="center">ชื่อพนักงาน</th>
+<th  width="12 %" align="center">เอกสารอ้างอิง</th>
+<th  width="10 %" align="center">สถานะ</th>
 </tr> </thead>';
 
   $Sql_Detail="SELECT
-                TIME(stock_unprocess.Date_start) AS date_Ts,
-                stock_unprocess.item_qty,
-                stock_unprocess.DocNo,
-                item_unit.UnitName,
-                item.item_name,
-                stock_unprocess.item_ccqty,
-                stock_unprocess.stock_code
+                process_rice.DocDate,
+                process_rice.DocNo,
+                Sum(process_rice_detail.kilo) AS total_qty,
+                packge_unit.PackgeName,
+                process_rice.RefDocNo,
+                TIME(process_rice.start_process) AS sTime,
+                TIME(process_rice.end_process) AS eTime,
+                process_rice.IsStatus,
+                employee.FName
                 FROM
-                stock_unprocess
-                INNER JOIN item ON stock_unprocess.item_code = item.item_code
-                INNER JOIN item_unit ON stock_unprocess.UnitCode = item_unit.UnitCode
+                process_rice
+                INNER JOIN process_rice_detail ON process_rice.DocNo = process_rice_detail.RC_DocNo
+                INNER JOIN packge_unit ON process_rice_detail.UnitCode = packge_unit.PackgeCode
+                INNER JOIN employee ON employee.ID = process_rice.Employee_ID
                 WHERE
-                DATE(stock_unprocess.Date_start ) = '$sDate'
-                ORDER BY
-                DATE(stock_unprocess.Date_start) ASC,
-                stock_unprocess.DocNo ASC,
-                stock_unprocess.item_code ASC
+                DATE( process_rice.DocDate ) BETWEEN '$sDate' AND '$eDate' AND
+                process_rice.IsRef_Status = 2
+                GROUP BY
+                process_rice.DocNo
+                ORDER BY process_rice.DocDate ASC
               ";
               $sump=0;
               $sumqty=0;
@@ -159,30 +163,41 @@ while ($Result_Detail = mysqli_fetch_assoc($meQuery2)) {
 
 
 
-  $html .= '<tr nobr="true" style="font-size:16px;">';
-  $html .=   '<td width="8 %" align="center">' . $count . '</td>';
-  $html .=   '<td width="12 %" align="center"> '.$Result_Detail['stock_code'].'</td>';
-  $html .=   '<td width="11 %" align="center">'.$Result_Detail['item_name'].'</td>';
-  $html .=   '<td width="12 %" align="center">'.$Result_Detail['date_Ts'].'</td>';
-  $html .=   '<td width="12 %" align="right">'.number_format($Result_Detail['item_qty'],0).'</td>';
-  $html .=   '<td width="16 %" align="right">'.number_format($Result_Detail['item_ccqty'],0).'</td>';
-  $html .=   '<td width="15 %" align="center">'.$Result_Detail['UnitName'].'</td>';
-  $html .=   '<td width="15 %" align="center">'.$Result_Detail['DocNo'].'</td>';
+  $html .= '<tr nobr="true" style="font-size:14px;">';
+  $html .=   '<td width="6 %" align="center">' . $count . '</td>';
+  $html .=   '<td width="11 %" align="center"> '.$Result_Detail['DocDate'].'</td>';
+  $html .=   '<td width="12 %" align="center">'.$Result_Detail['DocNo'].'</td>';
+  $html .=   '<td width="11 %" align="right">'.number_format($Result_Detail['total_qty'],0).'</td>';
+  $html .=   '<td width="10 %" align="center">'.$Result_Detail['PackgeName'].'</td>';
+  $html .=   '<td width="11 %" align="center">'.$Result_Detail['sTime'].'</td>';
+  $html .=   '<td width="11 %" align="center">'.$Result_Detail['eTime'].'</td>';
+  $html .=   '<td width="12 %" align="center">'.$Result_Detail['FName'].'</td>';
+  $html .=   '<td width="12 %" align="center">'.$Result_Detail['RefDocNo'].'</td>';
 
+if($Result_Detail['IsStatus']==0){
+  $IsStatus="ยังไม่ได้บันทึก";
+}else if($Result_Detail['IsStatus']==1){
+  $IsStatus="บันทึกเรียบร้อย";
+}else{
+  $IsStatus="ยกเลิกเอกสาร";
+}
+  $html .=   '<td width="10 %" align="center">'.$IsStatus.'</td>';
   $html .=  '</tr>';
   $count++;
-  $sump += $Result_Detail['item_ccqty'];
-  $sumqty += $Result_Detail['item_qty'];
+  $sump += $Result_Detail['Total'];
+  $sumqty += $Result_Detail['total_qty'];
 }
-$html .= '<tr nobr="true" style="background-color: #CDCDC1;font-size:16px;" >';
-  $html .=   '<td width="8 %" align="center"></td>';
-  $html .=   '<td width="12 %" align="center"></td>';
+$html .= '<tr nobr="true" style="background-color: #CDCDC1;font-size:14px;" >';
+  $html .=   '<td width="6 %" align="center"></td>';
   $html .=   '<td width="11 %" align="center"></td>';
   $html .=   '<td width="12 %" align="center" style="font-weight: bold;">รวม</td>';
-  $html .=   '<td width="12 %" align="right" style="font-weight: bold;">'.number_format($sumqty,0).'</td>';
-  $html .=   '<td width="16 %" align="right" style="font-weight: bold;">'.number_format($sump,0).'</td>';
-  $html .=   '<td width="15 %" align="center"></td>';
-  $html .=   '<td width="15 %" align="center" ></td>';
+  $html .=   '<td width="11 %" align="right" style="font-weight: bold;">'.number_format($sumqty,0).'</td>';
+  $html .=   '<td width="10 %" align="center"></td>';
+  $html .=   '<td width="11 %" align="center" ></td>';
+  $html .=   '<td width="11 %" align="center" ></td>';
+  $html .=   '<td width="12 %" align="center" ></td>';
+  $html .=   '<td width="12 %" align="center" ></td>';
+  $html .=   '<td width="10 %" align="center" ></td>';
   $html .=  '</tr>';
 $html .= '</table>';
 

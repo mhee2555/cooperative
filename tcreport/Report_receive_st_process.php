@@ -48,7 +48,7 @@ class MYPDF extends TCPDF
       $this->Cell(0, 10,  "วันที่พิมพ์รายงาน " . $printdate, 0, 1, 'R');
 
       $this->SetFont('thsarabun', 'b', 22);
-      $this->Cell(0, 10,  "รายงานการรับเข้าคลังสินค้าไม่ได้แปรรูป", 0, 1, 'C');
+      $this->Cell(0, 10,  "รายงานการรับเข้าคลังสินค้าแปรรูป", 0, 1, 'C');
       $this->SetFont('thsarabun', 'b', 20);
       $this->Cell(0, 10,  "ประจำวันที่ ".$sDateTH, 0, 1, 'C');
       $this->Ln(10);
@@ -133,23 +133,23 @@ $html = '<table cellspacing="0" cellpadding="2" border="1" >
 </tr> </thead>';
 
   $Sql_Detail="SELECT
-                TIME(stock_unprocess.Date_start) AS date_Ts,
-                stock_unprocess.item_qty,
-                stock_unprocess.DocNo,
-                item_unit.UnitName,
+                stock_process.stock_code,
+                TIME(stock_process.Date_start) AS tDate,
+                stock_process.item_qty,
+                stock_process.item_ccqty,
+                stock_process.DocNo,
                 item.item_name,
-                stock_unprocess.item_ccqty,
-                stock_unprocess.stock_code
+                item_unit.UnitName
                 FROM
-                stock_unprocess
-                INNER JOIN item ON stock_unprocess.item_code = item.item_code
-                INNER JOIN item_unit ON stock_unprocess.UnitCode = item_unit.UnitCode
+                stock_process
+                INNER JOIN item ON stock_process.item_code = item.item_code
+                INNER JOIN item_unit ON stock_process.UnitCode = item_unit.UnitCode
                 WHERE
-                DATE(stock_unprocess.Date_start ) = '$sDate'
+                DATE(stock_process.Date_start) = '$sDate'
                 ORDER BY
-                DATE(stock_unprocess.Date_start) ASC,
-                stock_unprocess.DocNo ASC,
-                stock_unprocess.item_code ASC
+                DATE(stock_process.Date_start) ASC,
+                stock_process.DocNo ASC,
+                stock_process.item_code ASC
               ";
               $sump=0;
               $sumqty=0;
@@ -163,7 +163,7 @@ while ($Result_Detail = mysqli_fetch_assoc($meQuery2)) {
   $html .=   '<td width="8 %" align="center">' . $count . '</td>';
   $html .=   '<td width="12 %" align="center"> '.$Result_Detail['stock_code'].'</td>';
   $html .=   '<td width="11 %" align="center">'.$Result_Detail['item_name'].'</td>';
-  $html .=   '<td width="12 %" align="center">'.$Result_Detail['date_Ts'].'</td>';
+  $html .=   '<td width="12 %" align="center">'.$Result_Detail['tDate'].'</td>';
   $html .=   '<td width="12 %" align="right">'.number_format($Result_Detail['item_qty'],0).'</td>';
   $html .=   '<td width="16 %" align="right">'.number_format($Result_Detail['item_ccqty'],0).'</td>';
   $html .=   '<td width="15 %" align="center">'.$Result_Detail['UnitName'].'</td>';

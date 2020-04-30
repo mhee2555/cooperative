@@ -388,6 +388,7 @@ function ShowSearch($conn, $DATA)
 
 function Savebill($conn, $DATA)
 {
+  $UnitCodeArray = $DATA["UnitCode"];
   $KiloArray  = $DATA["Kilo"];
   $ItemCodeArray  = $DATA["ItemCode"];
   $DocNo  = $DATA["DocNo"];
@@ -397,6 +398,7 @@ function Savebill($conn, $DATA)
   // ========================================
   $ItemCode = explode(",", $ItemCodeArray);
   $Kilo = explode(",", $KiloArray);
+  $UnitCode = explode(",", $UnitCodeArray);
   // ========================================
 
 
@@ -409,6 +411,7 @@ function Savebill($conn, $DATA)
                         item_code = '$value',
                         item_qty = '$Kilo[$key]',
                         item_ccqty = '$Kilo[$key]',
+                        UnitCode = '$UnitCode[$key]',
                         Date_start = NOW(),
                         Date_exp = NOW() + INTERVAL 180 DAY,
                         DocNo = '$DocNo' ";  
