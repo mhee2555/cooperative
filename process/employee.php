@@ -65,7 +65,9 @@ function show_detail_customer($conn, $DATA)
                           employee.ID,
                           employee.address,
                           permission.Permission,
-                          employee.PmID
+                          employee.PmID,
+                          employee.pic
+
                       FROM   employee
                       INNER JOIN permission ON employee.PmID = permission.PmID 
                       WHERE employee.ID='$ID' ";
@@ -76,6 +78,7 @@ function show_detail_customer($conn, $DATA)
       $return['email']    = $Result['email']; 
       $return['Tel']      = $Result['Tel']; 
       $return['ID']       = $Result['ID'];
+      $return['pic'] = $Result['pic']==null?'default_img.png':$Result['pic'];
       $return['address']       = $Result['address']; 
       $return['Password']       = $Result['Password']; 
       $return['Permission']       = $Result['Permission']; 

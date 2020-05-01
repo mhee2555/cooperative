@@ -17,6 +17,7 @@ $Permission = $_SESSION['Permission'];
     <meta name="author" content="">
     <link rel="icon" href="assets/img/basic/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css?family=Krub&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../dropify/dist/css/dropify.min.css">
     <!-- <link href="../dist/css/sweetalert2.css" rel="stylesheet"> -->
     <script src="../dist/js/sweetalert2.min.js"></script>
     <script src="../dist/js/jquery-3.3.1.min.js"></script>
@@ -27,6 +28,7 @@ $Permission = $_SESSION['Permission'];
 
     <script type="text/javascript">
       $(document).ready(function(e){
+        $('.dropify').dropify();
         getUser();
         // ค้นหา
         $("#Search").on("keyup", function() 
@@ -63,6 +65,7 @@ $Permission = $_SESSION['Permission'];
     } 
     function edit_customer()
     {
+
         var ID = $('#ID_edit').val();
         var FName_edit = $('#FName_edit').val();
         var UserName_edit = $('#UserName_edit').val();
@@ -71,33 +74,92 @@ $Permission = $_SESSION['Permission'];
         var Tel_edit = $('#Tel_edit').val();
         var PmID_edit = $('#PmID_edit').val();
         var Password_edit = $('#Password_edit').val();
-        
-        if(FName_edit=='' || UserName_edit=='' || address_edit=='' || email_edit=='' || Tel_edit==''|| Password_edit==''){
-                swal({
-                          title: '',
-                          text: 'กรุณากรอกข้อมูลให้ครบ',
-                          type: 'info',
-                          showCancelButton: false,
-                          showConfirmButton: false,
-                          timer: 1500,
-                          confirmButtonText: 'Ok'
-                    }); 
-        }else{
-                var data = 
-                    {
-                    'STATUS': 'edit_customer',
-                    'ID':ID,
-                    'FName_edit':FName_edit,
-                    'UserName_edit':UserName_edit,
-                    'address_edit':address_edit,
-                    'email_edit':email_edit,
-                    'Tel_edit':Tel_edit,
-                    'PmID_edit':PmID_edit,
-                    'Password_edit':Password_edit
-                    };
-                senddata(JSON.stringify(data));
+        var file_data = $('#image_edit').prop('files')[0];   
+        var form_data = new FormData();
+                        form_data.append('file', file_data);
+                        form_data.append('ID', ID);
+                        form_data.append('FName_edit', FName_edit);
+                        form_data.append('UserName_edit', UserName_edit);
+                        form_data.append('address_edit', address_edit);
+                        form_data.append('email_edit', email_edit);
+                        form_data.append('Tel_edit', Tel_edit);
+                        form_data.append('PmID_edit', PmID_edit);
+                        form_data.append('Password_edit', Password_edit);
+                        var URL = '../process/updateemp.php';
 
-        }
+                       if(FName_edit=='' || UserName_edit=='' || address_edit=='' || email_edit=='' || Tel_edit==''|| Password_edit=='')
+                       {
+                            swal({
+                                        title: '',
+                                        text: 'กรุณากรอกข้อมูลให้ครบ',
+                                        type: 'info',
+                                        showCancelButton: false,
+                                        showConfirmButton: false,
+                                        timer: 1500,
+                                        confirmButtonText: 'Ok'
+                                    }); 
+                       }
+                       else
+                       {
+                            $.ajax({
+                                url: URL, 
+                                dataType: 'text',
+                                cache: false,
+                                contentType: false,
+                                processData: false,
+                                data:  form_data,
+                                type: 'post',
+                                success: function(result)
+                                {
+                                    swal({
+                                        title: '',
+                                        text: 'บันทึกข้อมูลเรียบร้อยแล้ว',
+                                        type: 'success',
+                                        showCancelButton: false,
+                                        timer: 1000,
+                                        confirmButtonText: 'Ok',
+                                        showConfirmButton: false
+                                    });
+                                    $('#show_customer_edit').modal('hide');
+
+                                    setTimeout(function()
+                                    {
+                                        getUser();
+                                    },  1000);
+                                }
+                            });
+                       }
+   
+
+
+
+
+        // if(FName_edit=='' || UserName_edit=='' || address_edit=='' || email_edit=='' || Tel_edit==''|| Password_edit==''){
+        //         swal({
+        //                   title: '',
+        //                   text: 'กรุณากรอกข้อมูลให้ครบ',
+        //                   type: 'info',
+        //                   showCancelButton: false,
+        //                   showConfirmButton: false,
+        //                   timer: 1500,
+        //                   confirmButtonText: 'Ok'
+        //             }); 
+        // }else{
+        //         var data = 
+        //             {
+        //             'STATUS': 'edit_customer',
+        //             'ID':ID,
+        //             'FName_edit':FName_edit,
+        //             'UserName_edit':UserName_edit,
+        //             'address_edit':address_edit,
+        //             'email_edit':email_edit,
+        //             'Tel_edit':Tel_edit,
+        //             'PmID_edit':PmID_edit,
+        //             'Password_edit':Password_edit
+        //             };
+        //         senddata(JSON.stringify(data));
+
+        // }
        
     }
     function delete_customer(ID)
@@ -136,37 +198,102 @@ $Permission = $_SESSION['Permission'];
             var Tel_add                        = $('#Tel_add').val();
             var PmID_add                    = $('#PmID_add').val();
             var Password_add              = $('#Password_add').val();
+        var file_data = $('#image_add').prop('files')[0];   
+        var form_data = new FormData();
+                        form_data.append('file', file_data);
+                        form_data.append('FName_add', FName_add);
+                        form_data.append('UserName_add', UserName_add);
+                        form_data.append('address_add', address_add);
+                        form_data.append('email_add', email_add);
+                        form_data.append('Tel_add', Tel_add);
+                        form_data.append('PmID_add', PmID_add);
+                        form_data.append('Password_add', Password_add);
+                        var URL = '../process/insertemp.php';
 
-            if(FName_add=='' || UserName_add=='' || address_add=='' || email_add=='' || Tel_add==''|| Password_add==''){
-                swal({
-                          title: '',
-                          text: 'กรุณากรอกข้อมูลให้ครบ',
-                          type: 'info',
-                          showCancelButton: false,
-                          showConfirmButton: false,
-                          timer: 1500,
-                          confirmButtonText: 'Ok'
-                    }); 
-            }else{
+                if(FName_add=='' || UserName_add=='' || address_add=='' || email_add=='' || Tel_add==''|| Password_add=='')
+                {
+                            swal({
+                                        title: '',
+                                        text: 'กรุณากรอกข้อมูลให้ครบ',
+                                        type: 'info',
+                                        showCancelButton: false,
+                                        showConfirmButton: false,
+                                        timer: 1500,
+                                        confirmButtonText: 'Ok'
+                                    }); 
+                       }
+                       else
+                       {
+                            $.ajax({
+                                url: URL, 
+                                dataType: 'text',
+                                cache: false,
+                                contentType: false,
+                                processData: false,
+                                data:  form_data,
+                                type: 'post',
+                                success: function(result)
+                                {
+                                    swal({
+                                        title: '',
+                                        text: 'บันทึกข้อมูลเรียบร้อยแล้ว',
+                                        type: 'success',
+                                        showCancelButton: false,
+                                        timer: 1000,
+                                        confirmButtonText: 'Ok',
+                                        showConfirmButton: false
+                                    });
+                                    $('#add_customer').modal('hide');
 
-                var data = 
-                    {
-                    'STATUS': 'add_customer',
-                    'FName_add':FName_add,
-                    'UserName_add':UserName_add,
-                    'address_add':address_add,
-                    'email_add':email_add,
-                    'Tel_add':Tel_add,
-                    'PmID_add':PmID_add,
-                    'Password_add':Password_add
-                    };
+                                    setTimeout(function()
+                                    {
+                                        getUser();
+                                    },  1000);
+                                }
+                            });
+                       }
 
-                $('#add_customer').modal('toggle');
 
-                setTimeout(() => {
-                    senddata(JSON.stringify(data));
-                }, 1000);
-            }
+
+
+            // var FName_add                = $('#FName_add').val();
+            // var UserName_add           = $('#UserName_add').val();
+            // var address_add                = $('#address_add').val();
+            // var email_add                    = $('#email_add').val();
+            // var Tel_add                        = $('#Tel_add').val();
+            // var PmID_add                    = $('#PmID_add').val();
+            // var Password_add              = $('#Password_add').val();
+
+            // if(FName_add=='' || UserName_add=='' || address_add=='' || email_add=='' || Tel_add==''|| Password_add==''){
+            //     swal({
+            //               title: '',
+            //               text: 'กรุณากรอกข้อมูลให้ครบ',
+            //               type: 'info',
+            //               showCancelButton: false,
+            //               showConfirmButton: false,
+            //               timer: 1500,
+            //               confirmButtonText: 'Ok'
+            //         }); 
+            // }else{
+
+            //     var data = 
+            //         {
+            //         'STATUS': 'add_customer',
+            //         'FName_add':FName_add,
+            //         'UserName_add':UserName_add,
+            //         'address_add':address_add,
+            //         'email_add':email_add,
+            //         'Tel_add':Tel_add,
+            //         'PmID_add':PmID_add,
+            //         'Password_add':Password_add
+            //         };
+
+            //     $('#add_customer').modal('toggle');
+
+            //     setTimeout(() => {
+            //         senddata(JSON.stringify(data));
+            //     }, 1000);
+            // }
     }
 //-----------------------------------------------------------------------------------------
     function senddata(data)
@@ -220,7 +347,8 @@ $Permission = $_SESSION['Permission'];
                     else if( (temp["form"]=='show_detail_customer') )
                     {
                         var sel = temp['sel'];
-                        if(sel==1){
+                        if(sel==1)
+                        {
                             $('#show_customer').modal('toggle');
                             $('#ID').val(temp['ID']);
                             $('#FName').val(temp['FName']);
@@ -229,7 +357,26 @@ $Permission = $_SESSION['Permission'];
                             $('#email').val(temp['email']);
                             $('#Tel').val(temp['Tel']);
                             $('#PmID').val(temp['Permission']);
-                        }else{
+
+                            $(".dropify-clear").click(); 
+                            var imageName = "../profile/img/"+temp['pic'];
+                            var drEvent = $('.dropifyshow').dropify(
+                            {
+                                defaultFile: imageName
+                            });
+                            drEvent = drEvent.data('dropify');
+                                    drEvent.resetPreview();
+                                    drEvent.clearElement();
+                                    drEvent.settings.defaultFile = imageName;
+                                    drEvent.destroy();
+                                    drEvent.init();
+
+
+                            
+                        }
+                        else
+                        {
+
                             $('#show_customer_edit').modal('toggle');
                             $('#ID_edit').val(temp['ID']);
                             $('#FName_edit').val(temp['FName']);
@@ -239,6 +386,10 @@ $Permission = $_SESSION['Permission'];
                             $('#email_edit').val(temp['email']);
                             $('#Tel_edit').val(temp['Tel']);
                             $('#PmID_edit').val(temp['PmID']);
+
+
+      
+         
                         }
                         
                     }
@@ -695,34 +846,39 @@ $Permission = $_SESSION['Permission'];
         </button>
       </div>
       <div class="modal-body">
-            <div class="margin_input">
+            <div class="margin_input mt-3">
             <label class="form-label mr-1" style="color:#000000;">ID Code</label>
             <input type="text" id="ID" class="form-control " placeholder="ID">
             </div>
-            <div class="margin_input">
+            <div class="margin_input  mt-3">
             <label class="form-label mr-1" style="color:#000000;">ชื่อ-นามสกุล</label>
             <input type="text" id="FName" class="form-control " placeholder="ชื่อ-นามสกุล">
             </div>
-            <div class="margin_input">
+            <div class="margin_input  mt-3">
             <label class="form-label mr-1" style="color:#000000;">User</label>
             <input type="text" id="UserName" class="form-control " placeholder="User">
             </div>
-            <div class="margin_input">
+            <div class="margin_input  mt-3">
             <label class="form-label mr-1" style="color:#000000;">ที่อยู่</label>
             <input type="text" id="address" class="form-control " placeholder="ที่อยู่">
             </div>
-            <div class="margin_input">
+            <div class="margin_input  mt-3">
             <label class="form-label mr-1" style="color:#000000;">E-Mail</label>
             <input type="text" id="email" class="form-control " placeholder="E-Mail">
             </div>
-            <div class="margin_input">
+            <div class="margin_input  mt-3">
             <label class="form-label mr-1" style="color:#000000;">เบอร์โทร</label>
             <input type="text" id="Tel" class="form-control " placeholder="เบอร์โทร">
             </div>
-            <div class="margin_input">
+            <div class="margin_input  mt-3">
             <label class="form-label mr-1" style="color:#000000;">แผนก</label>
             <input type="text" id="PmID" class="form-control " placeholder="แผนก">
             </div>
+            <div class="margin_input  mt-3">
+            <label class="form-label mr-1" style="color:#000000;">รูปโปรไฟล์</label>
+            <input type="file" class="dropify  dropifyshow"  accept="image/x-png,image/gif,image/jpeg" id="image" name="image" />
+            </div>
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-success " data-dismiss="modal">OK</button>
@@ -742,35 +898,35 @@ $Permission = $_SESSION['Permission'];
         </button>
       </div>
       <div class="modal-body">
-            <div class="margin_input">
+            <div class="margin_input mt-3">
             <label class="form-label mr-1" style="color:#000000;">ID Code</label>
             <input type="text" id="ID_edit" class="form-control " placeholder="ID" disabled>
             </div>
-            <div class="margin_input">
+            <div class="margin_input mt-3">
             <label class="form-label mr-1" style="color:#000000;">ชื่อ-นามสกุล *</label>
             <input type="text" id="FName_edit" class="form-control " placeholder="ชื่อ-นามสกุล">
             </div>
-            <div class="margin_input">
+            <div class="margin_input mt-3">
             <label class="form-label mr-1" style="color:#000000;">User *</label>
             <input type="text" id="UserName_edit" class="form-control " placeholder="User">
             </div>
-            <div class="margin_input">
+            <div class="margin_input mt-3">
             <label class="form-label mr-1" style="color:#000000;">Password *</label>
             <input type="text" id="Password_edit" class="form-control " placeholder="Password">
             </div>
-            <div class="margin_input">
+            <div class="margin_input mt-3">
             <label class="form-label mr-1" style="color:#000000;">ที่อยู่ *</label>
             <input type="text" id="address_edit" class="form-control " placeholder="ที่อยู่">
             </div>
-            <div class="margin_input">
+            <div class="margin_input mt-3">
             <label class="form-label mr-1" style="color:#000000;">E-Mail *</label>
             <input type="text" id="email_edit" class="form-control " placeholder="E-Mail">
             </div>
-            <div class="margin_input">
+            <div class="margin_input mt-3">
             <label class="form-label mr-1" style="color:#000000;">เบอร์โทร *</label>
             <input type="text" id="Tel_edit" class="form-control " placeholder="เบอร์โทร">
             </div>
-            <div class="margin_input">
+            <div class="margin_input mt-3">
             <label class="form-label mr-1" style="color:#000000;">แผนก</label>
                 <select class =  " custom-select  " id="PmID_edit">
                             <option value="1">ผู้จัดการ</option>
@@ -779,6 +935,10 @@ $Permission = $_SESSION['Permission'];
                             <option value="4">รวบรวม</option>
                             <option value="5">การส่งออก</option>
                 </select>
+            </div>
+            <div class="margin_input  mt-3">
+            <label class="form-label mr-1" style="color:#000000;">รูปโปรไฟล์</label>
+            <input type="file" class="dropify"  accept="image/x-png,image/gif,image/jpeg" id="image_edit" name="image_edit" />
             </div>
       </div>
       <div class="modal-footer">
@@ -800,31 +960,31 @@ $Permission = $_SESSION['Permission'];
         </button>
       </div>
       <div class="modal-body">
-            <div class="margin_input">
+            <div class="margin_input mt-3">
             <label class="form-label mr-1" style="color:#000000;">ชื่อ-นามสกุล *</label>
             <input type="text" id="FName_add" class="form-control " placeholder="ชื่อ-นามสกุล">
             </div>
-            <div class="margin_input">
+            <div class="margin_input mt-3">
             <label class="form-label mr-1" style="color:#000000;">User *</label>
             <input type="text" id="UserName_add" class="form-control " placeholder="User">
             </div>
-            <div class="margin_input">
+            <div class="margin_input mt-3">
             <label class="form-label mr-1" style="color:#000000;">Password *</label>
             <input type="text" id="Password_add" class="form-control " placeholder="Password">
             </div>
-            <div class="margin_input">
+            <div class="margin_input mt-3">
             <label class="form-label mr-1" style="color:#000000;">ที่อยู่ *</label>
             <input type="text" id="address_add" class="form-control " placeholder="ที่อยู่">
             </div>
-            <div class="margin_input">
+            <div class="margin_input mt-3">
             <label class="form-label mr-1" style="color:#000000;">E-Mail *</label>
             <input type="text" id="email_add" class="form-control " placeholder="E-Mail">
             </div>
-            <div class="margin_input">
+            <div class="margin_input mt-3">
             <label class="form-label mr-1" style="color:#000000;">เบอร์โทร *</label>
             <input type="text" id="Tel_add" class="form-control " placeholder="เบอร์โทร" maxlength="10">
             </div>
-            <div class="margin_input">
+            <div class="margin_input mt-3">
             <label class="form-label mr-1" style="color:#000000;">แผนก</label>
                 <select class =  " custom-select  " id="PmID_add">
                             <option value="1">ผู้จัดการ</option>
@@ -833,6 +993,10 @@ $Permission = $_SESSION['Permission'];
                             <option value="4">รวบรวม</option>
                             <option value="5">การส่งออก</option>
                 </select>
+            </div>
+            <div class="margin_input  mt-3">
+            <label class="form-label mr-1" style="color:#000000;">รูปโปรไฟล์</label>
+            <input type="file" class="dropify"  accept="image/x-png,image/gif,image/jpeg" id="image_add" name="image_add" />
             </div>
       </div>
       <div class="modal-footer">
@@ -845,8 +1009,29 @@ $Permission = $_SESSION['Permission'];
 <!-------------------------- end add_customer Modal ----------------------------------------------->
 <!--/#app -->
 <script src="assets/js/app.js"></script>
+<script src="../dropify/dist/js/dropify.min.js"></script>
 
+<script>
+                $(document).ready(function(e) {
+                    $('.dropify').dropify();
 
+                    // Used events
+                    var drEvent = $('#input-file-events').dropify();
+
+                    drEvent.on('dropify.beforeClear', function(event, element) {
+                        return confirm("Do you really want to delete \"" + element.file.name + "\" ?");
+                    });
+
+                    drEvent.on('dropify.afterClear', function(event, element) {
+                        alert('File deleted');
+                    });
+
+                    drEvent.on('dropify.errors', function(event, element) {
+                        console.log('Has Errors');
+                    });
+
+                });
+            </script>
 
 
 <!--

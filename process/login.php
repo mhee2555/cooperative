@@ -14,7 +14,8 @@ function checklogin($conn,$DATA)
                     employee.ID,
                     employee.FName,
                     employee.PmID,
-										Permission.Permission
+										Permission.Permission,
+                    employee.pic
                 FROM
                     employee 
                 INNER JOIN permission ON permission.PmID = employee.PmID 
@@ -30,6 +31,7 @@ function checklogin($conn,$DATA)
         $_SESSION['FName']     = $Result['FName'];
         $_SESSION['ID']             = $Result['ID'];
         $_SESSION['Permission']       = $Result['Permission'];
+        $_SESSION['pic']  = $Result['pic']==null?'default_img.png':$Result['pic'];
         $return['PmID']         = $Result['PmID'];
 
         $boolean = true;
