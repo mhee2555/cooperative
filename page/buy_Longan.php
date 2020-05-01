@@ -6,7 +6,7 @@ $PmID = $_SESSION['PmID'];
 $Userid = $_SESSION['ID'];
 $FName = $_SESSION['FName'];
 $Permission = $_SESSION['Permission'];
-
+$Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
 // session_destroy();
 ?>
 

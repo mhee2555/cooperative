@@ -5,6 +5,8 @@ date_default_timezone_set("Asia/Bangkok");
 $FName = $_SESSION['FName'];
 $PmID = $_SESSION['PmID'];
 $Permission = $_SESSION['Permission'];
+$Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
+
 ?>
 
 <!DOCTYPE html>
