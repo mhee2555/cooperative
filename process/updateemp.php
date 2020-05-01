@@ -46,6 +46,7 @@
             WHERE
               employee.ID = '$ID'";
   }
+  $_SESSION['pic']  = $filename==null?'default_img.png':$filename;
   mysqli_query($conn, $Sql);
   echo json_encode($result);
   mysqli_close($conn);
