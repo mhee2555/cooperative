@@ -168,7 +168,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
           // divyear = ปี
           // divbtn = ปุ่ม
 
-          if(type == 'Report_buy_lg_between.php' || type == 'Report_buy_rc_between.php' || type == 'Report_sale_lg_bt.php' || type == 'Report_sale_rc_bt.php' || type == 'Report_draw_daily_lg.php' || type == 'Report_draw_daily_rc.php' || type == 'Report_process_lg.php' || type == 'Report_process_rc.php' || type == 'Report_pk_lg_bt.php' || type == 'Report_pk_rc_bt.php' || type == 'Report_receive_stock_unprocess.php' || type == 'Report_receive_st_process.php')
+          if(  type == 'finance' || type == 'Report_buy_lg_between.php' || type == 'Report_buy_rc_between.php' || type == 'Report_sale_lg_bt.php' || type == 'Report_sale_rc_bt.php' || type == 'Report_draw_daily_lg.php' || type == 'Report_draw_daily_rc.php' || type == 'Report_process_lg.php' || type == 'Report_process_rc.php' || type == 'Report_pk_lg_bt.php' || type == 'Report_pk_rc_bt.php' || type == 'Report_receive_stock_unprocess.php' || type == 'Report_receive_st_process.php')
           {
             $('#divsdate').attr('hidden' , false); 
             $('#divedate').attr('hidden' , false);
@@ -210,7 +210,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
           var xMonth =  $('#xMonth').val();
           var option = "";
 
-          if(type == 'Report_buy_lg_between.php' || type == 'Report_buy_rc_between.php' || type == 'Report_sale_lg_bt.php' || type == 'Report_sale_rc_bt.php' || type == 'Report_draw_daily_lg.php' || type == 'Report_draw_daily_rc.php' || type == 'Report_process_lg.php' || type == 'Report_process_rc.php' || type == 'Report_pk_lg_bt.php' || type == 'Report_pk_rc_bt.php' || type == 'Report_receive_stock_unprocess.php' || type == 'Report_receive_st_process.php')
+          if(type == 'finance' || type == 'Report_buy_lg_between.php' || type == 'Report_buy_rc_between.php' || type == 'Report_sale_lg_bt.php' || type == 'Report_sale_rc_bt.php' || type == 'Report_draw_daily_lg.php' || type == 'Report_draw_daily_rc.php' || type == 'Report_process_lg.php' || type == 'Report_process_rc.php' || type == 'Report_pk_lg_bt.php' || type == 'Report_pk_rc_bt.php' || type == 'Report_receive_stock_unprocess.php' || type == 'Report_receive_st_process.php')
           {
             option = "?sDate="+sDate+"&eDate="+eDate;
           }
@@ -694,7 +694,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
               <button class="margin-btn btn btn-success mt-3" style="width:95%" id="Report_Spore_Test" onclick="ShowReport('Report_receive_stock_unprocess_M.php')">รายงานรับเข้าสินค้ายังไม่ได้แปรรูปประจำเดือน</button>
               <button class="margin-btn btn btn-success mt-3" style="width:95%" id="Report_Spore_Test" onclick="ShowReport('Report_receive_st_process.php')">รายงานรับเข้าสินค้าแปรรูปประจำวัน</button>
               <button class="margin-btn btn btn-success mt-3" style="width:95%" id="Report_Spore_Test" onclick="ShowReport('Report_receive_st_processM.php')">รายงานรับเข้าสินค้าแปรรูปประจำเดือน</button>
-              <button class="margin-btn btn btn-success mt-3" style="width:95%" id="Report_Spore_Test" onclick="ShowReport('xxxx')">รายงานการซื้อขาย การเงิน</button>
+              <button class="margin-btn btn btn-success mt-3" style="width:95%" id="Report_Spore_Test" onclick="ShowReport('finance.php')">รายงานการซื้อขาย การเงิน</button>
             </div>
             <div class="col-md-2"></div>
             <div class="col-md-5" id="divdetail2">
