@@ -48,7 +48,7 @@ class MYPDF extends TCPDF
       $this->Cell(0, 10,  "วันที่พิมพ์รายงาน " . $printdate, 0, 1, 'R');
 
       $this->SetFont('thsarabun', 'b', 22);
-      $this->Cell(0, 10,  "รายงานรายรับรายจ่ายการซื้อขาย", 0, 1, 'C');
+      $this->Cell(0, 10,  "รายงานรายรับรายจ่ายการซื้อขาย ลำใย", 0, 1, 'C');
       $this->SetFont('thsarabun', 'b', 20);
       $this->Cell(0, 10,  "ประจำวันที่ ".$sDateTH." ถึง ".$eDateTH, 0, 1, 'C');
       $this->Ln(10);
@@ -119,19 +119,18 @@ $pdf->AddPage('P', 'A4');
 $Sum_total_buy=0;
 
 $pdf->Ln(20);
-$pdf->SetFont('thsarabun', 'B', 18);
-$pdf->Cell(0, 10,  "ค่าใช้จ่ายการซื้อผลผลิต", 0, 1, 'L');
 $pdf->SetFont('thsarabun', 'B', 16);
-$pdf->Cell(10, 10,  "ซื้อ :", 0, 0, 'L');
+$pdf->Cell(45, 10,  "รายรับรายจ่ายการซื้อขาย :", 0, 0, 'L');
 $pdf->SetFont('thsarabun', '', 16);
 $pdf->Cell(0, 10,  "ลำใย", 0, 1, 'L');
 
 $html = '<table cellspacing="0" cellpadding="2" border="1" >
 <thead><tr style="font-size:20px;font-weight: bold;background-color: #8B8989;">
 <th  width="20 %" align="center">ลำดับ</th>
-<th  width="25 %" align="center">วันที่</th>
-<th  width="25 %" align="center">จำนวนเงิน</th>
-<th  width="25 %" align="center">หน่วยนับ</th>
+<th  width="20 %" align="center">วันที่</th>
+<th  width="20 %" align="center">รายรับ</th>
+<th  width="20 %" align="center">รายจ่าย</th>
+<th  width="20 %" align="center">หน่วยนับ</th>
 </tr> </thead>';
 
   $Sql_Detail="SELECT
@@ -152,176 +151,24 @@ while ($Result_Detail = mysqli_fetch_assoc($meQuery2)) {
 
   $html .= '<tr nobr="true" style="font-size:18px;">';
   $html .=   '<td width="20 %" align="center">' . $count . '</td>';
-  $html .=   '<td width="25 %" align="center"> '.$Result_Detail['DocDate'].'</td>';
-  $html .=   '<td width="25 %" align="right">'.number_format($Result_Detail['t_lg'],2).'</td>';
-  $html .=   '<td width="25 %" align="center">บาท</td>';
+  $html .=   '<td width="20 %" align="center"> '.$Result_Detail['DocDate'].'</td>';
+  $html .=   '<td width="20 %" align="right">'.number_format($Result_Detail['t_lg'],2).'</td>';
+  $html .=   '<td width="20 %" align="right">'.number_format($Result_Detail['t_lg'],2).'</td>';
+  $html .=   '<td width="20 %" align="center">บาท</td>';
   $html .=  '</tr>';
   $count++;
   $total_lg += $Result_Detail['t_lg'];
 }
 $html .= '<tr nobr="true" style="background-color: #CDCDC1;font-size:18px;" >';
   $html .=   '<td width="20 %" align="center"></td>';
-  $html .=   '<td width="25 %" align="center" style="font-weight: bold;">รวม</td>';
-  $html .=   '<td width="25 %" align="right" style="font-weight: bold;">'.number_format($total_lg,2).'</td>';
-  $html .=   '<td width="25 %" align="center"></td>';
-  $html .=  '</tr>';
-$html .= '</table>';
-$pdf->writeHTML($html, true, false, false, false, '');
-
-
-
-$pdf->SetFont('thsarabun', 'B', 16);
-$pdf->Cell(10, 10,  "ซื้อ :", 0, 0, 'L');
-$pdf->SetFont('thsarabun', '', 16);
-$pdf->Cell(0, 10,  "ข้าว", 0, 1, 'L');
-
-$html2 = '<table cellspacing="0" cellpadding="2" border="1" >
-<thead><tr style="font-size:20px;font-weight: bold;background-color: #8B8989;">
-<th  width="20 %" align="center">ลำดับ</th>
-<th  width="25 %" align="center">วันที่</th>
-<th  width="25 %" align="center">จำนวนเงิน</th>
-<th  width="25 %" align="center">หน่วยนับ</th>
-</tr> </thead>';
-
-  $Sql_Detail="SELECT
-                buy_rice.DocDate,
-                SUM(buy_rice.Total) AS t_rc
-                FROM
-                buy_rice
-                WHERE DATE(buy_rice.DocDate) BETWEEN '$sDate' AND '$eDate'
-                GROUP BY buy_rice.DocDate
-                ORDER BY buy_rice.DocDate ASC
-              ";
-              $total_rc=0;
-              $count=1;
-  $meQuery2 = mysqli_query($conn,$Sql_Detail);
-while ($Result_Detail = mysqli_fetch_assoc($meQuery2)) {
-
-
-
-
-  $html2 .= '<tr nobr="true" style="font-size:18px;">';
-  $html2 .=   '<td width="20 %" align="center">' . $count . '</td>';
-  $html2 .=   '<td width="25 %" align="center"> '.$Result_Detail['DocDate'].'</td>';
-  $html2 .=   '<td width="25 %" align="right">'.number_format($Result_Detail['t_rc'],2).'</td>';
-  $html2 .=   '<td width="25 %" align="center">บาท</td>';
-  $html2 .=  '</tr>';
-  $count++;
-  $total_rc += $Result_Detail['t_rc'];
-}
-$html2 .= '<tr nobr="true" style="background-color: #CDCDC1;font-size:18px;" >';
-  $html2 .=   '<td width="20 %" align="center"></td>';
-  $html2 .=   '<td width="25 %" align="center" style="font-weight: bold;">รวม</td>';
-  $html2 .=   '<td width="25 %" align="right" style="font-weight: bold;">'.number_format($total_rc,2).'</td>';
-  $html2 .=   '<td width="25 %" align="center"></td>';
-  $html2 .=  '</tr>';
-$html2 .= '</table>';
-$pdf->writeHTML($html2, true, false, false, false, '');
-$Sum_total_buy = $total_lg+$total_rc;
-//=================================================================================
-
-$pdf->AddPage('P', 'A4');
-
-$Sum_total_sale=0;
-$pdf->SetFont('thsarabun', 'B', 18);
-$pdf->Cell(0, 10,  "รายได้การขายผลผลิต", 0, 1, 'L');
-$pdf->SetFont('thsarabun', 'B', 16);
-$pdf->Cell(10, 10,  "ขาย :", 0, 0, 'L');
-$pdf->SetFont('thsarabun', '', 16);
-$pdf->Cell(0, 10,  "ลำใย", 0, 1, 'L');
-
-$html = '<table cellspacing="0" cellpadding="2" border="1" >
-<thead><tr style="font-size:20px;font-weight: bold;background-color: #8B8989;">
-<th  width="20 %" align="center">ลำดับ</th>
-<th  width="25 %" align="center">วันที่</th>
-<th  width="25 %" align="center">จำนวนเงิน</th>
-<th  width="25 %" align="center">หน่วยนับ</th>
-</tr> </thead>';
-
-  $Sql_Detail="SELECT
-                sale_longan.DocDate,
-                SUM(sale_longan.Total) AS t_lg
-                FROM
-                sale_longan
-                WHERE DATE(sale_longan.DocDate) BETWEEN '$sDate' AND '$eDate'
-                GROUP BY sale_longan.DocDate
-                ORDER BY sale_longan.DocDate ASC
-              ";
-              $total_lg=0;
-  $meQuery2 = mysqli_query($conn,$Sql_Detail);
-while ($Result_Detail = mysqli_fetch_assoc($meQuery2)) {
-
-
-
-
-  $html .= '<tr nobr="true" style="font-size:18px;">';
-  $html .=   '<td width="20 %" align="center">' . $count . '</td>';
-  $html .=   '<td width="25 %" align="center"> '.$Result_Detail['DocDate'].'</td>';
-  $html .=   '<td width="25 %" align="right">'.number_format($Result_Detail['t_lg'],2).'</td>';
-  $html .=   '<td width="25 %" align="center">บาท</td>';
-  $html .=  '</tr>';
-  $count++;
-  $total_lg += $Result_Detail['t_lg'];
-}
-$html .= '<tr nobr="true" style="background-color: #CDCDC1;font-size:18px;" >';
+  $html .=   '<td width="20 %" align="center" style="font-weight: bold;">รวม</td>';
+  $html .=   '<td width="20 %" align="right" style="font-weight: bold;">'.number_format($total_lg,2).'</td>';
+  $html .=   '<td width="20 %" align="right" style="font-weight: bold;">'.number_format($total_lg,2).'</td>';
   $html .=   '<td width="20 %" align="center"></td>';
-  $html .=   '<td width="25 %" align="center" style="font-weight: bold;">รวม</td>';
-  $html .=   '<td width="25 %" align="right" style="font-weight: bold;">'.number_format($total_lg,2).'</td>';
-  $html .=   '<td width="25 %" align="center"></td>';
   $html .=  '</tr>';
 $html .= '</table>';
 $pdf->writeHTML($html, true, false, false, false, '');
 
-
-
-$pdf->SetFont('thsarabun', 'B', 16);
-$pdf->Cell(10, 10,  "ขาย :", 0, 0, 'L');
-$pdf->SetFont('thsarabun', '', 16);
-$pdf->Cell(0, 10,  "ข้าว", 0, 1, 'L');
-
-$html2 = '<table cellspacing="0" cellpadding="2" border="1" >
-<thead><tr style="font-size:20px;font-weight: bold;background-color: #8B8989;">
-<th  width="20 %" align="center">ลำดับ</th>
-<th  width="25 %" align="center">วันที่</th>
-<th  width="25 %" align="center">จำนวนเงิน</th>
-<th  width="25 %" align="center">หน่วยนับ</th>
-</tr> </thead>';
-
-  $Sql_Detail="SELECT
-                sale_rice.DocDate,
-                SUM(sale_rice.Total) AS t_rc
-                FROM
-                sale_rice
-                WHERE DATE(sale_rice.DocDate) BETWEEN '$sDate' AND '$eDate'
-                GROUP BY sale_rice.DocDate
-                ORDER BY sale_rice.DocDate ASC
-              ";
-              $total_rc=0;
-              $count=1;
-  $meQuery2 = mysqli_query($conn,$Sql_Detail);
-while ($Result_Detail = mysqli_fetch_assoc($meQuery2)) {
-
-
-
-
-  $html2 .= '<tr nobr="true" style="font-size:18px;">';
-  $html2 .=   '<td width="20 %" align="center">' . $count . '</td>';
-  $html2 .=   '<td width="25 %" align="center"> '.$Result_Detail['DocDate'].'</td>';
-  $html2 .=   '<td width="25 %" align="right">'.number_format($Result_Detail['t_rc'],2).'</td>';
-  $html2 .=   '<td width="25 %" align="center">บาท</td>';
-  $html2 .=  '</tr>';
-  $count++;
-  $total_rc += $Result_Detail['t_rc'];
-}
-$html2 .= '<tr nobr="true" style="background-color: #CDCDC1;font-size:18px;" >';
-  $html2 .=   '<td width="20 %" align="center"></td>';
-  $html2 .=   '<td width="25 %" align="center" style="font-weight: bold;">รวม</td>';
-  $html2 .=   '<td width="25 %" align="right" style="font-weight: bold;">'.number_format($total_rc,2).'</td>';
-  $html2 .=   '<td width="25 %" align="center"></td>';
-  $html2 .=  '</tr>';
-$html2 .= '</table>';
-$pdf->writeHTML($html2, true, false, false, false, '');
-$Sum_total_sale = $total_lg+$total_rc;
 
 $pdf->SetFont('thsarabun', 'B', 18);
 $pdf->Cell(0, 10,  "สรุป", 0, 1, 'L');

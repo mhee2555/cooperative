@@ -91,6 +91,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
 
             showpro();
             showpack();
+            get_report();
         });
 
         function showchartbuy()
@@ -168,7 +169,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
           // divyear = ปี
           // divbtn = ปุ่ม
 
-          if(  type == 'finance.php' || type == 'Report_buy_lg_between.php' || type == 'Report_buy_rc_between.php' || type == 'Report_sale_lg_bt.php' || type == 'Report_sale_rc_bt.php' || type == 'Report_draw_daily_lg.php' || type == 'Report_draw_daily_rc.php' || type == 'Report_process_lg.php' || type == 'Report_process_rc.php' || type == 'Report_pk_lg_bt.php' || type == 'Report_pk_rc_bt.php' || type == 'Report_receive_stock_unprocess.php' || type == 'Report_receive_st_process.php')
+          if(  type == 'finance.php' || type == 'Report_buy_lg_between.php' || type == 'Report_buy_rc_between.php' || type == 'Report_sale_lg_bt.php' || type == 'Report_sale_rc_bt.php' || type == 'Report_draw_daily_lg.php' || type == 'Report_draw_daily_rc.php' || type == 'Report_process_lg.php' || type == 'Report_process_rc.php' || type == 'Report_pk_lg_bt.php' || type == 'Report_pk_rc_bt.php')
           {
             $('#divsdate').attr('hidden' , false); 
             $('#divedate').attr('hidden' , false);
@@ -196,7 +197,15 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
             $('#divsdate').attr('hidden' , true);
             $('#divedate').attr('hidden' , true);
           }
+          else if(type == 'Report_receive_stock_unprocess.php' || type == 'Report_receive_st_process.php')
+          {
+            $('#divxyear').attr('hidden' , true);
+            $('#divxmonth').attr('hidden' , true);
+            $('#divbtn').attr('hidden' , false);
 
+            $('#divsdate').attr('hidden' , false);
+            $('#divedate').attr('hidden' , true);
+          }
 
 
         }
@@ -210,7 +219,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
           var xMonth =  $('#xMonth').val();
           var option = "";
 
-          if(type == 'finance.php' || type == 'Report_buy_lg_between.php' || type == 'Report_buy_rc_between.php' || type == 'Report_sale_lg_bt.php' || type == 'Report_sale_rc_bt.php' || type == 'Report_draw_daily_lg.php' || type == 'Report_draw_daily_rc.php' || type == 'Report_process_lg.php' || type == 'Report_process_rc.php' || type == 'Report_pk_lg_bt.php' || type == 'Report_pk_rc_bt.php' || type == 'Report_receive_stock_unprocess.php' || type == 'Report_receive_st_process.php')
+          if(type == 'finance.php' || type == 'Report_buy_lg_between.php' || type == 'Report_buy_rc_between.php' || type == 'Report_sale_lg_bt.php' || type == 'Report_sale_rc_bt.php' || type == 'Report_draw_daily_lg.php' || type == 'Report_draw_daily_rc.php' || type == 'Report_process_lg.php' || type == 'Report_process_rc.php' || type == 'Report_pk_lg_bt.php' || type == 'Report_pk_rc_bt.php')
           {
             option = "?sDate="+sDate+"&eDate="+eDate;
           }
@@ -222,6 +231,10 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
           {
             option = "?xYear="+xYear+"&xMonth="+xMonth;
           }
+          else if(type == 'Report_receive_stock_unprocess.php' || type == 'Report_receive_st_process.php')
+          {
+            option = "?sDate="+sDate;
+          }
 
           var url  = "../tcreport/"+type+option;
           window.open(url);
@@ -229,7 +242,175 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
         }
         // END FUNCTION
 
+        function get_report()
+        {
+            var report_type = $('#report_type').val();
+            // alert(report_type);
 
+            switch (report_type) {
+               case '1':
+                    $('#Report_Spore_Test1').show();
+                    $('#Report_Spore_Test2').show();
+                    $('#Report_Spore_Test3').show();
+                    $('#Report_Spore_Test4').show();
+
+                    $('#Report_Spore_Test5').hide();
+                    $('#Report_Spore_Test6').hide();
+                    $('#Report_Spore_Test7').hide();
+                    $('#Report_Spore_Test8').hide();
+                    $('#Report_Spore_Test9').hide();
+                    $('#Report_Spore_Test10').hide();
+                    $('#Report_Spore_Test11').hide();
+                    $('#Report_Spore_Test12').hide();
+                    $('#Report_Spore_Test13').hide();
+                    $('#Report_Spore_Test14').hide();
+                    $('#Report_Spore_Test15').hide();
+                    $('#Report_Spore_Test16').hide();
+                    $('#Report_Spore_Test17').hide();
+                    $('#Report_Spore_Test18').hide();
+                    $('#Report_Spore_Test19').hide();
+                  break;
+                case '2':
+                    $('#Report_Spore_Test1').hide();
+                    $('#Report_Spore_Test2').hide();
+                    $('#Report_Spore_Test3').hide();
+                    $('#Report_Spore_Test4').hide();
+
+                    $('#Report_Spore_Test5').show();
+                    $('#Report_Spore_Test6').show();
+                    $('#Report_Spore_Test7').show();
+                    $('#Report_Spore_Test8').show();
+
+                    $('#Report_Spore_Test9').hide();
+                    $('#Report_Spore_Test10').hide();
+                    $('#Report_Spore_Test11').hide();
+                    $('#Report_Spore_Test12').hide();
+                    $('#Report_Spore_Test13').hide();
+                    $('#Report_Spore_Test14').hide();
+                    $('#Report_Spore_Test15').hide();
+                    $('#Report_Spore_Test16').hide();
+                    $('#Report_Spore_Test17').hide();
+                    $('#Report_Spore_Test18').hide();
+                    $('#Report_Spore_Test19').hide();
+                  break;
+                case '3':
+                    $('#Report_Spore_Test1').hide();
+                    $('#Report_Spore_Test2').hide();
+                    $('#Report_Spore_Test3').hide();
+                    $('#Report_Spore_Test4').hide();
+
+                    $('#Report_Spore_Test5').hide();
+                    $('#Report_Spore_Test6').hide();
+                    $('#Report_Spore_Test7').hide();
+                    $('#Report_Spore_Test8').hide();
+                    
+                    $('#Report_Spore_Test9').show();
+                    $('#Report_Spore_Test10').show();
+                    $('#Report_Spore_Test11').hide();
+                    $('#Report_Spore_Test12').hide();
+                    $('#Report_Spore_Test13').hide();
+                    $('#Report_Spore_Test14').hide();
+                    $('#Report_Spore_Test15').hide();
+                    $('#Report_Spore_Test16').hide();
+                    $('#Report_Spore_Test17').hide();
+                    $('#Report_Spore_Test18').hide();
+                    $('#Report_Spore_Test19').hide();
+                  break;
+                case '4':
+                    $('#Report_Spore_Test1').hide();
+                    $('#Report_Spore_Test2').hide();
+                    $('#Report_Spore_Test3').hide();
+                    $('#Report_Spore_Test4').hide();
+
+                    $('#Report_Spore_Test5').hide();
+                    $('#Report_Spore_Test6').hide();
+                    $('#Report_Spore_Test7').hide();
+                    $('#Report_Spore_Test8').hide();
+                    
+                    $('#Report_Spore_Test9').hide();
+                    $('#Report_Spore_Test10').hide();
+                    $('#Report_Spore_Test11').show();
+                    $('#Report_Spore_Test12').show();
+                    $('#Report_Spore_Test13').hide();
+                    $('#Report_Spore_Test14').hide();
+                    $('#Report_Spore_Test15').hide();
+                    $('#Report_Spore_Test16').hide();
+                    $('#Report_Spore_Test17').hide();
+                    $('#Report_Spore_Test18').hide();
+                    $('#Report_Spore_Test19').hide();
+                 
+                  break;
+                case '5':
+                    $('#Report_Spore_Test1').hide();
+                    $('#Report_Spore_Test2').hide();
+                    $('#Report_Spore_Test3').hide();
+                    $('#Report_Spore_Test4').hide();
+
+                    $('#Report_Spore_Test5').hide();
+                    $('#Report_Spore_Test6').hide();
+                    $('#Report_Spore_Test7').hide();
+                    $('#Report_Spore_Test8').hide();
+                    
+                    $('#Report_Spore_Test9').hide();
+                    $('#Report_Spore_Test10').hide();
+                    $('#Report_Spore_Test11').hide();
+                    $('#Report_Spore_Test12').hide();
+                    $('#Report_Spore_Test13').show();
+                    $('#Report_Spore_Test14').show();
+                    $('#Report_Spore_Test15').hide();
+                    $('#Report_Spore_Test16').hide();
+                    $('#Report_Spore_Test17').hide();
+                    $('#Report_Spore_Test18').hide();
+                    $('#Report_Spore_Test19').hide();
+                  break;
+                case '6':
+                    $('#Report_Spore_Test1').hide();
+                    $('#Report_Spore_Test2').hide();
+                    $('#Report_Spore_Test3').hide();
+                    $('#Report_Spore_Test4').hide();
+
+                    $('#Report_Spore_Test5').hide();
+                    $('#Report_Spore_Test6').hide();
+                    $('#Report_Spore_Test7').hide();
+                    $('#Report_Spore_Test8').hide();
+                    
+                    $('#Report_Spore_Test9').hide();
+                    $('#Report_Spore_Test10').hide();
+                    $('#Report_Spore_Test11').hide();
+                    $('#Report_Spore_Test12').hide();
+                    $('#Report_Spore_Test13').hide();
+                    $('#Report_Spore_Test14').hide();
+                    $('#Report_Spore_Test15').show();
+                    $('#Report_Spore_Test16').show();
+                    $('#Report_Spore_Test17').show();
+                    $('#Report_Spore_Test18').show();
+                    $('#Report_Spore_Test19').hide();
+                  break;
+                  case '7':
+                    $('#Report_Spore_Test1').hide();
+                    $('#Report_Spore_Test2').hide();
+                    $('#Report_Spore_Test3').hide();
+                    $('#Report_Spore_Test4').hide();
+
+                    $('#Report_Spore_Test5').hide();
+                    $('#Report_Spore_Test6').hide();
+                    $('#Report_Spore_Test7').hide();
+                    $('#Report_Spore_Test8').hide();
+                    
+                    $('#Report_Spore_Test9').hide();
+                    $('#Report_Spore_Test10').hide();
+                    $('#Report_Spore_Test11').hide();
+                    $('#Report_Spore_Test12').hide();
+                    $('#Report_Spore_Test13').hide();
+                    $('#Report_Spore_Test14').hide();
+                    $('#Report_Spore_Test15').hide();
+                    $('#Report_Spore_Test16').hide();
+                    $('#Report_Spore_Test17').hide();
+                    $('#Report_Spore_Test18').hide();
+                    $('#Report_Spore_Test19').show();
+                  break;
+            }
+        }
 
 
         function senddata(data)
@@ -654,7 +835,20 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
 
     <div class="container-fluid">
 
-
+    <div  style="margin:1% 0px 10px 19%;" >
+        <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000; font-size: 20px;">ประเภท</label>
+                <select class =  " custom-select  " id="report_type" style="width:23%;" onchange="get_report();">
+                            <option value="1">รายงานการซื้อ</option>
+                            <option value="2">รายงานการขาย</option>
+                            <option value="3">รายงานการขอเบิก</option>
+                            <option value="4">รายงานการแปรรูป</option>
+                            <option value="5">รายงานการบรรจุภัณฑ์</option>
+                            <option value="6">รายงานการรับเข้าสินค้าเข้าคลัง</option>
+                            <option value="7">รายงานรายรับรายจ่ายการซื้อขาย</option>
+                </select>
+        </div>
+    </div>
 
       <div class="container">
           <div class="row" style="padding:20px;">
@@ -673,28 +867,28 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
               </div>
 
           </div>
-
+         
           <div class="row" >
             <div class="col-md-5" Style="height: 600px; overflow: auto;" id="rowbtn">
-              <button class="margin-btn btn btn-success mt-3" style="width:95%" id="Report_Spore_Test" onclick="ShowReport('Report_buy_lg_between.php')">รายงานการซื้อลำใยประจำวัน</button>
-              <button class="margin-btn btn btn-success mt-3" style="width:95%" id="Report_Spore_Test" onclick="ShowReport('Report_buylg_Y.php')">รายงานการซื้อลำใยประจำปี</button>
-              <button class="margin-btn btn btn-success mt-3" style="width:95%" id="Report_Spore_Test" onclick="ShowReport('Report_buy_rc_between.php')">รายงานการซื้อข้าวประจำวัน</button>
-              <button class="margin-btn btn btn-success mt-3" style="width:95%" id="Report_Spore_Test" onclick="ShowReport('Report_buyrc_Y.php')">รายงานการซื้อข้าวประจำปี</button>
-              <button class="margin-btn btn btn-success mt-3" style="width:95%" id="Report_Spore_Test" onclick="ShowReport('Report_sale_lg_bt.php')">รายงานการขายลำใยประจำวัน</button>
-              <button class="margin-btn btn btn-success mt-3" style="width:95%" id="Report_Spore_Test" onclick="ShowReport('Report_sale_lg_Y.php')">รายงานการขายลำใยประจำปี</button>
-              <button class="margin-btn btn btn-success mt-3" style="width:95%" id="Report_Spore_Test" onclick="ShowReport('Report_sale_rc_bt.php')">รายงานการขายข้าวประจำวัน</button>
-              <button class="margin-btn btn btn-success mt-3" style="width:95%" id="Report_Spore_Test" onclick="ShowReport('Report_sale_rc_Y.php')">รายงานการซื้อข้าวประจำปี</button>
-              <button class="margin-btn btn btn-success mt-3" style="width:95%" id="Report_Spore_Test" onclick="ShowReport('Report_draw_daily_lg.php')">รายงานการขอเบิกลำใยประจำวัน</button>
-              <button class="margin-btn btn btn-success mt-3" style="width:95%" id="Report_Spore_Test" onclick="ShowReport('Report_draw_daily_rc.php')">รายงานการขอเบิกข้าวประจำวัน</button>
-              <button class="margin-btn btn btn-success mt-3" style="width:95%" id="Report_Spore_Test" onclick="ShowReport('Report_process_lg.php')">รายงานการแปรรูปลำใยประจำวัน</button>
-              <button class="margin-btn btn btn-success mt-3" style="width:95%" id="Report_Spore_Test" onclick="ShowReport('Report_process_rc.php')">รายงานการแปรรูปข้าวประจำวัน</button>
-              <button class="margin-btn btn btn-success mt-3" style="width:95%" id="Report_Spore_Test" onclick="ShowReport('Report_pk_lg_bt.php')">รายงานการบรรจุภัณฑ์ลำใยประจำวัน</button>
-              <button class="margin-btn btn btn-success mt-3" style="width:95%" id="Report_Spore_Test" onclick="ShowReport('Report_pk_rc_bt.php')">รายงานการบรรจุภัณฑ์ข้าวประจำวัน</button>
-              <button class="margin-btn btn btn-success mt-3" style="width:95%" id="Report_Spore_Test" onclick="ShowReport('Report_receive_stock_unprocess.php')">รายงานรับเข้าสินค้ายังไม่ได้แปรรูปประจำวัน</button>
-              <button class="margin-btn btn btn-success mt-3" style="width:95%" id="Report_Spore_Test" onclick="ShowReport('Report_receive_stock_unprocess_M.php')">รายงานรับเข้าสินค้ายังไม่ได้แปรรูปประจำเดือน</button>
-              <button class="margin-btn btn btn-success mt-3" style="width:95%" id="Report_Spore_Test" onclick="ShowReport('Report_receive_st_process.php')">รายงานรับเข้าสินค้าแปรรูปประจำวัน</button>
-              <button class="margin-btn btn btn-success mt-3" style="width:95%" id="Report_Spore_Test" onclick="ShowReport('Report_receive_st_processM.php')">รายงานรับเข้าสินค้าแปรรูปประจำเดือน</button>
-              <button class="margin-btn btn btn-success mt-3" style="width:95%" id="Report_Spore_Test" onclick="ShowReport('finance.php')">รายงานการซื้อขาย การเงิน</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test1" onclick="ShowReport('Report_buy_lg_between.php')">รายงานการซื้อลำใยประจำวัน</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test2" onclick="ShowReport('Report_buylg_Y.php')">รายงานการซื้อลำใยประจำปี</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test3" onclick="ShowReport('Report_buy_rc_between.php')">รายงานการซื้อข้าวประจำวัน</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test4" onclick="ShowReport('Report_buyrc_Y.php')">รายงานการซื้อข้าวประจำปี</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test5" onclick="ShowReport('Report_sale_lg_bt.php')">รายงานการขายลำใยประจำวัน</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test6" onclick="ShowReport('Report_sale_lg_Y.php')">รายงานการขายลำใยประจำปี</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test7" onclick="ShowReport('Report_sale_rc_bt.php')">รายงานการขายข้าวประจำวัน</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test8" onclick="ShowReport('Report_sale_rc_Y.php')">รายงานการขายข้าวประจำปี</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test9" onclick="ShowReport('Report_draw_daily_lg.php')">รายงานการขอเบิกลำใยประจำวัน</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test10" onclick="ShowReport('Report_draw_daily_rc.php')">รายงานการขอเบิกข้าวประจำวัน</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test11" onclick="ShowReport('Report_process_lg.php')">รายงานการแปรรูปลำใยประจำวัน</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test12" onclick="ShowReport('Report_process_rc.php')">รายงานการแปรรูปข้าวประจำวัน</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test13" onclick="ShowReport('Report_pk_lg_bt.php')">รายงานการบรรจุภัณฑ์ลำใยประจำวัน</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test14" onclick="ShowReport('Report_pk_rc_bt.php')">รายงานการบรรจุภัณฑ์ข้าวประจำวัน</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test15" onclick="ShowReport('Report_receive_stock_unprocess.php')">รายงานรับเข้าสินค้ายังไม่ได้แปรรูปประจำวัน</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test16" onclick="ShowReport('Report_receive_stock_unprocess_M.php')">รายงานรับเข้าสินค้ายังไม่ได้แปรรูปประจำเดือน</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test17" onclick="ShowReport('Report_receive_st_process.php')">รายงานรับเข้าสินค้าแปรรูปประจำวัน</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test18" onclick="ShowReport('Report_receive_st_processM.php')">รายงานรับเข้าสินค้าแปรรูปประจำเดือน</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test19" onclick="ShowReport('finance.php')">รายงานรายรับรายจ่ายการซื้อขาย</button>
             </div>
             <div class="col-md-2"></div>
             <div class="col-md-5" id="divdetail2">
