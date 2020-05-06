@@ -580,7 +580,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
     <div class="container-fluid">
         <div class="row my-3">
             <!-- bar chart -->
-            <div class="col-md-6 col-sm-6 col-xs-12"  <?php if($PmID <> 1 && $PmID <> 2) echo 'hidden'; ?>>
+            <div class="col-md-6 col-sm-6 col-xs-12"  <?php if($PmID <> 1 ) echo 'hidden'; ?>>
                 <div class="card " id="chartbuy">
                     <div class='card-header white'> 
 
