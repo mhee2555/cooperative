@@ -152,8 +152,28 @@ function ShowItem($conn, $DATA)
   $count = 0;
   $boolean = false;
   $datestock   = $DATA["datestock"]==''?date('Y-m-d'):$DATA["datestock"];
-
-  $Sql = "SELECT
+  $chk   = $DATA["chk"];
+  if($chk ==1 )
+  {
+    $Sql = "SELECT
+              item.item_name ,
+              item.item_code ,
+              sup.stock_code,
+              sup.item_qty,
+              sup.item_ccqty,
+              DATE(sup.Date_exp) as date_exp,
+              sup.DocNo
+            FROM
+            stock_unprocess sup
+            INNER JOIN item ON item.item_code = sup.item_code 
+            WHERE item.item_type = 2 
+            AND sup.item_ccqty <> 0 
+            AND TIMEDIFF(sup.Date_exp , NOW() ) > 0
+            ORDER BY DATE(sup.Date_exp) ASC";
+  }
+  else
+  {
+          $Sql = "SELECT
           item.item_name ,
           item.item_code ,
           sup.stock_code,
@@ -167,7 +187,10 @@ function ShowItem($conn, $DATA)
           WHERE item.item_type = 2 
           AND sup.item_ccqty <> 0 
           AND TIMEDIFF(sup.Date_exp , NOW() ) > 0
-          AND DATE(sup.Date_start) = '$datestock'";
+          AND DATE(sup.Date_start) = '$datestock'
+          ORDER BY TIME(sup.Date_exp) ASC";
+  }
+
 
     $meQuery = mysqli_query($conn, $Sql);
     while ($Result = mysqli_fetch_assoc($meQuery)) 

@@ -60,16 +60,17 @@ function showchartbuy($conn, $DATA)
   }
   else
   {
-    $return['status'] = "failed";
-    $return['msg'] = "showcharterror";
+    $return['type_chart'] = $type_buy_chart_select;
+    $return['status'] = "success";
+    $return['form'] = "showchartbuy";
+    // $return['status'] = "failed";
+    // $return['msg'] = "showcharterror";
     $return['date'] = $datepicker;
     echo json_encode($return);
     mysqli_close($conn);
     die;
   }
 }
-
-
 function showchartsale($conn, $DATA)
 {
   $boolean = false;
@@ -126,15 +127,17 @@ function showchartsale($conn, $DATA)
   }
   else
   {
-    $return['status'] = "failed";
-    $return['msg'] = "showcharterror";
+    $return['type_chart'] = $type_sale_chart_select;
+    $return['status'] = "success";
+    $return['form'] = "showchartsale";
+    // $return['status'] = "failed";
+    // $return['msg'] = "showcharterror";
     $return['date'] = $datepicker;
     echo json_encode($return);
     mysqli_close($conn);
     die;
   }
 }
-
 function showpro($conn, $DATA)
 {
   $boolean = false;
@@ -203,7 +206,6 @@ function showpro($conn, $DATA)
    die;
  }
 }
-
 function showpack($conn, $DATA)
 {
   $boolean = false;

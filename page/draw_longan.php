@@ -100,16 +100,17 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
         if(DocNo != "")
         {
             $('#Additem').modal('show');
-            ShowItem();
+            ShowItem(1);
         }
     }
-    function ShowItem()
+    function ShowItem(chk)
     {
         var datestock = $("#datestock").val();
         var data = 
         {
             'STATUS'  : 'ShowItem',
-            'datestock'	: datestock
+            'datestock'	: datestock,
+            'chk'	: chk
         };
         senddata(JSON.stringify(data));
     }   
@@ -320,43 +321,62 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                 senddata(JSON.stringify(data));
     }
     function Deleteitem()
-    {
-        var DocNo = $("#DocNo").val();
-        var itemcode = "";
-        $('input[name="detailrow"]:checked').each(function() 
+    {   
+        var chkrow  =   $( ".chkrow" ).length;
+        if(chkrow < 1)
         {
-            itemcode = $(this).val();
-        });
+            swal({
+                title: '',
+                text: 'กรุณาเพิ่มรายการก่อนลบรายการ',
+                type: 'warning',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                showConfirmButton: false,
+                timer: 2000,
+                confirmButtonText: 'Ok'
+                })
+        }
+        else
+        {
+            var DocNo = $("#DocNo").val();
+            var itemcode = "";
+            $('input[name="detailrow"]:checked').each(function() 
+            {
+                itemcode = $(this).val();
+            });
 
-        swal({
-          title: "",
-          text: "ยืนยันการลบรายการ",
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonClass: "btn-danger",
-          confirmButtonText: "ใช่",
-          cancelButtonText: "ไม่ใช่",
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          closeOnConfirm: false,
-          closeOnCancel: false,
-          showCancelButton: true}).then(result => 
-          {
-            if (result.value) 
+            swal({
+            title: "",
+            text: "ยืนยันการลบรายการ",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "ใช่",
+            cancelButtonText: "ไม่ใช่",
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            closeOnConfirm: false,
+            closeOnCancel: false,
+            showCancelButton: true}).then(result => 
             {
-                var data = 
+                if (result.value) 
                 {
-                'STATUS'    : 'Deleteitem',
-                'DocNo'	: DocNo,
-                'itemcode'	: itemcode
-                };
-                senddata(JSON.stringify(data));
-            } 
-            else if (result.dismiss === 'cancel') 
-            {
-                swal.close();
-            } 
-          })
+                    var data = 
+                    {
+                    'STATUS'    : 'Deleteitem',
+                    'DocNo'	: DocNo,
+                    'itemcode'	: itemcode
+                    };
+                    senddata(JSON.stringify(data));
+                } 
+                else if (result.dismiss === 'cancel') 
+                {
+                    swal.close();
+                } 
+            })
+        }
+        
         
     }
 
@@ -458,7 +478,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                                                 "<td >"+qty_total+"</td>"+
                                                 "<td >"+qty_cc+"</td>"+
                                                 "<td style='width: 13%;'>"+temp[i]['DocNo']+"</td>"+
-                                                "<td >"+temp[i]['date_exp']+"</td>"+
+                                                "<td style='width: 10%;'>"+temp[i]['date_exp']+"</td>"+
                                                 "<td >"+draw+"</td>"+
                                                 "<td >"+chkunit+"</td>"+
                                                 "<td hidden>"+fix+"</td>"+
@@ -1019,7 +1039,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
             <input type="text" autocomplete="off" class ="form-control datepicker-here" id="datestock" data-language='en' data-date-format='yyyy-mm-dd' placeholder="ค้นหาจากวันที่">
         </div>
           <div class="col-md-4  mt-2 ">
-            <button type="button" class="btn btn-primary btn-lg" onclick="ShowItem()">
+            <button type="button" class="btn btn-primary btn-lg" onclick="ShowItem(2)">
             <i class="icon-search3"></i> ค้นหา </button>
           </div>
       </div>
@@ -1030,7 +1050,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                                             <th>ชื่อรายการ</th>
                                             <th>จำนวนทั้งหมด(กก)</th>
                                             <th>คงเหลือ(กก)</th>
-                                            <th>ลอต</th>
+                                            <th>รหัสคลังสินค้า</th>
                                             <th>หมดอายุ</th>
                                             <th>ขอเบิก(กก)</th>
                                             <th>หน่วยนับ</th>

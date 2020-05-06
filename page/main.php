@@ -86,10 +86,15 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                     ((''+day).length<2 ? '0' : '') + day;
                 $("#Date_Pro").val(output);
                 $("#Date_Pack").val(output);
-
-
+                $("#DateSale_Start").val('2020-05-01');
+                $("#DateSale_End").val('2020-05-31');
+                $("#DateBuy_Start").val('2020-05-01');
+                $("#DateBuy_End").val('2020-05-31');
+                
             showpro();
             showpack();
+            showchartbuy();
+            showchartsale();
         });
 
         function showchartbuy()
@@ -604,7 +609,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                         </select>                     
                     </div>
                     <div class = 'row justify-content-center' >
-                        <input class="form-control mb-3 col-md-5 datepicker-here" id='DateBuy_Start' data-language='en' data-date-format='yyyy-mm-dd'  placeholder="ค้นหาจากวันที่เรึ่ม">
+                        <input class="form-control mb-3 col-md-5 datepicker-here" id='DateBuy_Start' data-language='en' data-date-format='yyyy-mm-dd'  placeholder="ค้นหาจากวันที่เรึ่ม" >
                         <h4 class="col-md-1" > </h4>
                         <input class="form-control mb-3 col-md-5 datepicker-here" id='DateBuy_End'data-language='en' data-date-format='yyyy-mm-dd'  placeholder="ค้นหาจากวันที่สิ้นสุด">
                     </div>
@@ -660,7 +665,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                 <div class="card " id="chartbuy">
                     <div class='card-header white'> 
                     <div class = 'row justify-content-center' >
-                        <h4 class="col-md-12 text-center mb-3" >การขอแปรรูปสินค้า</h4>
+                        <h4 class="col-md-12 text-center mb-3" >การขอเบิกสินค้า</h4>
                     </div>
 
                 
