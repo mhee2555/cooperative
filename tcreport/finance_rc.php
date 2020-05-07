@@ -48,7 +48,7 @@ class MYPDF extends TCPDF
       $this->Cell(0, 10,  "วันที่พิมพ์รายงาน " . $printdate, 0, 1, 'R');
 
       $this->SetFont('thsarabun', 'b', 22);
-      $this->Cell(0, 10,  "รายงานรายรับรายจ่ายการซื้อขาย ลำใย", 0, 1, 'C');
+      $this->Cell(0, 10,  "รายงานรายรับรายจ่ายการซื้อขาย ข้าว", 0, 1, 'C');
       $this->SetFont('thsarabun', 'b', 20);
       $this->Cell(0, 10,  "ประจำวันที่ ".$sDateTH." ถึง ".$eDateTH, 0, 1, 'C');
       $this->Ln(10);
@@ -113,7 +113,16 @@ $eDate = $eDate[2].'-'.$eDate[1].'-'.$eDate[0];
 $pdf->AddPage('P', 'A4');
 
 
+$begin = new DateTime( $sDate );
+$end = new DateTime( $eDate );
+$end = $end->modify( '1 day' );
 
+$interval = new DateInterval('P1D');
+$period = new DatePeriod($begin, $interval ,$end);
+foreach ($period as $key => $value)
+{
+  $date[] = $value->format('Y-m-d');
+}
 
 
 $Sum_total_buy=0;
@@ -122,67 +131,96 @@ $pdf->Ln(20);
 $pdf->SetFont('thsarabun', 'B', 16);
 $pdf->Cell(45, 10,  "รายรับรายจ่ายการซื้อขาย :", 0, 0, 'L');
 $pdf->SetFont('thsarabun', '', 16);
-$pdf->Cell(0, 10,  "ลำใย", 0, 1, 'L');
+$pdf->Cell(0, 10,  "ข้าว", 0, 1, 'L');
 
 $html = '<table cellspacing="0" cellpadding="2" border="1" >
 <thead><tr style="font-size:20px;font-weight: bold;background-color: #8B8989;">
-<th  width="20 %" align="center">ลำดับ</th>
-<th  width="20 %" align="center">วันที่</th>
-<th  width="20 %" align="center">รายรับ</th>
-<th  width="20 %" align="center">รายจ่าย</th>
-<th  width="20 %" align="center">หน่วยนับ</th>
+<th  width="10 %" align="center">ลำดับ</th>
+<th  width="18 %" align="center">วันที่</th>
+<th  width="18 %" align="center">รายรับ</th>
+<th  width="18 %" align="center">รายจ่าย</th>
+<th  width="18 %" align="center">ส่วนต่าง</th>
+<th  width="18 %" align="center">หน่วยนับ</th>
 </tr> </thead>';
-
-  $Sql_Detail="SELECT
-                buy_longan.DocDate,
-                SUM(buy_longan.Total) AS t_lg
-                FROM
-                buy_longan
-                WHERE DATE(buy_longan.DocDate) BETWEEN '$sDate' AND '$eDate'
-                GROUP BY buy_longan.DocDate
-                ORDER BY buy_longan.DocDate ASC
+$count=1;
+$total_b_rc=0;
+$total_s_rc=0;
+$total_sum2=0;
+foreach ($date as $key => $value)
+{
+  $Sql_buy_rice="SELECT
+                    buy_rice.DocDate,
+                    SUM(buy_rice.Total) AS b_rc
+                    FROM
+                    buy_rice
+                    WHERE DATE(buy_rice.DocDate) = '$value' 
+                    GROUP BY  buy_rice.DocDate
+                    ORDER BY buy_rice.DocDate ASC
               ";
-              $total_lg=0;
-  $meQuery2 = mysqli_query($conn,$Sql_Detail);
-while ($Result_Detail = mysqli_fetch_assoc($meQuery2)) {
+  
+  $meQuery_buy_rice = mysqli_query($conn,$Sql_buy_rice);
+  $Result_buy_rice = mysqli_fetch_assoc($meQuery_buy_rice);
 
+  $b_rc = $Result_buy_rice['b_rc'];
 
+  $Sql_sale_rice="SELECT
+                  sale_rice.DocDate,
+                  SUM(sale_rice.Total) AS s_rc
+                  FROM
+                  sale_rice
+                  WHERE DATE(sale_rice.DocDate) = '$value' 
+                  GROUP BY  sale_rice.DocDate
+                  ORDER BY sale_rice.DocDate ASC
+                  ";
 
+  $meQuery_sale_rice = mysqli_query($conn,$Sql_sale_rice);
+  $Result_sale_rice = mysqli_fetch_assoc($meQuery_sale_rice);
+
+  $s_rc = $Result_sale_rice['s_rc'];
+
+  $total_sum = $s_rc-$b_rc;
 
   $html .= '<tr nobr="true" style="font-size:18px;">';
-  $html .=   '<td width="20 %" align="center">' . $count . '</td>';
-  $html .=   '<td width="20 %" align="center"> '.$Result_Detail['DocDate'].'</td>';
-  $html .=   '<td width="20 %" align="right">'.number_format($Result_Detail['t_lg'],2).'</td>';
-  $html .=   '<td width="20 %" align="right">'.number_format($Result_Detail['t_lg'],2).'</td>';
-  $html .=   '<td width="20 %" align="center">บาท</td>';
+  $html .=   '<td width="10 %" align="center">' . $count . '</td>';
+  $html .=   '<td width="18 %" align="center"> '.$value.'</td>';
+  $html .=   '<td width="18 %" align="right">'.number_format($s_rc,2).'</td>';
+  $html .=   '<td width="18 %" align="right">'.number_format($b_rc,2).'</td>';
+  $html .=   '<td width="18 %" align="right">'.number_format($total_sum,2).'</td>';
+  $html .=   '<td width="18 %" align="center">บาท</td>';
   $html .=  '</tr>';
   $count++;
-  $total_lg += $Result_Detail['t_lg'];
+  $total_b_rc +=  $b_rc;
+  $total_s_rc += $s_rc;
+
+  $total_sum2 +=  $total_sum ; 
 }
 $html .= '<tr nobr="true" style="background-color: #CDCDC1;font-size:18px;" >';
-  $html .=   '<td width="20 %" align="center"></td>';
-  $html .=   '<td width="20 %" align="center" style="font-weight: bold;">รวม</td>';
-  $html .=   '<td width="20 %" align="right" style="font-weight: bold;">'.number_format($total_lg,2).'</td>';
-  $html .=   '<td width="20 %" align="right" style="font-weight: bold;">'.number_format($total_lg,2).'</td>';
-  $html .=   '<td width="20 %" align="center"></td>';
+  $html .=   '<td width="10 %" align="center"></td>';
+  $html .=   '<td width="18 %" align="center" style="font-weight: bold;">รวม</td>';
+  $html .=   '<td width="18 %" align="right" style="font-weight: bold;">'.number_format($total_s_rc,2).'</td>';
+  $html .=   '<td width="18 %" align="right" style="font-weight: bold;">'.number_format($total_b_rc,2).'</td>';
+  $html .=   '<td width="18 %" align="right" style="font-weight: bold;">'.number_format($total_sum2,2).'</td>';
+  $html .=   '<td width="18 %" align="center"></td>';
   $html .=  '</tr>';
 $html .= '</table>';
 $pdf->writeHTML($html, true, false, false, false, '');
 
-
+$pdf->Ln();
 $pdf->SetFont('thsarabun', 'B', 18);
 $pdf->Cell(0, 10,  "สรุป", 0, 1, 'L');
 
 $html = '<table cellspacing="0" cellpadding="2" border="1" >
 <thead><tr style="font-size:20px;font-weight: bold;background-color: #8B8989;">
-<th  width="25 %" align="center">รวมค่าใช้จ่ายซื้อผลผลิต</th>
 <th  width="25 %" align="center">รวมรายได้ขายผลผลิต</th>
+<th  width="25 %" align="center">รวมค่าใช้จ่ายซื้อผลผลิต</th>
+<th  width="25 %" align="center">รวมส่วนต่าง</th>
 <th  width="20 %" align="center">หน่วยนับ</th>
 </tr> </thead>';
 
   $html .= '<tr nobr="true" style="font-size:18px;">';
-  $html .=   '<td width="25 %" align="center">' .number_format($Sum_total_buy,2). '</td>';
-  $html .=   '<td width="25 %" align="center"> '.number_format($Sum_total_sale,2).'</td>';
+  $html .=   '<td width="25 %" align="center">' .number_format($total_s_rc,2). '</td>';
+  $html .=   '<td width="25 %" align="center"> '.number_format($total_b_rc,2).'</td>';
+  $html .=   '<td width="25 %" align="center"> '.number_format($total_sum2,2).'</td>';
 //   $html .=   '<td width="25 %" align="right">'.number_format($Result_Detail['t_lg'],2).'</td>';
   $html .=   '<td width="20 %" align="center">บาท</td>';
   $html .=  '</tr>';
@@ -196,7 +234,7 @@ $pdf->writeHTML($html, true, false, false, false, '');
 $eDate = $_GET['eDate'];
 $eDate=str_replace("/","_",$eDate);
 $ddate = date('d_m_Y');
-$pdf->Output('Report_draw_longan_' . $eDate . '.pdf', 'I');
+$pdf->Output('finance_rc_' . $eDate . '.pdf', 'I');
 
 //============================================================+
 // END OF FILE
