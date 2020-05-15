@@ -669,7 +669,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                                             <th>จำนวนที่เหลือ</th>
                                             <th>เวลารับเข้า</th>
                                             <th>เวลาหมดอายุ</th>
-                                            <th>ลอต</th>
+                                            <th>รหัสคลังสินค้า</th>
                                             <th>สถานะ</th>
                                         </tr>
                                         </thead>
