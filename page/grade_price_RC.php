@@ -556,7 +556,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                     <input type="text" class =  "form-control " placeholder="ค้นหาจากชื่อรายการ" id="Search">
                 </div> -->
                 <div class="col-md-10">
-                    <spen style=" font-size:20px;margin-left:4%;">เกณฑ์ราคาข้าว</spen> 
+                    <!-- <spen style=" font-size:20px;margin-left:4%;">เกณฑ์ราคาข้าว</spen>  -->
                     <button type="button" style=" float: right;"  data-toggle="modal" data-target="#add_item_rice"  class="btn btn-success btn-lg ml-3"  onclick="Get_item_rice();"><i class="icon-add"></i>&nbsp;เพิ่ม เกณฑ์ราคาข้าว&nbsp;</button>
                     <button type="button" style=" float: right;"  data-toggle="modal" class="btn btn-success btn-lg ml-3" onclick="line_notify()"><i class="icon-comment"></i>&nbsp;ส่งข้อมูลเข้า Line@&nbsp;</button>
                 </div>

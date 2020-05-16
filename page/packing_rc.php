@@ -451,6 +451,8 @@ function report_rc(){
                             confirmButtonText: 'Ok',
                             showConfirmButton: false
                             });
+                        $( "#TableDetail tbody" ).empty();
+
                         $("#DocNo").val(temp[0]['DocNo']);
                         $("#docdate").val(temp[0]['DocDate']);
                         $("#Employee").val(temp[0]['Record']);

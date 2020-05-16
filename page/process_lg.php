@@ -480,6 +480,8 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                             confirmButtonText: 'Ok',
                             showConfirmButton: false
                             });
+                        $( "#TableDetail tbody" ).empty();
+
                         $("#DocNo").val(temp[0]['DocNo']);
                         $("#docdate").val(temp[0]['DocDate']);
                         $("#Employee").val(temp[0]['Record']);
@@ -1132,7 +1134,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
       <div class="modal-body">
         <div class="row ">
         <div class="col-md-4 mt-2 ">
-                <select  autocomplete="off" class ="form-control "  id="chk_ref_status">
+                <select  autocomplete="off" class ="form-control "  id="chk_ref_status" onchange="ShowRefDocNo()">
                     <option value="1">เอกสารสั่งแปรรูป</option> 
                     <option value="2">เอกสารสั่งบรรจุภัณฑ์</option> 
                 </select>

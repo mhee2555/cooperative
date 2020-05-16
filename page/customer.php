@@ -448,7 +448,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                 <ul class="nav nav-material nav-material-white responsive-tab" id="v-pills-tab" role="tablist">
                     <li>
                         <a class="nav-link active" id="v-pills-all-tab" data-toggle="pill" href="#v-pills-all"
-                           role="tab" aria-controls="v-pills-all"><i class="icon icon-home2"></i>All Users</a>
+                           role="tab" aria-controls="v-pills-all"><i class="icon icon-home2"></i>ลูกค้า</a>
                     </li>
                     <!-- <li>
                         <a class="nav-link" id="v-pills-buyers-tab" data-toggle="pill" href="#v-pills-buyers" role="tab"
@@ -458,9 +458,9 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                         <a class="nav-link" id="v-pills-sellers-tab" data-toggle="pill" href="#v-pills-sellers" role="tab"
                            aria-controls="v-pills-sellers"><i class="icon  icon-local_shipping"></i> Sellers</a>
                     </li> -->
-                    <li class="float-right">
+                    <!-- <li class="float-right">
                         <a class="nav-link"  href="panel-page-users-create.html" ><i class="icon icon-plus-circle"></i> Add New User</a>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
         </div>
@@ -568,7 +568,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                     </div>
                 </div>
 
-                <nav class="my-3" aria-label="Page navigation">
+                <!-- <nav class="my-3" aria-label="Page navigation">
                     <ul class="pagination">
                         <li class="page-item"><a class="page-link" href="#">Previous</a>
                         </li>
@@ -581,7 +581,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                         <li class="page-item"><a class="page-link" href="#">Next</a>
                         </li>
                     </ul>
-                </nav>
+                </nav> -->
             </div>
 
             <!-- START BUYERS -->

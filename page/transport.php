@@ -212,7 +212,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                               status_text = "หยุดชั่วขณะ";
                             } else if (temp[i]['IsStatus'] == 1 ) {
                               status_class = "status4";
-                              status_text = "ไม่ทำงาน";
+                              status_text = "รอการจัดส่ง";
                             } else if (temp[i]['IsStatus'] == 2 ) {
                               status_class = "status1";
                               status_text = "กำลังส่ง";
@@ -339,6 +339,8 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                             Str += "					<th>No.</th>";
                             Str += "					<th>รายการ</th>";
                             Str += "					<th>จำนวน</th>";
+														Str += "					<th>หน่วยนับ</th>";
+														Str += "					<th>รหัสคลังสินค้า</th>";
                             Str += "				</tr>";
                             Str += "			</thead>";
                             Str += "			<tbody>";
@@ -349,6 +351,8 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                               Str += "						<th>" + Number(i+1) + "</th>";
                               Str += "						<td class='text-left pl-3'>" + temp[i]['item_name'] + "</td>";
                               Str += "						<td>" + temp[i]['kilo'] + "</td>";
+															Str += "						<td>" + temp[i]['PackgeName'] + "</td>";
+															Str += "						<td>" + temp[i]['DocNo'] + "</td>";
                               Str += "					</tr>";
                             }
 

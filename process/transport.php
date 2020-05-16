@@ -203,20 +203,27 @@ function view_detail($conn, $DATA)
   {
     $Sql = "SELECT
               item.item_name,
-              sale_longan_detail.kilo 
+              sale_longan_detail.kilo,
+              packge_unit.PackgeName
             FROM
               sale_longan_detail
               INNER JOIN item ON item.item_code = sale_longan_detail.item_code
+              INNER JOIN packge_unit ON packge_unit.PackgeCode = sale_longan_detail.PackgeCode
+              INNER JOIN stock_package ON stock_package.stock_code = sale_longan_detail.stock_code
             WHERE sale_longan_detail.Sale_DocNo = '$DocNo' ";
   }
   else
   {
     $Sql = "SELECT
               item.item_name,
-              sale_rice_detail.kilo 
+              sale_rice_detail.kilo,
+              packge_unit.PackgeName,
+              stock_package.DocNo
             FROM
               sale_rice_detail
               INNER JOIN item ON item.item_code = sale_rice_detail.item_code
+              INNER JOIN packge_unit ON packge_unit.PackgeCode = sale_rice_detail.PackgeCode
+              INNER JOIN stock_package ON stock_package.stock_code = sale_rice_detail.stock_code
             WHERE sale_rice_detail.Sale_DocNo = '$DocNo' ";
   }
 
@@ -229,6 +236,8 @@ function view_detail($conn, $DATA)
   {
     $return[$count]['item_name'] = $Result['item_name'];
     $return[$count]['kilo'] = $Result['kilo'];
+    $return[$count]['PackgeName'] = $Result['PackgeName'];
+    $return[$count]['DocNo'] = $Result['DocNo']==null?'ไม่พบรหัสคลังสินค้า':$Result['DocNo'];
     $count++;
   }
 
