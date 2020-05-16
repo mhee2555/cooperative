@@ -580,7 +580,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                                         Status = "เสร็จสิ้นกระบวนการ";
                                         Style  = "style='color: #20B80E;'";
                                     }
-                                    else if(temp[i]['IsStatus']==3)
+                                    else if(temp[i]['IsStatus']==9)
                                     {
                                         Status = "ยกเลิกเอกสาร";
                                         Style  = "style='color: #ff0000;'";

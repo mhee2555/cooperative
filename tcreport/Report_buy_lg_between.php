@@ -156,9 +156,6 @@ $html = '<table cellspacing="0" cellpadding="2" border="1" >
   $meQuery2 = mysqli_query($conn,$Sql_Detail);
 while ($Result_Detail = mysqli_fetch_assoc($meQuery2)) {
 
-
-
-
   $html .= '<tr nobr="true" style="font-size:18px;">';
   $html .=   '<td width="10 %" align="center">' . $count . '</td>';
   $html .=   '<td width="12 %" align="center"> '.$Result_Detail['DocDate'].'</td>';
@@ -168,13 +165,29 @@ while ($Result_Detail = mysqli_fetch_assoc($meQuery2)) {
   $html .=   '<td width="13 %" align="right">'.number_format($Result_Detail['Total'],2).'</td>';
   $html .=   '<td width="15 %" align="center">'.$Result_Detail['FName'].'</td>';
 
-if($Result_Detail['IsStatus']==0){
+if($Result_Detail['IsStatus']==0)
+{
   $IsStatus="ยังไม่ได้บันทึก";
-}else if($Result_Detail['IsStatus']==1){
-  $IsStatus="บันทึกเรียบร้อย";
-}else{
+}
+else if($Result_Detail['IsStatus']==1)
+{
+  $IsStatus="รออนุมัติ";
+}
+else if($Result_Detail['IsStatus']==2)
+{
+  $IsStatus="อนุมัติเรียบร้อย";
+}
+else if($Result_Detail['IsStatus']==8)
+{
+  $IsStatus="ปฎิเสธการขอเบิก";
+}
+else if($Result_Detail['IsStatus']==9)
+{
   $IsStatus="ยกเลิกเอกสาร";
 }
+
+
+
   $html .=   '<td width="13 %" align="center">'.$IsStatus.'</td>';
   $html .=  '</tr>';
   $count++;

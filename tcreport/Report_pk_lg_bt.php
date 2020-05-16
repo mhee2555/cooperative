@@ -174,13 +174,26 @@ while ($Result_Detail = mysqli_fetch_assoc($meQuery2)) {
   $html .=   '<td width="12 %" align="center">'.$Result_Detail['FName'].'</td>';
   $html .=   '<td width="12 %" align="center">'.$Result_Detail['RefDocNo'].'</td>';
 
-if($Result_Detail['IsStatus']==0){
-  $IsStatus="ยังไม่ได้บันทึก";
-}else if($Result_Detail['IsStatus']==1){
-  $IsStatus="บันทึกเรียบร้อย";
-}else{
-  $IsStatus="ยกเลิกเอกสาร";
-}
+  if($Result_Detail['IsStatus']==0)
+  {
+    $IsStatus="ยังไม่ได้บันทึก";
+  }
+  else if($Result_Detail['IsStatus']==1)
+  {
+    $IsStatus="เรึ่มต้นการแปรรูป";
+  }
+  else if($Result_Detail['IsStatus']==2)
+  {
+    $IsStatus="แปรรูปเสร็จสิ้น";
+  }
+  else if($Result_Detail['IsStatus']==3)
+  {
+    $IsStatus="เสร็จสิ้นกระบวนการ";
+  }
+  else if($Result_Detail['IsStatus']==9)
+  {
+    $IsStatus="ยกเลิกเอกสาร";
+  }
   $html .=   '<td width="10 %" align="center">'.$IsStatus.'</td>';
   $html .=  '</tr>';
   $count++;

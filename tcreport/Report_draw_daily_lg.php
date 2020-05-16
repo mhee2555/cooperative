@@ -200,13 +200,26 @@ $pdf->AddPage('P', 'A4');
         $html .=   '<td width="13 %" align="right">'.number_format($Result_Detail['total_qty'],0).'</td>';
         $html .=   '<td width="12 %" align="center">'.$Result_Detail['UnitName'].'</td>';
         $html .=   '<td width="15 %" align="center">'.$Result_Detail['FName'].'</td>';
-
-        if($Result_Detail['IsStatus']==0){
-        $IsStatus="ยังไม่ได้บันทึก";
-        }else if($Result_Detail['IsStatus']==1){
-        $IsStatus="บันทึกเรียบร้อย";
-        }else{
-        $IsStatus="ยกเลิกเอกสาร";
+        
+        if($Result_Detail['IsStatus']==0)
+        {
+          $IsStatus="ยังไม่ได้บันทึก";
+        }
+        else if($Result_Detail['IsStatus']==1)
+        {
+          $IsStatus="รออนุมัติ";
+        }
+        else if($Result_Detail['IsStatus']==2)
+        {
+          $IsStatus="อนุมัติเรียบร้อย";
+        }
+        else if($Result_Detail['IsStatus']==8)
+        {
+          $IsStatus="ปฎิเสธการขอเบิก";
+        }
+        else if($Result_Detail['IsStatus']==9)
+        {
+          $IsStatus="ยกเลิกเอกสาร";
         }
         $html .=   '<td width="13 %" align="center">'.$IsStatus.'</td>';
         $html .=   '<td width="13 %" align="center">'.$ap_name.'</td>';
