@@ -338,9 +338,25 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
     function Cancelbill()
     {
         var DocNo = $("#DocNo").val();
-        swal({
+        if(DocNo == '')
+        {
+            swal({
+                title: '',
+                text: 'กรุณาสร้างเอกสารก่อนยกเลิกเอกสาร',
+                type: 'warning',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                showConfirmButton: false,
+                timer: 2000,
+                confirmButtonText: 'Ok'
+                })
+        }
+        else
+        {
+            swal({
           title: "",
-          text: "ยืนยันการบันทึกเอกสาร "+DocNo+" ",
+          text: "ยืนยันการยกเลิกเอกสาร "+DocNo+" ",
           type: "warning",
           showCancelButton: true,
           confirmButtonClass: "btn-danger",
@@ -367,6 +383,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                 swal.close();
               }
           })
+        }
     }
     function ShowDocNo()
     {
@@ -474,7 +491,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                         $("#DocNo").attr('disabled' , true );
 
                  
-
+                        $("#RefDocNo").attr('disabled' , false );
                         // 1 วิเรียกใช้ Function
                         setTimeout(() =>
                         {
@@ -931,7 +948,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                 <div class="col-md-6">
                     <div class='form-group row  text-black'>
                         <label class=" col-sm-4 form-label  h4" >เอกสารอ้างอิง</label>
-                        <input type="text" autocomplete="off"   class=" col-sm-7 form-control " id="RefDocNo"   placeholder="เอกสารอ้างอิง" onclick="ShowRefDocNo();">
+                        <input type="text" autocomplete="off" disabled  class=" col-sm-7 form-control " id="RefDocNo"   placeholder="เอกสารอ้างอิง" onclick="ShowRefDocNo();">
                     </div>
                 </div>
                 <div class="col-md-6">

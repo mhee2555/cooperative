@@ -287,9 +287,25 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
     function Cancelbill()
     {
         var DocNo = $("#DocNo").val();
-        swal({
+        if(DocNo == '')
+        {
+            swal({
+                title: '',
+                text: 'กรุณาสร้างเอกสารก่อนยกเลิกเอกสาร',
+                type: 'warning',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                showConfirmButton: false,
+                timer: 2000,
+                confirmButtonText: 'Ok'
+                })
+        }
+        else
+        {
+            swal({
           title: "",
-          text: "ยืนยันการบันทึกเอกสาร "+DocNo+" ",
+          text: "ยืนยันการยกเลิกเอกสาร "+DocNo+" ",
           type: "warning",
           showCancelButton: true,
           confirmButtonClass: "btn-danger",
@@ -316,6 +332,8 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                 swal.close();
               }
           })
+        }
+   
     }
     function ShowDocNo()
     {
@@ -335,42 +353,61 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
     }
     function Deleteitem()
     {
-        var DocNo = $("#DocNo").val();
-        var itemcode = "";
-        $('input[name="detailrow"]:checked').each(function() 
+        var chkrow  =   $( ".chkrow" ).length;
+        if(chkrow < 1)
         {
-            itemcode = $(this).val();
-        });
+            swal({
+                title: '',
+                text: 'กรุณาเพิ่มรายการก่อนลบรายการ',
+                type: 'warning',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                showConfirmButton: false,
+                timer: 2000,
+                confirmButtonText: 'Ok'
+                })
+        }
+        else
+        {
+            var DocNo = $("#DocNo").val();
+            var itemcode = "";
+            $('input[name="detailrow"]:checked').each(function() 
+            {
+                itemcode = $(this).val();
+            });
 
-        swal({
-          title: "",
-          text: "ยืนยันการลบรายการ",
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonClass: "btn-danger",
-          confirmButtonText: "ใช่",
-          cancelButtonText: "ไม่ใช่",
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          closeOnConfirm: false,
-          closeOnCancel: false,
-          showCancelButton: true}).then(result => 
-          {
-            if (result.value) 
+            swal({
+            title: "",
+            text: "ยืนยันการลบรายการ",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "ใช่",
+            cancelButtonText: "ไม่ใช่",
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            closeOnConfirm: false,
+            closeOnCancel: false,
+            showCancelButton: true}).then(result => 
             {
-                var data = 
+                if (result.value) 
                 {
-                'STATUS'    : 'Deleteitem',
-                'DocNo'	: DocNo,
-                'itemcode'	: itemcode
-                };
-                senddata(JSON.stringify(data));
-            } 
-            else if (result.dismiss === 'cancel') 
-            {
-                swal.close();
-            } 
-          })
+                    var data = 
+                    {
+                    'STATUS'    : 'Deleteitem',
+                    'DocNo'	: DocNo,
+                    'itemcode'	: itemcode
+                    };
+                    senddata(JSON.stringify(data));
+                } 
+                else if (result.dismiss === 'cancel') 
+                {
+                    swal.close();
+                } 
+            })
+        }
+        
         
     }
 

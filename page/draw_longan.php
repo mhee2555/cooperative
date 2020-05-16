@@ -262,9 +262,25 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
     function Cancelbill()
     {
         var DocNo = $("#DocNo").val();
-        swal({
+        if(DocNo == '')
+        {
+            swal({
+                title: '',
+                text: 'กรุณาสร้างเอกสารก่อนยกเลิกเอกสาร',
+                type: 'warning',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                showConfirmButton: false,
+                timer: 2000,
+                confirmButtonText: 'Ok'
+                })
+        }
+        else
+        {
+            swal({
           title: "",
-          text: "ยืนยันการบันทึกเอกสาร "+DocNo+" ",
+          text: "ยืนยันการยกเลิกเอกสาร "+DocNo+" ",
           type: "warning",
           showCancelButton: true,
           confirmButtonClass: "btn-danger",
@@ -291,6 +307,8 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                 swal.close();
               }
           })
+        }
+   
     }
     function ShowDocNo()
     {
