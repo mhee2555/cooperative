@@ -16,7 +16,7 @@ function CreateDocument($conn, $DATA)
   $Sql = "SELECT CONCAT('LY',SUBSTRING(YEAR(DATE(NOW())),3,4),LPAD(MONTH(DATE(NOW())),2,0),'-',
   LPAD( (COALESCE(MAX(CONVERT(SUBSTRING(DocNo,10,5),UNSIGNED INTEGER)),0)+1) ,5,0)) AS DocNo,DATE(NOW()) AS DocDate,
   CURRENT_TIME() AS RecNow
-  FROM buy_Longan
+  FROM buy_longan
   WHERE DocNo Like CONCAT('LY',SUBSTRING(YEAR(DATE(NOW())),3,4),LPAD(MONTH(DATE(NOW())),2,0),'%')
   ORDER BY DocNo DESC LIMIT 1";
 
@@ -32,7 +32,7 @@ function CreateDocument($conn, $DATA)
 
   if ($count == 1) 
   {
-      $Sqlx = "INSERT INTO buy_Longan (
+      $Sqlx = "INSERT INTO buy_longan (
                     DocNo,
                     DocDate,
                     Modify_Date,
@@ -165,7 +165,7 @@ function Importdata($conn, $DATA)
     $count = " SELECT
                 COUNT(*) AS Cnt
                FROM
-                buy_Longan_detail
+                buy_longan_detail
                WHERE
                 Buy_DocNo = '$DocNo'
                AND item_code = '$value' ";
@@ -175,7 +175,7 @@ function Importdata($conn, $DATA)
 
     if ($chkUpdate == 0) 
     {
-      $insert = "INSERT INTO  buy_Longan_detail
+      $insert = "INSERT INTO  buy_longan_detail
                   SET 
                       Buy_DocNo = '$DocNo',
                       item_code = '$value',
@@ -187,7 +187,7 @@ function Importdata($conn, $DATA)
     }
     else
     {
-      $update = "UPDATE  buy_Longan_detail
+      $update = "UPDATE  buy_longan_detail
                  SET 
                       Buy_DocNo = '$DocNo',
                       item_code = '$value',
@@ -221,7 +221,7 @@ function ShowDetail($conn, $DATA)
               bpd.UnitCode,
 	            grade_price.Grade
             FROM
-              buy_Longan_detail bpd
+              buy_longan_detail bpd
             INNER JOIN item ON item.item_code = bpd.item_code
             INNER JOIN grade_price ON grade_price.item_code = item.item_code
             WHERE Buy_DocNo = '$DocNo' ";
@@ -244,7 +244,7 @@ function ShowDetail($conn, $DATA)
 
                       
             #UPDATE TOTAL
-            $updatetotal = "UPDATE buy_Longan 
+            $updatetotal = "UPDATE buy_longan 
             SET 
                 Total = $Total 
             WHERE DocNo ='$DocNo' ";
@@ -341,7 +341,7 @@ function ShowSearch($conn, $DATA)
                   emp.FName AS employee ,
                   bp.IsStatus
                 FROM
-                  buy_Longan bp
+                  buy_longan bp
                 INNER JOIN employee emp ON emp.ID = bp.Employee_ID
                 INNER JOIN users ON users.ID = bp.Customer_ID
                 WHERE bp.DocDate = '$datepicker' ORDER BY bp.DocNo DESC ";
@@ -416,7 +416,7 @@ function Savebill($conn, $DATA)
   }
 
   //UPDATE STATUS 
-  $Sql = "UPDATE buy_Longan SET IsStatus = 1 , Modify_Date = TIME(NOW())  WHERE buy_Longan.DocNo = '$DocNo'";
+  $Sql = "UPDATE buy_longan SET IsStatus = 1 , Modify_Date = TIME(NOW())  WHERE buy_longan.DocNo = '$DocNo'";
   mysqli_query($conn, $Sql);
 
 
@@ -435,7 +435,7 @@ function Cancelbill($conn, $DATA)
   mysqli_query($conn, $delete);
 
 
-  $Sql = "UPDATE buy_Longan SET IsStatus = 9 WHERE buy_Longan.DocNo = '$DocNo'";
+  $Sql = "UPDATE buy_longan SET IsStatus = 9 WHERE buy_longan.DocNo = '$DocNo'";
   mysqli_query($conn, $Sql);
 
   ShowSearch($conn, $DATA);
@@ -458,7 +458,7 @@ function ShowDocNo($conn, $DATA)
                   emp.FName AS employee ,
                   bp.IsStatus
                 FROM
-                  buy_Longan bp
+                  buy_longan bp
                 INNER JOIN employee emp ON emp.ID = bp.Employee_ID
                 INNER JOIN users ON users.ID = bp.Customer_ID
                 WHERE bp.DocNo = '$DocNo' ";
@@ -527,7 +527,7 @@ function Deleteitem($conn, $DATA)
   mysqli_query($conn, $deletex);
 
 
-  $Delete = "DELETE FROM buy_Longan_detail WHERE item_code = '$itemcode' AND Buy_DocNo = '$DocNo' ";
+  $Delete = "DELETE FROM buy_longan_detail WHERE item_code = '$itemcode' AND Buy_DocNo = '$DocNo' ";
   mysqli_query($conn, $Delete);
 
   ShowDetail($conn, $DATA);
