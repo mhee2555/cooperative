@@ -242,8 +242,8 @@ function ShowDetail($conn, $DATA)
               $return[$count]['kilo']           = $Result['kilo'];
               $return[$count]['UnitCode']      = $Result['UnitCode'];
               $return[$count]['moisture']           = $Result['moisture'];
-              $return[$count]['total']          = $Result['total'];
-              $return[$count]['Sumtotal']          = $Result['Sumtotal'];
+              $return[$count]['total']          = number_format($Result['total'],2);
+              $return[$count]['Sumtotal']          = number_format($Result['Sumtotal'],2);
               $return[$count]['Grade']          = $Result['Grade'];
               $Total += $Result['total'];
               $count ++ ;

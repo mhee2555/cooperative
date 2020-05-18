@@ -467,7 +467,9 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                 'weight_mall'	: weight_mall
                 };
                 senddata(JSON.stringify(data));
-
+                $("#weight_mall").val("");
+                $("#weight_mcar").val("");
+                $("#DocNo_mcar").val("");
                 $('#Addweight_car').modal('toggle');
               }
               else if (result.dismiss === 'cancel') 
@@ -602,11 +604,11 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                         var SUM_total = temp["SUM_total"];
                         var total_p = temp["total_p"];
                         var rowid = temp["rowid"];
-                        //  $("#Total_"+rowid).val(SUM_total);
-                        //  $("#Total_p_"+rowid).val(total_p);
+                         $("#Total_"+rowid).val(SUM_total);
+                         $("#Total_p_"+rowid).val(total_p);
 
-                         $("#Total_"+rowid).val(SUM_total.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                         $("#Total_p_"+rowid).val(total_p.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                        //  $("#Total_"+rowid).val(SUM_total.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                        //  $("#Total_p_"+rowid).val(total_p.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 
                          
                     }
@@ -1201,6 +1203,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+
       <div class="modal-body">
             <div class="row">
                 <label class=" col-sm-3 form-label mt-3 ml-2" >น้ำหนักบรรทุก</label>

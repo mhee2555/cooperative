@@ -204,7 +204,8 @@ function view_detail($conn, $DATA)
     $Sql = "SELECT
               item.item_name,
               sale_longan_detail.kilo,
-              packge_unit.PackgeName
+              packge_unit.PackgeName,
+              stock_package.DocNo
             FROM
               sale_longan_detail
               INNER JOIN item ON item.item_code = sale_longan_detail.item_code

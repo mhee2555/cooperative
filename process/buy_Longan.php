@@ -99,7 +99,8 @@ function ShowItem($conn, $DATA)
                 grade_price.Grade
               FROM
                 item
-              INNER JOIN grade_price ON grade_price.item_code = item.item_code  ";
+              INNER JOIN grade_price ON grade_price.item_code = item.item_code 
+              ORDER BY  ID_Grade ASC ";
     $meQuery = mysqli_query($conn, $Sql);
     while ($Result = mysqli_fetch_assoc($meQuery)) 
     {
@@ -233,7 +234,7 @@ function ShowDetail($conn, $DATA)
               $return[$count]['item_name']      = $Result['item_name'];
               $return[$count]['UnitCode']      = $Result['UnitCode'];
               $return[$count]['kilo']           = $Result['kilo'];
-              $return[$count]['total']          = $Result['total'];
+              $return[$count]['total']          = number_format($Result['total'],2);
               $return[$count]['Grade']          = $Result['Grade'];
               $Total += $Result['total'];
               $count ++ ;

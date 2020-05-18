@@ -14,7 +14,8 @@ function Showitem($conn, $DATA)
                     FROM
                       grade_price
                     INNER JOIN item ON 
-                    grade_price.item_code = item.item_code";
+                    grade_price.item_code = item.item_code
+                    ORDER BY ID_Grade ASC";
 
  
       $meQuery = mysqli_query($conn, $Showitem);

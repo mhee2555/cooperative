@@ -127,8 +127,8 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
         {
             SUM = 0;
         }
-        // $("#Total_"+rowid).val(SUM);
-        $("#Total_"+rowid).val(SUM.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        $("#Total_"+rowid).val(SUM);
+        // $("#Total_"+rowid).val(SUM.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 
     }
     function Importdata()
