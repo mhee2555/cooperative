@@ -163,13 +163,13 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
         {
           $('#namereport').val(type);
           
+
           // divsdate = วันเรึ่มต้น
           // divedate = วันสิ้นสุด
           // divxmonth = เดือน 
           // divyear = ปี
           // divbtn = ปุ่ม
-
-          if(  type == 'finance_rc.php' ||'finance_lg.php' || type == 'Report_buy_lg_between.php' || type == 'Report_buy_rc_between.php' || type == 'Report_sale_lg_bt.php' || type == 'Report_sale_rc_bt.php' || type == 'Report_draw_daily_lg.php' || type == 'Report_draw_daily_rc.php' || type == 'Report_process_lg.php' || type == 'Report_process_rc.php' || type == 'Report_pk_lg_bt.php' || type == 'Report_pk_rc_bt.php')
+          if(  type == 'finance_rc.php' || type == 'finance_lg.php' || type == 'Report_buy_lg_between.php' || type == 'Report_buy_rc_between.php' || type == 'Report_sale_lg_bt.php' || type == 'Report_sale_rc_bt.php' || type == 'Report_draw_daily_lg.php' || type == 'Report_draw_daily_rc.php' || type == 'Report_process_lg.php' || type == 'Report_process_rc.php' || type == 'Report_pk_lg_bt.php' || type == 'Report_pk_rc_bt.php')
           {
             $('#divsdate').attr('hidden' , false); 
             $('#divedate').attr('hidden' , false);

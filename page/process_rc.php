@@ -34,6 +34,25 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
     <script type="text/javascript">
     $(document).ready(function(e)
     {
+
+        $("#v-pills-all-tab").click(function()
+        {
+            $( "#TableDetail tbody" ).empty();
+            $("#DocNo").val("");
+            $("#docdate").val("");
+            $("#ModifyDate").val("");
+            $("#RefDocNo").val("");
+            $("#RefDocNo_text").val("");
+            $("#process").val("");
+            $("#endprocess").val("");
+
+            $("#HSP").attr('hidden' , false );
+
+            $("#HEP").attr('hidden' , true );
+
+            $("#HS").attr('hidden' , true );
+         });
+         
          // ===========DATE ITEM =======
         var d = new Date();
         var month = d.getMonth()+1;
@@ -53,6 +72,8 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
             });
         });
         // 
+
+
 
 
 
