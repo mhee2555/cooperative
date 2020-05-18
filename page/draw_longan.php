@@ -35,6 +35,27 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
     $(document).ready(function(e)
     {
 
+        $("#v-pills-all-tab").click(function()
+        {
+            $( "#TableDetail tbody" ).empty();
+            $("#DocNo").val("");
+            $("#docdate").val("");
+            $("#ModifyDate").val("");
+            $("#Customer").val("1");
+            $("#Employee").val("");
+            $("#Total").val("");
+            
+         });
+
+         $("#v-pills-buyers-tab").click(function()
+         {
+            ShowSearch();
+         });
+
+
+
+
+
         $("#P").attr('disabled' , true );
       // ===========DATE ITEM =======
       var d = new Date();
@@ -46,7 +67,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
       $("#datestock").val(output);
         // ========
         Showuser();
-        ShowSearch();
+        // ShowSearch();
         // ========
         // ค้นหา
         $("#Search").on("keyup", function() 
@@ -57,6 +78,12 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
             });
         });
+    
+
+
+
+
+
     });
     // 
     

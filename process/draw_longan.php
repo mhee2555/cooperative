@@ -169,7 +169,7 @@ function ShowItem($conn, $DATA)
             WHERE item.item_type = 2 
             AND sup.item_ccqty <> 0 
             AND TIMEDIFF(sup.Date_exp , NOW() ) > 0
-            ORDER BY DATE(sup.Date_exp) ASC";
+            ORDER BY sup.DocNo ASC";
   }
   else
   {
@@ -179,7 +179,7 @@ function ShowItem($conn, $DATA)
           sup.stock_code,
           sup.item_qty,
           sup.item_ccqty,
-          TIME(sup.Date_exp) as date_exp,
+          DATE(sup.Date_exp) as date_exp,
           sup.DocNo
           FROM
           stock_unprocess sup
@@ -188,7 +188,7 @@ function ShowItem($conn, $DATA)
           AND sup.item_ccqty <> 0 
           AND TIMEDIFF(sup.Date_exp , NOW() ) > 0
           AND DATE(sup.Date_start) = '$datestock'
-          ORDER BY TIME(sup.Date_exp) ASC";
+          ORDER BY sup.DocNo ASC";
   }
 
 
