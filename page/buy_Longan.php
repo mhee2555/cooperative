@@ -127,7 +127,8 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
         {
             SUM = 0;
         }
-        $("#Total_"+rowid).val(SUM);
+        // $("#Total_"+rowid).val(SUM);
+        $("#Total_"+rowid).val(SUM.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 
     }
     function Importdata()
@@ -556,6 +557,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                                   var chkinput = "<div class='custom-control custom-radio'><input type='radio' class='custom-control-input checkSingle checkdetail' name='detailrow'  value='"+temp[i]['item_code']+"'  id= ' Detail_id_"+i+" ' required><label class='custom-control-label ' for=' Detail_id_"+i+" ' style='margin-top: 15px;'></label></div> ";
                                   var Kilo = "<input type='text' disabled id='Detail_Kilo_"+i+"' class='form-control ' style='text-align:right' autocomplete='off'  name='KiloArray'  placeholder='0.00' value='"+temp[i]['kilo']+"' disabled>  ";
                                   var Total = "<input type='text' disabled id='Detail_Total_"+i+"' class='form-control ' style='text-align:right' autocomplete='off'  value='"+temp[i]['total']+"' disabled >  ";
+
 
                                    StrTR =   "<tr class='chkrow'>"+
                                                 "<td >"+chkinput+"</td>"+

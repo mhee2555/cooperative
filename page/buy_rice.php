@@ -602,8 +602,12 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                         var SUM_total = temp["SUM_total"];
                         var total_p = temp["total_p"];
                         var rowid = temp["rowid"];
-                         $("#Total_"+rowid).val(SUM_total);
-                         $("#Total_p_"+rowid).val(total_p);
+                        //  $("#Total_"+rowid).val(SUM_total);
+                        //  $("#Total_p_"+rowid).val(total_p);
+
+                         $("#Total_"+rowid).val(SUM_total.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                         $("#Total_p_"+rowid).val(total_p.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+
                          
                     }
                     else if(temp["form"]=='ShowDetail')

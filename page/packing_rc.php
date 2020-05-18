@@ -366,6 +366,38 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
     }
     function Sumitem(i)
     {
+        // var qtyperunit = parseFloat($("#qtyperunit_"+i).val());
+        // var qty = parseFloat($("#Kilo_"+i).val());
+        // var total_stock_nan = parseFloat($("#total_stock_nan_"+i).val());
+
+        // // ทุกครั้งที่พิมให้ reset
+        // parseFloat($("#total_stock_"+i).val(total_stock_nan));
+        // parseFloat($("#gram_"+i).val('0.00'));
+
+        // var total_stock = parseFloat($("#total_stock_"+i).val());
+        // var sumqty = parseFloat((qty * qtyperunit));
+        // var sumqty_garm = parseFloat((sumqty / 1000));
+
+  
+        // if(isNaN(sumqty_garm) )
+        // {
+        //     sumqty_garm = '0.00';
+        // }
+
+
+        // var sumqty_total =  total_stock - sumqty_garm  ;
+
+
+        // if(isNaN(sumqty_total) )
+        // {
+        //     sumqty_total = total_stock_nan;
+        // }
+        // // จำนวนก่อน ลบ
+        // parseFloat($("#gram_"+i).val(sumqty_garm));
+        
+        // // จำนวนทั้งหมด ลบ กรัม
+        // parseFloat($("#total_stock_"+i).val(sumqty_total));
+
         var qtyperunit = parseFloat($("#qtyperunit_"+i).val());
         var qty = parseFloat($("#Kilo_"+i).val());
         var total_stock_nan = parseFloat($("#total_stock_nan_"+i).val());
@@ -387,18 +419,38 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
 
         var sumqty_total =  total_stock - sumqty_garm  ;
 
+        if(sumqty_total < 0)
+        {
+            sumqty_total = 0;
+        }
+
+        if(sumqty_garm >= total_stock_nan)
+        {
+            sumqty_garm = total_stock_nan;
+
+            var kilo_gram = parseFloat((total_stock_nan * 1000));
+
+            var kilo_x = parseFloat((kilo_gram / qtyperunit));
+
+            // จำนวนถ้ากรอกยอด ติดลบ
+            parseFloat($("#Kilo_"+i).val(kilo_x));
+        }
 
         if(isNaN(sumqty_total) )
         {
             sumqty_total = total_stock_nan;
         }
+
         // จำนวนก่อน ลบ
         parseFloat($("#gram_"+i).val(sumqty_garm));
         
+        
+    
         // จำนวนทั้งหมด ลบ กรัม
         parseFloat($("#total_stock_"+i).val(sumqty_total));
 
     }
+    
 function report_rc(){
    
    var DocNo = $("#DocNo").val();
