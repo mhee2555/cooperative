@@ -99,7 +99,8 @@ function ShowItem($conn, $DATA)
     sup.stock_code,
     sup.item_qty,
     sup.item_ccqty,
-    DATE(sup.Date_exp) as date_exp
+    DATE(sup.Date_exp) as date_exp,
+    sup.DocNo
     FROM
     stock_unprocess sup
     INNER JOIN item ON item.item_code = sup.item_code 
@@ -116,7 +117,8 @@ function ShowItem($conn, $DATA)
       sup.stock_code,
       sup.item_qty,
       sup.item_ccqty,
-      DATE(sup.Date_exp) as date_exp
+      DATE(sup.Date_exp) as date_exp,
+      sup.DocNo
       FROM
       stock_unprocess sup
       INNER JOIN item ON item.item_code = sup.item_code 
@@ -133,6 +135,7 @@ function ShowItem($conn, $DATA)
     {
       $return[$count]['item_name'] = $Result['item_name'];
       $return[$count]['item_code'] = $Result['item_code'];
+      $return[$count]['DocNo'] = $Result['DocNo'];
       $return[$count]['stock_code'] = $Result['stock_code'];
       $return[$count]['item_qty'] = $Result['item_qty'];
       $return[$count]['item_ccqty'] = $Result['item_ccqty'];

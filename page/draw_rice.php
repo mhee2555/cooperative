@@ -495,7 +495,8 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                                                 "<td style='width: 15%;'>"+temp[i]['item_name']+"</td>"+
                                                 "<td >"+qty_total+"</td>"+
                                                 "<td >"+qty_cc+"</td>"+
-                                                "<td >"+temp[i]['date_exp']+"</td>"+
+                                                "<td style='width: 13%;'>"+temp[i]['DocNo']+"</td>"+
+                                                "<td style='width: 10%;'>"+temp[i]['date_exp']+"</td>"+
                                                 "<td >"+draw+"</td>"+
                                                 "<td >"+chkunit+"</td>"+
                                                 "<td hidden>"+fix+"</td>"+
@@ -1031,8 +1032,10 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                                             <th>ชื่อรายการ</th>
                                             <th>จำนวนทั้งหมด(กก)</th>
                                             <th>คงเหลือ(กก)</th>
+                                            <th>รหัสคลังสินค้า</th>
                                             <th>หมดอายุ</th>
                                             <th>ขอเบิก(กก)</th>
+                                            <th>หน่วยนับ</th>
                                         </tr>
                                         </thead>
                                         <tbody  id="tbody">
