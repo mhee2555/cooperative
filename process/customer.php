@@ -45,7 +45,8 @@ function getUser($conn, $DATA)
                           users.email,
                           users.Tel,
                           users.ID,
-                          users.address
+                          users.address,
+                          users.type
                       FROM   users
                       WHERE users.ID='$ID' ";
     $meQuery = mysqli_query($conn, $Showcustomer);
@@ -55,6 +56,7 @@ function getUser($conn, $DATA)
       $return['Tel']      = $Result['Tel']; 
       $return['ID']       = $Result['ID'];
       $return['address']       = $Result['address']; 
+      $return['type']       = $Result['type']; 
       $count=1;
       
     if($count>0){
@@ -81,8 +83,9 @@ function getUser($conn, $DATA)
     $address_edit = $DATA["address_edit"];
     $email_edit = $DATA["email_edit"];
     $Tel_edit = $DATA["Tel_edit"];
-
-    $editcustomer = " UPDATE users SET users.FName ='$FName_edit',users.email ='$email_edit',users.Tel ='$Tel_edit',users.address ='$address_edit'
+    $c_type_edit = $DATA["c_type_edit"];
+    
+    $editcustomer = " UPDATE users SET users.FName ='$FName_edit',users.email ='$email_edit',users.Tel ='$Tel_edit',users.address ='$address_edit', type ='$c_type_edit'
                       WHERE users.ID='$ID' ";
     mysqli_query($conn, $editcustomer);
 
@@ -102,6 +105,7 @@ function getUser($conn, $DATA)
     $address_add = $DATA["address_add"];
     $email_add = $DATA["email_add"];
     $Tel_add = $DATA["Tel_add"];
+    $c_type = $DATA["c_type"];
 
     $Sql_ID = "SELECT (ID)+1 AS ID FROM users
                ORDER BY ID DESC LIMIT 1 ";
@@ -114,9 +118,9 @@ function getUser($conn, $DATA)
       $ID =  $Result2['ID']; 
     }
     $addcustomer = "INSERT INTO users
-                    (ID,FName,email,Start_Date,Modify_User,Modify_Date,Tel,address)
+                    (ID,FName,email,Start_Date,Modify_User,Modify_Date,Tel,address,type)
                     VALUES
-                    ($ID,'$FName_add','$email_add',NOW(),$ID,NOW(),'$Tel_add','$address_add')    
+                    ($ID,'$FName_add','$email_add',NOW(),$ID,NOW(),'$Tel_add','$address_add','$c_type')    
             ";
             // $return['sql'] = $addcustomer;
     mysqli_query($conn, $addcustomer);

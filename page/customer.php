@@ -68,7 +68,8 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
         var address_edit = $('#address_edit').val();
         var email_edit = $('#email_edit').val();
         var Tel_edit = $('#Tel_edit').val();
-
+        var c_type_edit = $('#c_type_edit').val();
+        
         if(FName_edit=='' || UserName_edit=='' || address_edit=='' || email_edit=='' || Tel_edit==''){
                 swal({
                           title: '',
@@ -88,7 +89,8 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                     // 'UserName_edit':UserName_edit,
                     'address_edit':address_edit,
                     'email_edit':email_edit,
-                    'Tel_edit':Tel_edit
+                    'Tel_edit':Tel_edit,
+                    'c_type_edit':c_type_edit
                     };
                 senddata(JSON.stringify(data));
 
@@ -102,7 +104,8 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
             var address_add = $('#address_add').val();
             var email_add = $('#email_add').val();
             var Tel_add = $('#Tel_add').val();
-
+            var c_type = $('#c_type').val();
+            
           
             if(FName_add=='' || UserName_add=='' || address_add=='' || email_add=='' || Tel_add==''){
                 swal({
@@ -123,7 +126,8 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                     // 'UserName_add':UserName_add,
                     'address_add':address_add,
                     'email_add':email_add,
-                    'Tel_add':Tel_add
+                    'Tel_add':Tel_add,
+                    'c_type':c_type
                     };
                 senddata(JSON.stringify(data));
                 $('#add_customer').modal('toggle');
@@ -218,6 +222,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                             $('#address').val(temp['address']);
                             $('#email').val(temp['email']);
                             $('#Tel').val(temp['Tel']);
+                            $('#c_type_s').val(temp['type']);
                         }else{
                             $('#show_customer_edit').modal('toggle');
 
@@ -227,6 +232,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                             $('#address_edit').val(temp['address']);
                             $('#email_edit').val(temp['email']);
                             $('#Tel_edit').val(temp['Tel']);
+                            $('#c_type_edit').val(temp['type']);
                             
                         }
                         
@@ -705,6 +711,13 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
             <label class="form-label mr-1" style="color:#000000;">เบอร์โทร</label>
             <input type="text" id="Tel" class="form-control " placeholder="เบอร์โทร">
             </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">ประเภท</label>
+            <select class ="custom-select" id="c_type_s" >
+                            <option value="1">ลูกค้าซื้อ</option>
+                            <option value="2">ลูกค้าขาย</option>
+            </select>
+            </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-success" data-dismiss="modal">OK</button>
@@ -748,6 +761,13 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
             <label class="form-label mr-1" style="color:#000000;">เบอร์โทร *</label>
             <input type="text" id="Tel_edit" class="form-control " placeholder="เบอร์โทร">
             </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">ประเภท</label>
+            <select class ="custom-select" id="c_type_edit" >
+                            <option value="1">ลูกค้าซื้อ</option>
+                            <option value="2">ลูกค้าขาย</option>
+            </select>
+            </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -787,6 +807,13 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
             <div class="margin_input">
             <label class="form-label mr-1" style="color:#000000;">เบอร์โทร *</label>
             <input type="text" id="Tel_add" class="form-control " placeholder="เบอร์โทร" maxlength="10">
+            </div>
+            <div class="margin_input">
+            <label class="form-label mr-1" style="color:#000000;">ประเภท</label>
+            <select class ="custom-select" id="c_type" >
+                            <option value="1">ลูกค้าซื้อ</option>
+                            <option value="2">ลูกค้าขาย</option>
+            </select>
             </div>
       </div>
       <div class="modal-footer">
