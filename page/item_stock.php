@@ -276,6 +276,13 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                                     var stutas = 'ยังไม่หมดอายุ';
                                     Style  = "style='color: #20B80E;'";
                                 }
+
+                                if(temp[i]['item_ccqty'] <= 0)
+                                {
+                                    var stutas = 'หมด';
+                                    Style  = "style='color: #ff0000;'";
+                                }
+
                                  StrTR = "<tr ondblclick='showmodal("+temp[i]['item_code']+","+'1'+");'>"+
                                                 "<td >"+(i+1)+"</td>"+
                                                 "<td >"+temp[i]['item_name']+ ' ' +temp[i]['UnitName'] +"</td>"+
@@ -445,6 +452,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                                 {
                                     var sum = cc;
                                 }
+                                
                                 var give = "<input type='text' id='Detail_give_"+i+"' class='form-control ' autocomplete='off'  name='giveArray2'  placeholder='0.00' value="+sum+" disabled><input type='hidden' name='stock_code_Array2'  id='stock_code_"+i+"' value='"+temp[i]['stock_code']+"'><input type='hidden' name='docno_detail2'   value='"+temp[i]['draw_DocNo']+"'>  ";
                                 var datetime = "<div><strong>"+temp[i]['date']+"<strong></div><small>"+temp[i]['time']+"</small>";
                                 

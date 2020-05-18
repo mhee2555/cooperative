@@ -119,13 +119,14 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
             ShowItem(1);
         }
     }
-    function ShowItem()
+    function ShowItem(chk)
     {
         var datestock = $("#datestock").val();
         var data = 
         {
             'STATUS'  : 'ShowItem',
-            'datestock'	: datestock
+            'datestock'	: datestock,
+            'chk'	: chk
         };
         senddata(JSON.stringify(data));
     }   

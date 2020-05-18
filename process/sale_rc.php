@@ -93,26 +93,53 @@ function ShowItem($conn, $DATA)
   $count = 0;
   $boolean = false;
   $datestock   = $DATA["datestock"]==''?date('Y-m-d'):$DATA["datestock"];
+  $chk   = $DATA["chk"];
 
-  $Sql = "SELECT
-          item.item_name ,
-          item.item_code ,
-          sup.stock_code,
-          sup.item_qty,
-          sup.item_ccqty,
-          TIME(sup.Date_exp) as date_exp,
-          sup.DocNo,
-          sup.PackgeCode,
-          packge_unit.Priceperunit
-          FROM
-          stock_package sup
-          INNER JOIN item ON item.item_code = sup.item_code 
-          INNER JOIN packge_unit ON packge_unit.PackgeCode = sup.PackgeCode 
-          WHERE 
-           sup.item_ccqty <> 0 
-          AND TIMEDIFF(sup.Date_exp , NOW() ) > 0
-          AND item.item_type = '3'
-          AND DATE(sup.Date_start) = '$datestock'";
+  if($chk ==1 )
+  {
+    $Sql = "SELECT
+    item.item_name ,
+    item.item_code ,
+    sup.stock_code,
+    sup.item_qty,
+    sup.item_ccqty,
+    TIME(sup.Date_exp) as date_exp,
+    sup.DocNo,
+    sup.PackgeCode,
+    packge_unit.Priceperunit
+    FROM
+    stock_package sup
+    INNER JOIN item ON item.item_code = sup.item_code 
+    INNER JOIN packge_unit ON packge_unit.PackgeCode = sup.PackgeCode 
+    WHERE 
+     sup.item_ccqty <> 0 
+    AND TIMEDIFF(sup.Date_exp , NOW() ) > 0
+    AND item.item_type = '3' ";
+  }
+  else
+  {
+    $Sql = "SELECT
+    item.item_name ,
+    item.item_code ,
+    sup.stock_code,
+    sup.item_qty,
+    sup.item_ccqty,
+    TIME(sup.Date_exp) as date_exp,
+    sup.DocNo,
+    sup.PackgeCode,
+    packge_unit.Priceperunit
+    FROM
+    stock_package sup
+    INNER JOIN item ON item.item_code = sup.item_code 
+    INNER JOIN packge_unit ON packge_unit.PackgeCode = sup.PackgeCode 
+    WHERE 
+     sup.item_ccqty <> 0 
+    AND TIMEDIFF(sup.Date_exp , NOW() ) > 0
+    AND item.item_type = '3'
+    AND DATE(sup.Date_start) = '$datestock'";
+    
+  }
+
 
     $meQuery = mysqli_query($conn, $Sql);
     while ($Result = mysqli_fetch_assoc($meQuery)) 

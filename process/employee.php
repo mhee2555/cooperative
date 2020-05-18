@@ -37,6 +37,21 @@ function getUser($conn, $DATA)
         $count++;
       }
       $return['count']  = $count;
+
+
+
+      // $select = "SELECT Modify_Date , DocNo FROM stockp_rice ";
+      // $meQuery2 = mysqli_query($conn, $select);
+      // while ($Result2 = mysqli_fetch_assoc($meQuery2))
+      // {
+      //   $DocNo  = $Result2['DocNo'];
+      //   $Modify_Date  = $Result2['Modify_Date'];
+
+      //   $update = " UPDATE stock_process SET Date_start = '$Modify_Date' , Date_exp = '$Modify_Date' + INTERVAL 90 DAY  WHERE DocNo = '$DocNo'  ";
+      //   mysqli_query($conn, $update);
+      // }
+
+
     if($count>0){
       $return['status'] = "success";
       $return['form'] = "getUser";

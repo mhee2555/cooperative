@@ -219,7 +219,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
           var xMonth =  $('#xMonth').val();
           var option = "";
 
-          if(type == 'finance_rc.php' ||'finance_lg.php' || type == 'Report_buy_lg_between.php' || type == 'Report_buy_rc_between.php' || type == 'Report_sale_lg_bt.php' || type == 'Report_sale_rc_bt.php' || type == 'Report_draw_daily_lg.php' || type == 'Report_draw_daily_rc.php' || type == 'Report_process_lg.php' || type == 'Report_process_rc.php' || type == 'Report_pk_lg_bt.php' || type == 'Report_pk_rc_bt.php')
+          if(type == 'finance_rc.php' || type == 'finance_lg.php' || type == 'Report_buy_lg_between.php' || type == 'Report_buy_rc_between.php' || type == 'Report_sale_lg_bt.php' || type == 'Report_sale_rc_bt.php' || type == 'Report_draw_daily_lg.php' || type == 'Report_draw_daily_rc.php' || type == 'Report_process_lg.php' || type == 'Report_process_rc.php' || type == 'Report_pk_lg_bt.php' || type == 'Report_pk_rc_bt.php')
           {
             option = "?sDate="+sDate+"&eDate="+eDate;
           }
@@ -269,6 +269,8 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                     $('#Report_Spore_Test17').hide();
                     $('#Report_Spore_Test18').hide();
                     $('#Report_Spore_Test19').hide();
+                    $('#Report_Spore_Test20').hide();
+                    
                   break;
                 case '2':
                     $('#Report_Spore_Test1').hide();
@@ -292,6 +294,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                     $('#Report_Spore_Test17').hide();
                     $('#Report_Spore_Test18').hide();
                     $('#Report_Spore_Test19').hide();
+                    $('#Report_Spore_Test20').hide();
                   break;
                 case '3':
                     $('#Report_Spore_Test1').hide();
@@ -315,6 +318,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                     $('#Report_Spore_Test17').hide();
                     $('#Report_Spore_Test18').hide();
                     $('#Report_Spore_Test19').hide();
+                    $('#Report_Spore_Test20').hide();
                   break;
                 case '4':
                     $('#Report_Spore_Test1').hide();
@@ -338,6 +342,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                     $('#Report_Spore_Test17').hide();
                     $('#Report_Spore_Test18').hide();
                     $('#Report_Spore_Test19').hide();
+                    $('#Report_Spore_Test20').hide();
                  
                   break;
                 case '5':
@@ -362,6 +367,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                     $('#Report_Spore_Test17').hide();
                     $('#Report_Spore_Test18').hide();
                     $('#Report_Spore_Test19').hide();
+                    $('#Report_Spore_Test20').hide();
                   break;
                 case '6':
                     $('#Report_Spore_Test1').hide();
@@ -385,6 +391,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                     $('#Report_Spore_Test17').show();
                     $('#Report_Spore_Test18').show();
                     $('#Report_Spore_Test19').hide();
+                    $('#Report_Spore_Test20').hide();
                   break;
                   case '7':
                     $('#Report_Spore_Test1').hide();
@@ -408,6 +415,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                     $('#Report_Spore_Test17').hide();
                     $('#Report_Spore_Test18').hide();
                     $('#Report_Spore_Test19').show();
+                    $('#Report_Spore_Test20').show();
                   break;
             }
         }

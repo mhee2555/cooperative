@@ -112,17 +112,18 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
         {
             $('#Additem').modal('show');
 
-            ShowItem();
+            ShowItem(1);
         }
 
     }
-    function ShowItem()
+    function ShowItem(chk)
     {
         var datestock = $("#datestock").val();
         var data = 
         {
             'STATUS'  : 'ShowItem',
-            'datestock'	: datestock
+            'datestock'	: datestock,
+            'chk'	: chk
         };
         senddata(JSON.stringify(data));
     }
@@ -1066,7 +1067,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
             <input type="text" autocomplete="off" class ="form-control datepicker-here" id="datestock" data-language='en' data-date-format='yyyy-mm-dd' placeholder="ค้นหาจากวันที่">
         </div>
           <div class="col-md-4  mt-2 ">
-            <button type="button" class="btn btn-primary btn-lg" onclick="ShowItem()">
+            <button type="button" class="btn btn-primary btn-lg" onclick="ShowItem(2)">
             <i class="icon-search3"></i> ค้นหา </button>
           </div>
       </div>

@@ -34,9 +34,25 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
     <script type="text/javascript">
     $(document).ready(function(e)
     {
+        $("#v-pills-all-tab").click(function(){
+            // location.reload();
+            $( "#TableDetail tbody" ).empty();
+            $("#DocNo").val("");
+            $("#docdate").val("");
+            $("#ModifyDate").val("");
+            $("#Customer").val("1");
+            $("#Employee").val("");
+            $("#Total").val("");
+            $("#weight_all").val("");
+            $("#DocNo_car").val("");
+            $("#weight_car").val("");
+         });
+         $("#v-pills-buyers-tab").click(function(){
+            ShowSearch();
+         });
         // ========
         Showuser();
-        ShowSearch();
+        // ShowSearch();
         // ========
         // ค้นหา
         $("#Search").on("keyup", function() 
@@ -51,19 +67,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
         $("#report_rice").attr('disabled' , true );
         $("#report_rice2").attr('disabled' , true );
         
-        $("#v-pills-all-tab").click(function(){
-            // location.reload();
-            $( "#TableDetail tbody" ).empty();
-            $("#DocNo").val("");
-            $("#docdate").val("");
-            $("#ModifyDate").val("");
-            $("#Customer").val("1");
-            $("#Employee").val("");
-            $("#Total").val("");
-         });
-         $("#v-pills-buyers-tab").click(function(){
-            ShowSearch();
-         });
+
     });
     // Function 
     function Createdocument()
