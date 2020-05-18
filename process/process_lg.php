@@ -290,7 +290,7 @@ function SaveRefDocNo($conn, $DATA)
   // ===========================================
   if($chk_ref_status ==1)
   {
-    $updateRef = "UPDATE process_longan , draw SET process_longan.RefDocNo = '$RefDocNo' , Draw.IsRef = 1 , process_longan.IsRef_Status = $chk_ref_status WHERE process_longan.DocNo = '$DocNo' AND draw.DocNo = '$RefDocNo' "; 
+    $updateRef = "UPDATE process_longan , draw SET process_longan.RefDocNo = '$RefDocNo' , draw.IsRef = 1 , process_longan.IsRef_Status = $chk_ref_status WHERE process_longan.DocNo = '$DocNo' AND draw.DocNo = '$RefDocNo' "; 
   }
   else
   {
