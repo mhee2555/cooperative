@@ -1045,8 +1045,8 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
 
 <!--------------------------------------- Modal add_customer  ------------------------------------------>
 <div class="modal fade" id="Additem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content" style='width : 140%;'>
+  <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document" style="height: 600px;">
+    <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel" style="color:#000000;">เพิ่ม รายการ</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
