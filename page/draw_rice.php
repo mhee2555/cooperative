@@ -662,6 +662,12 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                             $("#HP").addClass('boxshadowx');
                             $("#HD").addClass('boxshadowx');
                         }
+
+                        if(temp[0]['IsStatus'] >= 1)
+                        {
+                            $("#S").attr('disabled' , true );
+                            $("#HS").removeClass('boxshadowx');
+                        }
                         // 
                         ShowDetail();
                         // 

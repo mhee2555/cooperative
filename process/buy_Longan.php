@@ -296,7 +296,8 @@ function Showuser($conn, $DATA)
                   users.ID,
                   users.FName
                 FROM
-                  users ";
+                  users 
+                WHERE type = '1'  ";
 
   $meQuery = mysqli_query($conn, $Selectuser);
   while ($Result = mysqli_fetch_assoc($meQuery)) 

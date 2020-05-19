@@ -35,7 +35,8 @@ require '../connect/connect.php';
                     stock_process.item_qty, 
                     stock_process.item_ccqty, 
                     TIME(stock_process.Date_start) AS Date_start, 
-                    DATE(stock_process.Date_exp) AS Date_exp
+                    DATE(stock_process.Date_exp) AS Date_exp,
+                    stock_process.DocNo
                   FROM
                   stock_process
                   INNER JOIN item ON stock_process.item_code = item.item_code
@@ -52,7 +53,8 @@ require '../connect/connect.php';
                     stock_package.item_ccqty, 
                     TIME(stock_package.Date_start) AS Date_start, 
                     DATE(stock_package.Date_exp) AS Date_exp,
-                    packge_unit.PackgeName
+                    packge_unit.PackgeName,
+                    stock_package.DocNo
                   FROM
                   stock_package
                   INNER JOIN item ON stock_package.item_code = item.item_code

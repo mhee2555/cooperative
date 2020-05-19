@@ -350,7 +350,8 @@ function Showuser($conn, $DATA)
                   users.ID,
                   users.FName
                 FROM
-                  users ";
+                  users
+                  WHERE  type = '2'  ";
 
   $meQuery = mysqli_query($conn, $Selectuser);
   while ($Result = mysqli_fetch_assoc($meQuery)) 
@@ -487,8 +488,8 @@ function Cancelbill($conn, $DATA)
                   sale_rice.IsStatus
                 FROM
                   sale_rice
-                  INNER JOIN sale_rice_detail ON sale_rice_detail.Sale_DocNo = sale_longan.DocNo
-                WHERE sale_rice_detail.DocNo = '$DocNo'  ";
+                  INNER JOIN sale_rice_detail ON sale_rice_detail.Sale_DocNo = sale_rice.DocNo
+                WHERE sale_rice_detail.Sale_DocNo = '$DocNo'  ";
                 $meQuery = mysqli_query($conn, $Sql_stock);
                 while ($Result = mysqli_fetch_assoc($meQuery)) 
                 {
@@ -602,8 +603,8 @@ function Deleteitem($conn, $DATA)
                   sale_rice.IsStatus
                 FROM
                   sale_rice
-                  INNER JOIN sale_rice_detail ON sale_rice_detail.Sale_DocNo = sale_longan.DocNo
-                WHERE sale_rice_detail.DocNo = '$DocNo'
+                  INNER JOIN sale_rice_detail ON sale_rice_detail.Sale_DocNo = sale_rice.DocNo
+                WHERE sale_rice_detail.Sale_DocNo = '$DocNo'
                 AND sale_rice_detail.item_code = '$itemcode'   ";
                 $meQuery = mysqli_query($conn, $Sql_stock);
                 while ($Result = mysqli_fetch_assoc($meQuery)) 
@@ -625,7 +626,7 @@ function Deleteitem($conn, $DATA)
 
 
 
-  $Delete = "DELETE FROM sale_rice_detail WHERE item_code = '$itemcode' AND Buy_DocNo = '$DocNo' ";
+  $Delete = "DELETE FROM sale_rice_detail WHERE item_code = '$itemcode' AND Sale_DocNo = '$DocNo' ";
   mysqli_query($conn, $Delete);
 
   ShowDetail($conn, $DATA);

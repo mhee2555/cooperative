@@ -46,7 +46,7 @@ class MYPDF extends TCPDF
       $this->SetFont('thsarabun', 'b', 22);
       $this->Cell(0, 10,  "สหกรณ์การเกษรสันป่าตอง จำกัด", 0, 1, 'C');
       $this->SetFont('thsarabun', 'b', 22);
-      $this->Cell(0, 10,"ใบ สต๊อกสินค้า", 0, 1, 'C');
+      $this->Cell(0, 10,"ใบ สต๊อกสินค้าลำไย", 0, 1, 'C');
       $this->Ln(100);
 
     }else{
@@ -60,7 +60,7 @@ class MYPDF extends TCPDF
       $this->SetFont('thsarabun', 'b', 22);
       $this->Cell(0, 10,  "สหกรณ์การเกษรสันป่าตอง จำกัด", 0, 1, 'C');
       $this->SetFont('thsarabun', 'b', 22);
-      $this->Cell(0, 10,"ใบ สต๊อกสินค้า", 0, 1, 'C');
+      $this->Cell(0, 10,"ใบ สต๊อกสินค้าลำไย", 0, 1, 'C');
       $this->Ln(100);
     }
   }

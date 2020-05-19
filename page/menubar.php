@@ -14,7 +14,7 @@
             <div class="user-panel p-3 light mb-2">
                 <div>
                     <div class="float-left image">
-                    <img src="../profile/img/<?php echo $Profile;?>" class="user" style="width: 58px;border-radius: 50px;height: 55px;">
+                    <img src="../profile/img/<?php echo $Profile;?>" class="user" style="width: 50px;border-radius: 50px;height: 55px;">
                         <!-- <img class="user_avatar" src="assets/img/dummy/u2.png" alt="User Image"> -->
                     </div>
                     <div class="float-left info">

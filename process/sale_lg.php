@@ -350,7 +350,8 @@ function Showuser($conn, $DATA)
                   users.ID,
                   users.FName
                 FROM
-                  users ";
+                  users
+                WHERE  type = '2'  ";
 
   $meQuery = mysqli_query($conn, $Selectuser);
   while ($Result = mysqli_fetch_assoc($meQuery)) 
@@ -488,7 +489,7 @@ function Cancelbill($conn, $DATA)
                   FROM
                     sale_longan
                     INNER JOIN sale_longan_detail ON sale_longan_detail.Sale_DocNo = sale_longan.DocNo
-                  WHERE sale_longan_detail.DocNo = '$DocNo'";
+                  WHERE sale_longan_detail.Sale_DocNo = '$DocNo'";
   $meQuery = mysqli_query($conn, $Sql_stock);
   while ($Result = mysqli_fetch_assoc($meQuery)) 
   {
@@ -605,7 +606,7 @@ function Deleteitem($conn, $DATA)
                 FROM
                   sale_longan
                   INNER JOIN sale_longan_detail ON sale_longan_detail.Sale_DocNo = sale_longan.DocNo
-                WHERE sale_longan_detail.DocNo = '$DocNo'
+                WHERE sale_longan_detail.Sale_DocNo = '$DocNo'
                 AND sale_longan_detail.item_code = '$itemcode'   ";
                 $meQuery = mysqli_query($conn, $Sql_stock);
                 while ($Result = mysqli_fetch_assoc($meQuery)) 
@@ -627,7 +628,7 @@ function Deleteitem($conn, $DATA)
 
 
 
-  $Delete = "DELETE FROM sale_longan_detail WHERE item_code = '$itemcode' AND Buy_DocNo = '$DocNo' ";
+  $Delete = "DELETE FROM sale_longan_detail WHERE item_code = '$itemcode' AND Sale_DocNo = '$DocNo' ";
   mysqli_query($conn, $Delete);
 
   ShowDetail($conn, $DATA);
