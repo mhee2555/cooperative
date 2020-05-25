@@ -48,7 +48,7 @@ class MYPDF extends TCPDF
       $this->Cell(0, 10,  "วันที่พิมพ์รายงาน " . $printdate, 0, 1, 'R');
 
       $this->SetFont('thsarabun', 'b', 22);
-      $this->Cell(0, 10,  "รายงานการซื้อลำไย", 0, 1, 'C');
+      $this->Cell(0, 10,  "รายงานการซื้อลำใย", 0, 1, 'C');
       $this->SetFont('thsarabun', 'b', 20);
       $this->Cell(0, 10,  "ประจำวันที่ ".$sDateTH." ถึง ".$eDateTH, 0, 1, 'C');
       $this->Ln(10);
