@@ -141,7 +141,7 @@ $pdf->Cell(35, 7, $datadocdate, 0, 1, 'L');
 $pdf->SetFont('thsarabun', 'b', 16);
 $pdf->Cell(28, 7,  "ประเภทสินค้า : ", 0, 0, 'L');
 $pdf->SetFont('thsarabun', '', 16);
-$pdf->Cell(58, 7,  "ลำใยอบแห้ง", 0, 0, 'L');
+$pdf->Cell(58, 7,  "ลำไยอบแห้ง", 0, 0, 'L');
 
 $pdf->SetFont('thsarabun', 'b', 16);
 $pdf->Cell(70, 7,  "ผู้สั่งบรรจุภัณฑ์ : ", 0, 0, 'R');

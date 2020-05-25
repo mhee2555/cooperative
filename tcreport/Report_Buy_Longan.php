@@ -48,7 +48,7 @@ class MYPDF extends TCPDF
       $this->SetFont('thsarabun', 'b', 18);
       $this->Cell(0, 10,"ที่ตั้ง เลขที่ 238 ม.10 ต.ยุหว่า อ.สันป่าตอง จ.เชียงใหม่ 50120 โทร.053-106088", 0, 1, 'C');
       $this->SetFont('thsarabun', 'b', 22);
-      $this->Cell(0, 10,"ใบสำคัญซื้อสินค้าลำใย", 0, 1, 'C');
+      $this->Cell(0, 10,"ใบสำคัญซื้อสินค้าลำไย", 0, 1, 'C');
       $this->Ln(100);
 
     }
@@ -156,7 +156,7 @@ $pdf->Cell(120, 12,  $Result['ID'], 0, 1, 'L');
 $pdf->SetFont('thsarabun', 'b', 16);
 $pdf->Cell(25, 12,  "ชนิดสินค้า : ", 0, 0, 'L');
 $pdf->SetFont('thsarabun', '', 16);
-$pdf->Cell(120, 12, "ลำใย", 0, 1, 'L');
+$pdf->Cell(120, 12, "ลำไย", 0, 1, 'L');
 $pdf->Cell(0,0,'','T');  
 $pdf->Ln(5);
 

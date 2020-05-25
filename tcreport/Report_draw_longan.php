@@ -43,7 +43,7 @@ class MYPDF extends TCPDF
       $this->Cell(0, 10,  "วันที่พิมพ์รายงาน " . $printdate, 0, 1, 'R');
 
       $this->SetFont('thsarabun', 'b', 22);
-      $this->Cell(0, 10,  "เอกสารขอเบิกลำใย", 0, 1, 'C');
+      $this->Cell(0, 10,  "เอกสารขอเบิกลำไย", 0, 1, 'C');
       $this->Ln(10);
 
     }
@@ -149,7 +149,7 @@ $pdf->Cell(35, 7, $datadocdate, 0, 1, 'L');
 $pdf->SetFont('thsarabun', 'b', 16);
 $pdf->Cell(28, 7,  "ประเภทสินค้า : ", 0, 0, 'L');
 $pdf->SetFont('thsarabun', '', 16);
-$pdf->Cell(58, 7,  "ลำใย", 0, 0, 'L');
+$pdf->Cell(58, 7,  "ลำไย", 0, 0, 'L');
 
 $pdf->SetFont('thsarabun', 'b', 16);
 $pdf->Cell(70, 7,  "ผู้ขอเบิก : ", 0, 0, 'R');

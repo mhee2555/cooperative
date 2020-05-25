@@ -878,25 +878,25 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
          
           <div class="row" >
             <div class="col-md-5" Style="height: 600px; overflow: auto;" id="rowbtn">
-              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test1" onclick="ShowReport('Report_buy_lg_between.php')">รายงานการซื้อลำใยประจำวัน</button>
-              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test2" onclick="ShowReport('Report_buylg_Y.php')">รายงานการซื้อลำใยประจำปี</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test1" onclick="ShowReport('Report_buy_lg_between.php')">รายงานการซื้อลำไยประจำวัน</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test2" onclick="ShowReport('Report_buylg_Y.php')">รายงานการซื้อลำไยประจำปี</button>
               <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test3" onclick="ShowReport('Report_buy_rc_between.php')">รายงานการซื้อข้าวประจำวัน</button>
               <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test4" onclick="ShowReport('Report_buyrc_Y.php')">รายงานการซื้อข้าวประจำปี</button>
-              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test5" onclick="ShowReport('Report_sale_lg_bt.php')">รายงานการขายลำใยประจำวัน</button>
-              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test6" onclick="ShowReport('Report_sale_lg_Y.php')">รายงานการขายลำใยประจำปี</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test5" onclick="ShowReport('Report_sale_lg_bt.php')">รายงานการขายลำไยประจำวัน</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test6" onclick="ShowReport('Report_sale_lg_Y.php')">รายงานการขายลำไยประจำปี</button>
               <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test7" onclick="ShowReport('Report_sale_rc_bt.php')">รายงานการขายข้าวประจำวัน</button>
               <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test8" onclick="ShowReport('Report_sale_rc_Y.php')">รายงานการขายข้าวประจำปี</button>
-              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test9" onclick="ShowReport('Report_draw_daily_lg.php')">รายงานการขอเบิกลำใยประจำวัน</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test9" onclick="ShowReport('Report_draw_daily_lg.php')">รายงานการขอเบิกลำไยประจำวัน</button>
               <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test10" onclick="ShowReport('Report_draw_daily_rc.php')">รายงานการขอเบิกข้าวประจำวัน</button>
-              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test11" onclick="ShowReport('Report_process_lg.php')">รายงานการแปรรูปลำใยประจำวัน</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test11" onclick="ShowReport('Report_process_lg.php')">รายงานการแปรรูปลำไยประจำวัน</button>
               <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test12" onclick="ShowReport('Report_process_rc.php')">รายงานการแปรรูปข้าวประจำวัน</button>
-              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test13" onclick="ShowReport('Report_pk_lg_bt.php')">รายงานการบรรจุภัณฑ์ลำใยประจำวัน</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test13" onclick="ShowReport('Report_pk_lg_bt.php')">รายงานการบรรจุภัณฑ์ลำไยประจำวัน</button>
               <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test14" onclick="ShowReport('Report_pk_rc_bt.php')">รายงานการบรรจุภัณฑ์ข้าวประจำวัน</button>
               <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test15" onclick="ShowReport('Report_receive_stock_unprocess.php')">รายงานรับเข้าสินค้ายังไม่ได้แปรรูปประจำวัน</button>
               <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test16" onclick="ShowReport('Report_receive_stock_unprocess_M.php')">รายงานรับเข้าสินค้ายังไม่ได้แปรรูปประจำเดือน</button>
               <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test17" onclick="ShowReport('Report_receive_st_process.php')">รายงานรับเข้าสินค้าแปรรูปประจำวัน</button>
               <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test18" onclick="ShowReport('Report_receive_st_processM.php')">รายงานรับเข้าสินค้าแปรรูปประจำเดือน</button>
-              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test19" onclick="ShowReport('finance_lg.php')">รายรับรายจ่ายการซื้อขาย ลำใย</button>
+              <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test19" onclick="ShowReport('finance_lg.php')">รายรับรายจ่ายการซื้อขาย ลำไย</button>
               <button class="margin-btn btn btn-primary mt-3" style="width:95%" id="Report_Spore_Test20" onclick="ShowReport('finance_rc.php')">รายรับรายจ่ายการซื้อขาย ข้าว</button>
             </div>
             <div class="col-md-2"></div>
@@ -917,7 +917,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                   </div>
                   <div class="col-md-7">
                     <div class="input-group" style="width: 300px;">
-                      <input type="text" class="form-control datepicker-here" id="sDate" data-language='en' data-date-format='dd/mm/yyyy' value="<?php echo date('d/m/Y'); ?>">
+                      <input type="text" class="form-control datepicker-here" id="sDate" data-language='en' data-date-format='yyyy-mm-dd' value="<?php echo date('Y-m-d'); ?>">
                       </div>
                   </div>
                 </div>
@@ -928,7 +928,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                   </div>
                   <div class="col-md-7">
                     <div class="input-group" style="width: 300px;">
-                      <input type="text"  class="form-control datepicker-here" id="eDate" data-language='en' data-date-format='dd/mm/yyyy' value="<?php echo date('d/m/Y'); ?>">
+                      <input type="text"  class="form-control datepicker-here" id="eDate" data-language='en' data-date-format='yyyy-mm-dd' value="<?php echo date('Y-m-d'); ?>">
                       </div>
                   </div>
                 </div>

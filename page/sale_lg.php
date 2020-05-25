@@ -1085,7 +1085,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                                             <th>จำนวนทั้งหมด</th>
                                             <th>คงเหลือ</th>
                                             <th>ราคา</th>
-                                            <th>ลอต</th>
+                                            <th>รหัสคลังสินค้า</th>
                                             <!-- <th>หมดอายุ</th> -->
                                             <th>ขาย</th>
                                             <th>หน่วยบรรจุภัณฑ์</th>

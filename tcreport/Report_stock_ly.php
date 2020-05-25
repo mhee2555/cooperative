@@ -203,7 +203,7 @@ $DocNo = $_GET['DocNo'];
             $pdf->SetFont('thsarabun', 'b', 16);
             $pdf->Cell(25, 12,  "ชนิดสินค้า : ", 0, 0, 'L');
             $pdf->SetFont('thsarabun', '', 16);
-            $pdf->Cell(120, 12, "ลำใย", 0, 1, 'L');
+            $pdf->Cell(120, 12, "ลำไย", 0, 1, 'L');
             $pdf->Ln(5);
             $pdf->Cell(0,0,'','T');  
             $pdf->Ln(5);

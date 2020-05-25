@@ -21,7 +21,7 @@ function ShowDoc($conn, $DATA)
                   FROM
                     sale_longan
                   INNER JOIN users ON users.ID = sale_longan.Customer_ID
-                  WHERE sale_longan.DocDate = '$date' AND  sale_longan.IsStatus > 0  AND  sale_longan.IsStatus <> 9 ";
+                  WHERE sale_longan.DocDate = '$date' AND  ( sale_longan.IsStatus <> 0  AND  sale_longan.IsStatus <> 9 ) ";
 
        $meQuery = mysqli_query($conn, $select_doc);
        while ($Result = mysqli_fetch_assoc($meQuery))
@@ -44,7 +44,7 @@ function ShowDoc($conn, $DATA)
                   FROM
                     sale_rice
                   INNER JOIN users ON users.ID = sale_rice.Customer_ID
-                  WHERE sale_rice.DocDate = '$date' AND  sale_rice.IsStatus > 0  AND  sale_longan.IsStatus <> 9 ";
+                  WHERE sale_rice.DocDate = '$date' AND  ( sale_rice.IsStatus <> 0  AND  sale_rice.IsStatus <> 9 ) ";
 
                 $meQuery = mysqli_query($conn, $select_doc);
                 while ($Result = mysqli_fetch_assoc($meQuery))
