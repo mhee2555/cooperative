@@ -27,12 +27,12 @@ class MYPDF extends TCPDF
   {
     $datetime = new DatetimeTH();
     $eDateTH = $_GET['eDate'];
-    $eDateTH = explode("/",$eDateTH);
-    $eDateTH = $eDateTH[0]." ".$datetime->getTHmonthFromnum($eDateTH[1])." พ.ศ. ".$datetime->getTHyear($eDateTH[2]);
+    $eDateTH = explode("-",$eDateTH);
+    $eDateTH = $eDateTH[2]." ".$datetime->getTHmonthFromnum($eDateTH[1])." พ.ศ. ".$datetime->getTHyear($eDateTH[0]);
 
     $sDateTH = $_GET['sDate'];
-    $sDateTH = explode("/",$sDateTH);
-    $sDateTH = $sDateTH[0]." ".$datetime->getTHmonthFromnum($sDateTH[1])." พ.ศ. ".$datetime->getTHyear($sDateTH[2]);
+    $sDateTH = explode("-",$sDateTH);
+    $sDateTH = $sDateTH[2]." ".$datetime->getTHmonthFromnum($sDateTH[1])." พ.ศ. ".$datetime->getTHyear($sDateTH[0]);
 
     if ($this->page == 1)
     {
@@ -98,12 +98,12 @@ $count = 1;
 // ------------------------------------------------------------------------------
 
 $sDate = $_GET['sDate'];
-$sDate = explode("/",$sDate);
-$sDate = $sDate[2].'-'.$sDate[1].'-'.$sDate[0];
+$sDate = explode("-",$sDate);
+$sDate = $sDate[0].'-'.$sDate[1].'-'.$sDate[2];
 
 $eDate = $_GET['eDate'];
-$eDate = explode("/",$eDate);
-$eDate = $eDate[2].'-'.$eDate[1].'-'.$eDate[0];
+$eDate = explode("-",$eDate);
+$eDate = $eDate[0].'-'.$eDate[1].'-'.$eDate[2];
 
 
 
@@ -232,7 +232,7 @@ $pdf->writeHTML($html, true, false, false, false, '');
 
 //Close and output PDF document
 $eDate = $_GET['eDate'];
-$eDate=str_replace("/","_",$eDate);
+$eDate=str_replace("-","_",$eDate);
 $ddate = date('d_m_Y');
 $pdf->Output('finance_lg_' . $eDate . '.pdf', 'I');
 

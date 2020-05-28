@@ -29,7 +29,7 @@ class MYPDF extends TCPDF
     $datetime = new DatetimeTH();
     $eDate = $_GET['eDate'];
     $eDate = explode("/",$eDate);
-    $edate = $eDate[0]." ".$datetime->getTHmonthFromnum($eDate[1])." พ.ศ. ".$datetime->getTHyear($eDate[2]);
+    $edate = $eDate[2]." ".$datetime->getTHmonthFromnum($eDate[1])." พ.ศ. ".$datetime->getTHyear($eDate[0]);
     if ($this->page == 1)
     {
       // Logo
@@ -101,8 +101,8 @@ $count = 1;
 // ------------------------------------------------------------------------------
 
 $eDate = $_GET['eDate'];
-$eDate = explode("/",$eDate);
-$eDate = $eDate[2].'-'.$eDate[1].'-'.$eDate[0];
+$eDate = explode("-",$eDate);
+$eDate = $eDate[0].'-'.$eDate[1].'-'.$eDate[2];
 
 $DocNo = $_GET['DocNo'];
 // --------------------------------------------------------
@@ -258,7 +258,7 @@ $pdf->Cell(120, 5,  "(".$textTotal.")", 0, 1, 'R');
 
 //Close and output PDF document
 $eDate = $_GET['eDate'];
-$eDate=str_replace("/","_",$eDate);
+$eDate=str_replace("-","_",$eDate);
 $ddate = date('d_m_Y');
 $pdf->Output('Report_Buy_Longan_' . $eDate . '.pdf', 'I');
 

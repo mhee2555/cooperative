@@ -28,8 +28,8 @@ class MYPDF extends TCPDF
   {
     $datetime = new DatetimeTH();
     $eDate = $_GET['eDate'];
-    $eDate = explode("/",$eDate);
-    $edate = $eDate[0]." ".$datetime->getTHmonthFromnum($eDate[1])." พ.ศ. ".$datetime->getTHyear($eDate[2]);
+    $eDate = explode("-",$eDate);
+    $edate = $eDate[2]." ".$datetime->getTHmonthFromnum($eDate[1])." พ.ศ. ".$datetime->getTHyear($eDate[0]);
     if ($this->page == 1)
     {
       // Logo
@@ -101,8 +101,8 @@ $count = 1;
 // ------------------------------------------------------------------------------
 
 $eDate = $_GET['eDate'];
-$eDate = explode("/",$eDate);
-$eDate = $eDate[2].'-'.$eDate[1].'-'.$eDate[0];
+$eDate = explode("-",$eDate);
+$eDate = $eDate[0].'-'.$eDate[1].'-'.$eDate[2];
 
 $DocNo = $_GET['DocNo'];
 // --------------------------------------------------------

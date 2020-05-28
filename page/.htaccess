@@ -1,0 +1,4 @@
+RewriteEngine On
+RewriteBase /rewrite/
+
+RewriteRule ^(.*).html index.php?id=$1

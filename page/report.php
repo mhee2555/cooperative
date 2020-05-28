@@ -917,7 +917,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                   </div>
                   <div class="col-md-7">
                     <div class="input-group" style="width: 300px;">
-                      <input type="text" class="form-control datepicker-here" id="sDate" data-language='en' data-date-format='dd/mm/yyyy' value="<?php echo date('d/m/Y'); ?>">
+                      <input type="text" class="form-control datepicker-here" id="sDate" data-language='en' data-date-format='yyyy-mm-dd' value="<?php echo date('Y-m-d'); ?>">
                       </div>
                   </div>
                 </div>
@@ -928,7 +928,7 @@ $Profile = $_SESSION['pic']==null?'default_img.png':$_SESSION['pic'];
                   </div>
                   <div class="col-md-7">
                     <div class="input-group" style="width: 300px;">
-                      <input type="text"  class="form-control datepicker-here" id="eDate" data-language='en' data-date-format='dd/mm/yyyy' value="<?php echo date('d/m/Y'); ?>">
+                      <input type="text"  class="form-control datepicker-here" id="eDate" data-language='en' data-date-format='yyyy-mm-dd' value="<?php echo date('Y-m-d'); ?>">
                       </div>
                   </div>
                 </div>

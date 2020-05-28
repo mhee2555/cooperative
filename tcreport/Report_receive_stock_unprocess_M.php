@@ -206,7 +206,7 @@ $pdf->writeHTML($html, true, false, false, false, '');
 
 //Close and output PDF document
 $eDate = $_GET['eDate'];
-$eDate=str_replace("/","_",$eDate);
+$eDate=str_replace("-","_",$eDate);
 $ddate = date('d_m_Y');
 $pdf->Output('Report_draw_longan_' . $eDate . '.pdf', 'I');
 

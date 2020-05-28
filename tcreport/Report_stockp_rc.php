@@ -91,8 +91,8 @@ $count = 1;
 // ------------------------------------------------------------------------------
 
 $eDate = $_GET['eDate'];
-$eDate = explode("/",$eDate);
-$eDate = $eDate[2].'-'.$eDate[1].'-'.$eDate[0];
+$eDate = explode("-",$eDate);
+$eDate = $eDate[0].'-'.$eDate[1].'-'.$eDate[2];
 
 $datetime = new DatetimeTH();
 

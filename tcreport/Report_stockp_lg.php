@@ -91,8 +91,8 @@ $count = 1;
 // ------------------------------------------------------------------------------
 
 $eDate = $_GET['eDate'];
-$eDate = explode("/",$eDate);
-$eDate = $eDate[2].'-'.$eDate[1].'-'.$eDate[0];
+$eDate = explode("-",$eDate);
+$eDate = $eDate[0].'-'.$eDate[1].'-'.$eDate[2];
 
 $datetime = new DatetimeTH();
 
@@ -231,7 +231,7 @@ $pdf->Cell(20, 7, '(  . . .  / . . .  / . . . . . .  )', 0, 1, 'L');
 
 //Close and output PDF document
 $eDate = $_GET['eDate'];
-$eDate=str_replace("/","_",$eDate);
+$eDate=str_replace("-","_",$eDate);
 $ddate = date('d_m_Y');
 $pdf->Output('Report_stockp_lg_' . $eDate . '.pdf', 'I');
 
